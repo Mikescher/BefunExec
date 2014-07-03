@@ -114,7 +114,12 @@
     <Content Include="Resources\license.txt" />
     <Content Include="Resources\raster.bmp" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BefunHighlight\BefunHighlight.csproj">
+      <Project>{ed56cfac-ed62-485e-9438-e1fa0216d02f}</Project>
+      <Name>BefunHighlight</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -82,11 +82,14 @@ namespace BefungExec
 				Console.WriteLine("########## Parameter ##########");
 				Console.WriteLine();
 				Console.WriteLine("pause | no_pause           : Start Interpreter paused");
-				Console.WriteLine("highlight | no_highlight   : Enable Syntax-Highlighting");
 				Console.WriteLine("asciistack | no_asciistack : Enable char display in stack");
 				Console.WriteLine("skipnop | no_skipnop       : Skip NOP's");
 				Console.WriteLine("debug | no_debug           : Activates additional debug-messages");
 				Console.WriteLine("follow | no_follow         : Activates the follow-cursor mode");
+
+				Console.WriteLine("no-highlight               : Set Syntax-Highlighting to [none]");
+				Console.WriteLine("highlight | s-highlight    : Set Syntax-Highlighting to [simple]");
+				Console.WriteLine("e-highlight                : Set Syntax-Highlighting to [extended]");
 
 				Console.WriteLine("speed=?                    : Set the initial speed (index)");
 
@@ -112,10 +115,12 @@ namespace BefungExec
 
 			//##############
 
-			if (cmda.IsSet("highlight"))
-				RunOptions.SYNTAX_HIGHLIGHTING = true;
 			if (cmda.IsSet("no_highlight"))
-				RunOptions.SYNTAX_HIGHLIGHTING = false;
+				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_NONE;
+			if (cmda.IsSet("highlight") || cmda.IsSet("s-highlight"))
+				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_SIMPLE;
+			if (cmda.IsSet("e-highlight"))
+				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_EXTENDED;
 
 			//##############
 

@@ -47,6 +47,9 @@
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.displayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.syntaxHighlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.syntaxHighlighting_noneToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
+			this.syntaxHighlighting_simpleToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
+			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
 			this.followCursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showTrailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aSCIIStackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,8 +77,8 @@
 			this.showCompleteOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showCurrentStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.captureGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -282,11 +285,39 @@
 			// 
 			// syntaxHighlightingToolStripMenuItem
 			// 
-			this.syntaxHighlightingToolStripMenuItem.CheckOnClick = true;
+			this.syntaxHighlightingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.syntaxHighlighting_noneToolStripMenuItem,
+            this.syntaxHighlighting_simpleToolStripMenuItem,
+            this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem});
 			this.syntaxHighlightingToolStripMenuItem.Name = "syntaxHighlightingToolStripMenuItem";
 			this.syntaxHighlightingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.syntaxHighlightingToolStripMenuItem.Text = "Syntax Highlighting";
-			this.syntaxHighlightingToolStripMenuItem.CheckedChanged += new System.EventHandler(this.syntaxHighlightingToolStripMenuItem_CheckedChanged);
+			// 
+			// noneToolStripMenuItem
+			// 
+			this.syntaxHighlighting_noneToolStripMenuItem.CheckOnClick = true;
+			this.syntaxHighlighting_noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+			this.syntaxHighlighting_noneToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.syntaxHighlighting_noneToolStripMenuItem.Text = "None";
+			this.syntaxHighlighting_noneToolStripMenuItem.CheckedChanged += new System.EventHandler(this.syntaxhighlightingToolStripMenuItem_CheckedChanged);
+			// 
+			// simpleToolStripMenuItem
+			// 
+			this.syntaxHighlighting_simpleToolStripMenuItem.Checked = true;
+			this.syntaxHighlighting_simpleToolStripMenuItem.CheckOnClick = true;
+			this.syntaxHighlighting_simpleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.syntaxHighlighting_simpleToolStripMenuItem.Name = "simpleToolStripMenuItem";
+			this.syntaxHighlighting_simpleToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.syntaxHighlighting_simpleToolStripMenuItem.Text = "Simple";
+			this.syntaxHighlighting_simpleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.syntaxhighlightingToolStripMenuItem_CheckedChanged);
+			// 
+			// extendedBefunHighlightToolStripMenuItem
+			// 
+			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.CheckOnClick = true;
+			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Name = "extendedBefunHighlightToolStripMenuItem";
+			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Text = "Extended (BefunHighlight)";
+			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.CheckedChanged += new System.EventHandler(this.syntaxhighlightingToolStripMenuItem_CheckedChanged);
 			// 
 			// followCursorToolStripMenuItem
 			// 
@@ -399,7 +430,7 @@
 			// 
 			this.lowToolStripMenuItem.CheckOnClick = true;
 			this.lowToolStripMenuItem.Name = "lowToolStripMenuItem";
-			this.lowToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+			this.lowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.lowToolStripMenuItem.Text = "Low";
 			this.lowToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -407,7 +438,7 @@
 			// 
 			this.middleToolStripMenuItem.CheckOnClick = true;
 			this.middleToolStripMenuItem.Name = "middleToolStripMenuItem";
-			this.middleToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+			this.middleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.middleToolStripMenuItem.Text = "Middle";
 			this.middleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -415,7 +446,7 @@
 			// 
 			this.fastToolStripMenuItem.CheckOnClick = true;
 			this.fastToolStripMenuItem.Name = "fastToolStripMenuItem";
-			this.fastToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+			this.fastToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.fastToolStripMenuItem.Text = "Fast";
 			this.fastToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -423,7 +454,7 @@
 			// 
 			this.veryFastToolStripMenuItem.CheckOnClick = true;
 			this.veryFastToolStripMenuItem.Name = "veryFastToolStripMenuItem";
-			this.veryFastToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+			this.veryFastToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.veryFastToolStripMenuItem.Text = "Very Fast";
 			this.veryFastToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -431,7 +462,7 @@
 			// 
 			this.fullToolStripMenuItem.CheckOnClick = true;
 			this.fullToolStripMenuItem.Name = "fullToolStripMenuItem";
-			this.fullToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+			this.fullToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.fullToolStripMenuItem.Text = "Full";
 			this.fullToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -498,19 +529,19 @@
 			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.helpToolStripMenuItem.Text = "Help";
 			// 
-			// aboutToolStripMenuItem
-			// 
-			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.aboutToolStripMenuItem.Text = "About ...";
-			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-			// 
 			// captureGIFToolStripMenuItem
 			// 
 			this.captureGIFToolStripMenuItem.Name = "captureGIFToolStripMenuItem";
-			this.captureGIFToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.captureGIFToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
 			this.captureGIFToolStripMenuItem.Text = "Capture GIF";
 			this.captureGIFToolStripMenuItem.Click += new System.EventHandler(this.captureGIFToolStripMenuItem_Click);
+			// 
+			// aboutToolStripMenuItem
+			// 
+			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.aboutToolStripMenuItem.Text = "About ...";
+			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -587,5 +618,8 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ToolStripMenuItem followCursorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem captureGIFToolStripMenuItem;
+		private ToolStripRadioButtonMenuItem syntaxHighlighting_noneToolStripMenuItem;
+		private ToolStripRadioButtonMenuItem syntaxHighlighting_simpleToolStripMenuItem;
+		private ToolStripRadioButtonMenuItem syntaxHighlighting_extendedBefunHighlightToolStripMenuItem;
 	}
 }

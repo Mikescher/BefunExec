@@ -1,6 +1,7 @@
 ﻿using BefungExec.Logic;
 using BefungExec.View.OpenGL;
 using BefungExec.View.OpenGL.OGLMath;
+using BefunHighlight;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -33,7 +34,10 @@ namespace BefungExec.View
 
 		private FrequencyCounter fps = new FrequencyCounter();
 		private FontRasterSheet font;
+		private FontRasterSheet nop_font;
+		private FontRasterSheet stringfont;
 		private FontRasterSheet bwfont;
+		private BeGraph ExtendedSHGraph = null;
 		private QFont DebugFont;
 		private QFont StackFont;
 		private QFont BoxFont;
@@ -70,7 +74,9 @@ namespace BefungExec.View
 			if (zoom.Peek() == null || zoom.Peek().bl.X < 0 || zoom.Peek().bl.Y < 0 || zoom.Peek().tr.X > prog.Width || zoom.Peek().tr.Y > prog.Height)
 				zoom.Pop();
 
-			syntaxHighlightingToolStripMenuItem.Checked = RunOptions.SYNTAX_HIGHLIGHTING;
+			syntaxHighlighting_noneToolStripMenuItem.Checked = (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_NONE);
+			syntaxHighlighting_simpleToolStripMenuItem.Checked = (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_SIMPLE);
+			syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Checked = (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED);
 			aSCIIStackToolStripMenuItem.Checked = RunOptions.ASCII_STACK;
 			followCursorToolStripMenuItem.Checked = RunOptions.FOLLOW_MODE;
 			skipNOPsToolStripMenuItem.Checked = RunOptions.SKIP_NOP;
@@ -182,8 +188,10 @@ namespace BefungExec.View
 			BoxFont.Options.DropShadowActive = true;
 			BoxFont.Options.Colour = Color4.Black;
 
-			font = FontRasterSheet.create(RunOptions.SYNTAX_HIGHLIGHTING);
-			bwfont = FontRasterSheet.create(false);
+			initSyntaxHighlighting();
+			stringfont = FontRasterSheet.create(false, Color.DarkGreen, Color.FromArgb(212, 255, 212));
+			nop_font = FontRasterSheet.create(false, Color.Black, Color.FromArgb(244, 244, 244));
+			bwfont = FontRasterSheet.create(false, Color.Black, Color.White);
 
 			loaded_pv = true;
 		}
@@ -324,102 +332,25 @@ namespace BefungExec.View
 
 			#endregion
 
+			#region RENDER
+
 			if (h > 6)
 			{
-				#region PROG_HQ
-
-				long now = Environment.TickCount;
-
-				int f_binded = -1;
-
-				double p_r = -1;
-				double p_g = -1;
-				double p_b = -1;
-
-				for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				{
-					for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
-					{
-						double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.decay_raster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.decay_raster[x, y]);
-						decay_perc = Math.Min(1, decay_perc);
-
-						double r = prog.breakpoints[x, y] ? decay_perc : 1;
-						double g = prog.breakpoints[x, y] ? 0 : (1 - decay_perc);
-						double b = prog.breakpoints[x, y] ? (1 - decay_perc) : (1 - decay_perc);
-
-						if (p_r != r || p_g != g || p_b != b)
-							GL.Color3(p_r = r, p_g = g, p_b = b);
-
-						if (prog.breakpoints[x, y] || decay_perc > 0.25)
-						{
-							if (f_binded != 1)
-								bwfont.bind();
-							bwfont.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
-							f_binded = 1;
-						}
-						else
-						{
-							if (f_binded != 2)
-								font.bind();
-							font.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
-							f_binded = 2;
-						}
-					}
+					Render_HQ_sh(offx, offy, w, h);
 				}
-
-				#endregion
+				else
+				{
+					Render_HQ(offx, offy, w, h);
+				}
 			}
 			else
 			{
-				#region PROG_LQ
-
-				long now = Environment.TickCount;
-
-				GL.Disable(EnableCap.Texture2D);
-
-				GL.Begin(BeginMode.Quads);
-
-				int last = 0;
-
-				for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
-				{
-					for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
-					{
-						double decay_perc = (now - prog.decay_raster[x, y] * 1d) / RunOptions.DECAY_TIME;
-
-						if (!prog.breakpoints[x, y] && prog.raster[x, y] == ' ' && decay_perc >= 1)
-							continue;
-
-						bool docol = true;
-						if (prog.breakpoints[x, y])
-						{
-							GL.Color3(0.0, 0.0, 1.0);
-
-							docol = false;
-						}
-						else if (decay_perc < 0.66)
-						{
-							GL.Color3(1.0, 0.0, 0.0);
-
-							docol = false;
-						}
-						else if (last == prog.raster[x, y])
-						{
-							docol = false;
-						}
-
-						font.RenderLQ(docol, new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
-
-						last = (decay_perc < 0.66 || prog.breakpoints[x, y]) ? int.MinValue : prog.raster[x, y];
-					}
-				}
-
-				GL.End();
-
-				GL.Enable(EnableCap.Texture2D);
-
-				#endregion
+				Render_LQ(offx, offy, w, h);
 			}
+
+			#endregion
 
 			#region SELECTION
 
@@ -547,6 +478,159 @@ namespace BefungExec.View
 				glProgramView.SwapBuffers();
 
 			#endregion
+		}
+
+		private void Render_LQ(double offx, double offy, double w, double h)
+		{
+			long now = Environment.TickCount;
+
+			GL.Disable(EnableCap.Texture2D);
+
+			GL.Begin(BeginMode.Quads);
+
+			int last = 0;
+
+			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+			{
+				for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
+				{
+					double decay_perc = (now - prog.decay_raster[x, y] * 1d) / RunOptions.DECAY_TIME;
+
+					if (!prog.breakpoints[x, y] && prog.raster[x, y] == ' ' && decay_perc >= 1)
+						continue;
+
+					bool docol = true;
+					if (prog.breakpoints[x, y])
+					{
+						GL.Color3(0.0, 0.0, 1.0);
+
+						docol = false;
+					}
+					else if (decay_perc < 0.66)
+					{
+						GL.Color3(1.0, 0.0, 0.0);
+
+						docol = false;
+					}
+					else if (last == prog.raster[x, y])
+					{
+						docol = false;
+					}
+
+					font.RenderLQ(docol, new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+
+					last = (decay_perc < 0.66 || prog.breakpoints[x, y]) ? int.MinValue : prog.raster[x, y];
+				}
+			}
+
+			GL.End();
+
+			GL.Enable(EnableCap.Texture2D);
+		}
+
+		private void Render_HQ(double offx, double offy, double w, double h)
+		{
+			long now = Environment.TickCount;
+
+			int f_binded = -1;
+
+			double p_r = -1;
+			double p_g = -1;
+			double p_b = -1;
+
+			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+			{
+				for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
+				{
+					double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.decay_raster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.decay_raster[x, y]);
+					decay_perc = Math.Min(1, decay_perc);
+
+					double r = prog.breakpoints[x, y] ? decay_perc : 1;
+					double g = prog.breakpoints[x, y] ? 0 : (1 - decay_perc);
+					double b = prog.breakpoints[x, y] ? (1 - decay_perc) : (1 - decay_perc);
+
+					if (p_r != r || p_g != g || p_b != b)
+						GL.Color3(p_r = r, p_g = g, p_b = b);
+
+					if (prog.breakpoints[x, y] || decay_perc > 0.25)
+					{
+						if (f_binded != 1)
+							bwfont.bind();
+						bwfont.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+						f_binded = 1;
+					}
+					else
+					{
+						if (f_binded != 2)
+							font.bind();
+						font.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+						f_binded = 2;
+					}
+				}
+			}
+		}
+
+		private void Render_HQ_sh(double offx, double offy, double w, double h)
+		{
+			if (ExtendedSHGraph == null) return;
+
+			long now = Environment.TickCount;
+
+			int f_binded = -1;
+
+			double p_r = -1;
+			double p_g = -1;
+			double p_b = -1;
+
+			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+			{
+				for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
+				{
+					double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.decay_raster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.decay_raster[x, y]);
+					decay_perc = Math.Min(1, decay_perc);
+
+					double r = prog.breakpoints[x, y] ? decay_perc : 1;
+					double g = prog.breakpoints[x, y] ? 0 : (1 - decay_perc);
+					double b = prog.breakpoints[x, y] ? (1 - decay_perc) : (1 - decay_perc);
+
+					if (p_r != r || p_g != g || p_b != b)
+						GL.Color3(p_r = r, p_g = g, p_b = b);
+
+					if (prog.breakpoints[x, y] || decay_perc > 0.25)
+					{
+						if (f_binded != 1)
+							bwfont.bind();
+						bwfont.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+						f_binded = 1;
+					}
+					else
+					{
+						HighlightType type = ExtendedSHGraph.fields[x, y].getType();
+
+						if (type == HighlightType.NOP)
+						{
+							if (f_binded != 4)
+								nop_font.bind();
+							nop_font.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+							f_binded = 4;
+						}
+						else if (type == HighlightType.Command || type == HighlightType.String_and_Command)
+						{
+							if (f_binded != 2)
+								font.bind();
+							font.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+							f_binded = 2;
+						}
+						else if (type == HighlightType.String)
+						{
+							if (f_binded != 3)
+								stringfont.bind();
+							stringfont.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+							f_binded = 3;
+						}
+					}
+				}
+			}
 		}
 
 		public Bitmap GrabScreenshot()
@@ -1020,6 +1104,19 @@ namespace BefungExec.View
 			}
 		}
 
+		private void initSyntaxHighlighting()
+		{
+			font = FontRasterSheet.create(RunOptions.SYNTAX_HIGHLIGHTING != RunOptions.SH_NONE, Color.Black, Color.White);
+
+			ExtendedSHGraph = null;
+			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
+			{
+				ExtendedSHGraph = new BeGraph(prog.Width, prog.Height);
+
+				ExtendedSHGraph.Calculate(BeGraphHelper.parse(prog.raster));
+			}
+		}
+
 		#endregion
 
 		#region Menubar
@@ -1059,15 +1156,6 @@ namespace BefungExec.View
 					zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
 				}
 			}
-		}
-
-		private void syntaxHighlightingToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			if (!loaded)
-				return;
-
-			RunOptions.SYNTAX_HIGHLIGHTING = syntaxHighlightingToolStripMenuItem.Checked;
-			font = FontRasterSheet.create(RunOptions.SYNTAX_HIGHLIGHTING);
 		}
 
 		private void aSCIIStackToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1233,6 +1321,27 @@ namespace BefungExec.View
 			(new CaptureForm(this, prog)).ShowDialog();
 		}
 
+		private void syntaxhighlightingToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!loaded)
+				return;
+
+			if (syntaxHighlighting_noneToolStripMenuItem.Checked)
+			{
+				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_NONE;
+			}
+			else if (syntaxHighlighting_simpleToolStripMenuItem.Checked)
+			{
+				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_SIMPLE;
+			}
+			else if (syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Checked)
+			{
+				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_EXTENDED;
+			}
+
+			initSyntaxHighlighting();
+		}
+
 		#endregion
 
 		#region Controls
@@ -1249,5 +1358,6 @@ namespace BefungExec.View
 		}
 
 		#endregion
+
 	}
 }

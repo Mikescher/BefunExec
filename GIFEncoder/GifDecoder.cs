@@ -11,7 +11,7 @@
 // $History:		$  
 //  
 //===============================================================================
-#endregion 
+#endregion
 
 #region Java
 /**
@@ -39,12 +39,11 @@
 using System;
 using System.Collections;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 
 namespace Gif.Components
 {
-	public class GifDecoder 
+	public class GifDecoder
 	{
 
 		/**
@@ -113,9 +112,9 @@ namespace Gif.Components
 		protected ArrayList frames; // frames read from current file
 		protected int frameCount;
 
-		public class GifFrame 
+		public class GifFrame
 		{
-			public GifFrame( Image im, int del) 
+			public GifFrame(Image im, int del)
 			{
 				image = im;
 				delay = del;
@@ -130,13 +129,13 @@ namespace Gif.Components
 		 * @param n int index of frame
 		 * @return delay in milliseconds
 		 */
-		public int GetDelay(int n) 
+		public int GetDelay(int n)
 		{
 			//
 			delay = -1;
-			if ((n >= 0) && (n < frameCount)) 
+			if ((n >= 0) && (n < frameCount))
 			{
-				delay = ((GifFrame) frames[n]).delay;
+				delay = ((GifFrame)frames[n]).delay;
 			}
 			return delay;
 		}
@@ -145,7 +144,7 @@ namespace Gif.Components
 		 * Gets the number of frames read from file.
 		 * @return frame count
 		 */
-		public int GetFrameCount() 
+		public int GetFrameCount()
 		{
 			return frameCount;
 		}
@@ -155,7 +154,7 @@ namespace Gif.Components
 		 *
 		 * @return BufferedImage containing first frame, or null if none.
 		 */
-		public Image GetImage() 
+		public Image GetImage()
 		{
 			return GetFrame(0);
 		}
@@ -166,7 +165,7 @@ namespace Gif.Components
 		 *
 		 * @return iteration count if one was specified, else 1.
 		 */
-		public int GetLoopCount() 
+		public int GetLoopCount()
 		{
 			return loopCount;
 		}
@@ -175,9 +174,9 @@ namespace Gif.Components
 		 * Creates new frame image from current data (and previous
 		 * frames as specified by their disposition codes).
 		 */
-		int [] GetPixels( Bitmap bitmap )
+		int[] GetPixels(Bitmap bitmap)
 		{
-			int [] pixels = new int [ 3 * image.Width * image.Height ];
+			int[] pixels = new int[3 * image.Width * image.Height];
 			int count = 0;
 			for (int th = 0; th < image.Height; th++)
 			{
@@ -195,67 +194,67 @@ namespace Gif.Components
 			return pixels;
 		}
 
-		void SetPixels( int [] pixels )
+		void SetPixels(int[] pixels)
 		{
 			int count = 0;
 			for (int th = 0; th < image.Height; th++)
 			{
 				for (int tw = 0; tw < image.Width; tw++)
 				{
-					Color color = Color.FromArgb( pixels[count++] );
-					bitmap.SetPixel( tw, th, color );
+					Color color = Color.FromArgb(pixels[count++]);
+					bitmap.SetPixel(tw, th, color);
 				}
 			}
 		}
 
-		protected void SetPixels() 
+		protected void SetPixels()
 		{
 			// expose destination image's pixels as int array
 			//		int[] dest =
 			//			(( int ) image.getRaster().getDataBuffer()).getData();
-			int[] dest = GetPixels( bitmap );
+			int[] dest = GetPixels(bitmap);
 
 			// fill in starting image contents based on last image's dispose code
-			if (lastDispose > 0) 
+			if (lastDispose > 0)
 			{
-				if (lastDispose == 3) 
+				if (lastDispose == 3)
 				{
 					// use image before last
 					int n = frameCount - 2;
-					if (n > 0) 
+					if (n > 0)
 					{
 						lastImage = GetFrame(n - 1);
-					} 
-					else 
+					}
+					else
 					{
 						lastImage = null;
 					}
 				}
 
-				if (lastImage != null) 
+				if (lastImage != null)
 				{
 					//				int[] prev =
 					//					((DataBufferInt) lastImage.getRaster().getDataBuffer()).getData();
-					int[] prev = GetPixels( new Bitmap( lastImage ) );
+					int[] prev = GetPixels(new Bitmap(lastImage));
 					Array.Copy(prev, 0, dest, 0, width * height);
 					// copy pixels
 
-					if (lastDispose == 2) 
+					if (lastDispose == 2)
 					{
 						// fill last image rect area with background color
-						Graphics g = Graphics.FromImage( image );
+						Graphics g = Graphics.FromImage(image);
 						Color c = Color.Empty;
-						if (transparency) 
+						if (transparency)
 						{
-							c = Color.FromArgb( 0, 0, 0, 0 ); 	// assume background is transparent
-						} 
-						else 
+							c = Color.FromArgb(0, 0, 0, 0); 	// assume background is transparent
+						}
+						else
 						{
-							c = Color.FromArgb( lastBgColor ) ;
+							c = Color.FromArgb(lastBgColor);
 							//						c = new Color(lastBgColor); // use given background color
 						}
-						Brush brush = new SolidBrush( c );
-						g.FillRectangle( brush, lastRect );
+						Brush brush = new SolidBrush(c);
+						g.FillRectangle(brush, lastRect);
 						brush.Dispose();
 						g.Dispose();
 					}
@@ -266,24 +265,24 @@ namespace Gif.Components
 			int pass = 1;
 			int inc = 8;
 			int iline = 0;
-			for (int i = 0; i < ih; i++) 
+			for (int i = 0; i < ih; i++)
 			{
 				int line = i;
-				if (interlace) 
+				if (interlace)
 				{
-					if (iline >= ih) 
+					if (iline >= ih)
 					{
 						pass++;
-						switch (pass) 
+						switch (pass)
 						{
-							case 2 :
+							case 2:
 								iline = 4;
 								break;
-							case 3 :
+							case 3:
 								iline = 2;
 								inc = 4;
 								break;
-							case 4 :
+							case 4:
 								iline = 1;
 								inc = 2;
 								break;
@@ -293,22 +292,22 @@ namespace Gif.Components
 					iline += inc;
 				}
 				line += iy;
-				if (line < height) 
+				if (line < height)
 				{
 					int k = line * width;
 					int dx = k + ix; // start of line in dest
 					int dlim = dx + iw; // end of dest line
-					if ((k + width) < dlim) 
+					if ((k + width) < dlim)
 					{
 						dlim = k + width; // past dest edge
 					}
 					int sx = i * iw; // start of line in source
-					while (dx < dlim) 
+					while (dx < dlim)
 					{
 						// map color and insert in destination
-						int index = ((int) pixels[sx++]) & 0xff;
+						int index = ((int)pixels[sx++]) & 0xff;
 						int c = act[index];
-						if (c != 0) 
+						if (c != 0)
 						{
 							dest[dx] = c;
 						}
@@ -316,7 +315,7 @@ namespace Gif.Components
 					}
 				}
 			}
-			SetPixels( dest );
+			SetPixels(dest);
 		}
 
 		/**
@@ -324,12 +323,12 @@ namespace Gif.Components
 		 *
 		 * @return BufferedImage representation of frame, or null if n is invalid.
 		 */
-		public Image GetFrame(int n) 
+		public Image GetFrame(int n)
 		{
 			Image im = null;
-			if ((n >= 0) && (n < frameCount)) 
+			if ((n >= 0) && (n < frameCount))
 			{
-				im = ((GifFrame) frames[n] ).image;
+				im = ((GifFrame)frames[n]).image;
 			}
 			return im;
 		}
@@ -339,7 +338,7 @@ namespace Gif.Components
 		 *
 		 * @return GIF image dimensions
 		 */
-		public Size GetFrameSize() 
+		public Size GetFrameSize()
 		{
 			return new Size(width, height);
 		}
@@ -350,24 +349,24 @@ namespace Gif.Components
 		 * @param BufferedInputStream containing GIF file.
 		 * @return read status code (0 = no errors)
 		 */
-		public int Read( Stream inStream ) 
+		public int Read(Stream inStream)
 		{
 			Init();
-			if ( inStream != null) 
+			if (inStream != null)
 			{
 				this.inStream = inStream;
 				ReadHeader();
-				if (!Error()) 
+				if (!Error())
 				{
 					ReadContents();
-					if (frameCount < 0) 
+					if (frameCount < 0)
 					{
 						status = STATUS_FORMAT_ERROR;
 					}
 				}
 				inStream.Close();
-			} 
-			else 
+			}
+			else
 			{
 				status = STATUS_OPEN_ERROR;
 			}
@@ -381,15 +380,15 @@ namespace Gif.Components
 		 * @param name String containing source
 		 * @return read status code (0 = no errors)
 		 */
-		public int Read(String name) 
+		public int Read(String name)
 		{
 			status = STATUS_OK;
-			try 
+			try
 			{
 				name = name.Trim().ToLower();
-				status = Read( new FileInfo( name ).OpenRead() );
-			} 
-			catch (IOException e) 
+				status = Read(new FileInfo(name).OpenRead());
+			}
+			catch (IOException)
 			{
 				status = STATUS_OPEN_ERROR;
 			}
@@ -401,11 +400,11 @@ namespace Gif.Components
 		 * Decodes LZW image data into pixel array.
 		 * Adapted from John Cristy's ImageMagick.
 		 */
-		protected void DecodeImageData() 
+		protected void DecodeImageData()
 		{
 			int NullCode = -1;
 			int npix = iw * ih;
-			int available, 
+			int available,
 				clear,
 				code_mask,
 				code_size,
@@ -423,13 +422,16 @@ namespace Gif.Components
 				bi,
 				pi;
 
-			if ((pixels == null) || (pixels.Length < npix)) 
+			if ((pixels == null) || (pixels.Length < npix))
 			{
 				pixels = new byte[npix]; // allocate new pixel array
 			}
-			if (prefix == null) prefix = new short[MaxStackSize];
-			if (suffix == null) suffix = new byte[MaxStackSize];
-			if (pixelStack == null) pixelStack = new byte[MaxStackSize + 1];
+			if (prefix == null)
+				prefix = new short[MaxStackSize];
+			if (suffix == null)
+				suffix = new byte[MaxStackSize];
+			if (pixelStack == null)
+				pixelStack = new byte[MaxStackSize + 1];
 
 			//  Initialize GIF data stream decoder.
 
@@ -440,24 +442,24 @@ namespace Gif.Components
 			old_code = NullCode;
 			code_size = data_size + 1;
 			code_mask = (1 << code_size) - 1;
-			for (code = 0; code < clear; code++) 
+			for (code = 0; code < clear; code++)
 			{
 				prefix[code] = 0;
-				suffix[code] = (byte) code;
+				suffix[code] = (byte)code;
 			}
 
 			//  Decode GIF pixel stream.
 
 			datum = bits = count = first = top = pi = bi = 0;
 
-			for (i = 0; i < npix;) 
+			for (i = 0; i < npix; )
 			{
-				if (top == 0) 
+				if (top == 0)
 				{
-					if (bits < code_size) 
+					if (bits < code_size)
 					{
 						//  Load bytes until there are enough bits for a code.
-						if (count == 0) 
+						if (count == 0)
 						{
 							// Read a new data block.
 							count = ReadBlock();
@@ -465,7 +467,7 @@ namespace Gif.Components
 								break;
 							bi = 0;
 						}
-						datum += (((int) block[bi]) & 0xff) << bits;
+						datum += (((int)block[bi]) & 0xff) << bits;
 						bits += 8;
 						bi++;
 						count--;
@@ -482,7 +484,7 @@ namespace Gif.Components
 
 					if ((code > available) || (code == end_of_information))
 						break;
-					if (code == clear) 
+					if (code == clear)
 					{
 						//  Reset decoder.
 						code_size = data_size + 1;
@@ -491,7 +493,7 @@ namespace Gif.Components
 						old_code = NullCode;
 						continue;
 					}
-					if (old_code == NullCode) 
+					if (old_code == NullCode)
 					{
 						pixelStack[top++] = suffix[code];
 						old_code = code;
@@ -499,28 +501,28 @@ namespace Gif.Components
 						continue;
 					}
 					in_code = code;
-					if (code == available) 
+					if (code == available)
 					{
-						pixelStack[top++] = (byte) first;
+						pixelStack[top++] = (byte)first;
 						code = old_code;
 					}
-					while (code > clear) 
+					while (code > clear)
 					{
 						pixelStack[top++] = suffix[code];
 						code = prefix[code];
 					}
-					first = ((int) suffix[code]) & 0xff;
+					first = ((int)suffix[code]) & 0xff;
 
 					//  Add a new string to the string table,
 
 					if (available >= MaxStackSize)
 						break;
-					pixelStack[top++] = (byte) first;
-					prefix[available] = (short) old_code;
-					suffix[available] = (byte) first;
+					pixelStack[top++] = (byte)first;
+					prefix[available] = (short)old_code;
+					suffix[available] = (byte)first;
 					available++;
 					if (((available & code_mask) == 0)
-						&& (available < MaxStackSize)) 
+						&& (available < MaxStackSize))
 					{
 						code_size++;
 						code_mask += available;
@@ -535,7 +537,7 @@ namespace Gif.Components
 				i++;
 			}
 
-			for (i = pi; i < npix; i++) 
+			for (i = pi; i < npix; i++)
 			{
 				pixels[i] = 0; // clear missing pixels
 			}
@@ -545,7 +547,7 @@ namespace Gif.Components
 		/**
 		 * Returns true if an error was encountered during reading/decoding
 		 */
-		protected bool Error() 
+		protected bool Error()
 		{
 			return status != STATUS_OK;
 		}
@@ -553,7 +555,7 @@ namespace Gif.Components
 		/**
 		 * Initializes or re-initializes reader
 		 */
-		protected void Init() 
+		protected void Init()
 		{
 			status = STATUS_OK;
 			frameCount = 0;
@@ -565,14 +567,14 @@ namespace Gif.Components
 		/**
 		 * Reads a single byte from the input stream.
 		 */
-		protected int Read() 
+		protected int Read()
 		{
 			int curByte = 0;
-			try 
+			try
 			{
 				curByte = inStream.ReadByte();
-			} 
-			catch (IOException e) 
+			}
+			catch (IOException)
 			{
 				status = STATUS_FORMAT_ERROR;
 			}
@@ -584,28 +586,28 @@ namespace Gif.Components
 		 *
 		 * @return number of bytes stored in "buffer"
 		 */
-		protected int ReadBlock() 
+		protected int ReadBlock()
 		{
 			blockSize = Read();
 			int n = 0;
-			if (blockSize > 0) 
+			if (blockSize > 0)
 			{
-				try 
+				try
 				{
 					int count = 0;
-					while (n < blockSize) 
+					while (n < blockSize)
 					{
 						count = inStream.Read(block, n, blockSize - n);
-						if (count == -1) 
+						if (count == -1)
 							break;
 						n += count;
 					}
-				} 
-				catch (IOException e) 
+				}
+				catch (IOException)
 				{
 				}
 
-				if (n < blockSize) 
+				if (n < blockSize)
 				{
 					status = STATUS_FORMAT_ERROR;
 				}
@@ -619,34 +621,34 @@ namespace Gif.Components
 		 * @param ncolors int number of colors to read
 		 * @return int array containing 256 colors (packed ARGB with full alpha)
 		 */
-		protected int[] ReadColorTable(int ncolors) 
+		protected int[] ReadColorTable(int ncolors)
 		{
 			int nbytes = 3 * ncolors;
 			int[] tab = null;
 			byte[] c = new byte[nbytes];
 			int n = 0;
-			try 
+			try
 			{
-				n = inStream.Read(c, 0, c.Length );
-			} 
-			catch (IOException e) 
+				n = inStream.Read(c, 0, c.Length);
+			}
+			catch (IOException)
 			{
 			}
-			if (n < nbytes) 
+			if (n < nbytes)
 			{
 				status = STATUS_FORMAT_ERROR;
-			} 
-			else 
+			}
+			else
 			{
 				tab = new int[256]; // max size to avoid bounds checks
 				int i = 0;
 				int j = 0;
-				while (i < ncolors) 
+				while (i < ncolors)
 				{
-					int r = ((int) c[j++]) & 0xff;
-					int g = ((int) c[j++]) & 0xff;
-					int b = ((int) c[j++]) & 0xff;
-					tab[i++] = ( int ) ( 0xff000000 | (r << 16) | (g << 8) | b );
+					int r = ((int)c[j++]) & 0xff;
+					int g = ((int)c[j++]) & 0xff;
+					int b = ((int)c[j++]) & 0xff;
+					tab[i++] = (int)(0xff000000 | (r << 16) | (g << 8) | b);
 				}
 			}
 			return tab;
@@ -655,57 +657,57 @@ namespace Gif.Components
 		/**
 		 * Main file parser.  Reads GIF content blocks.
 		 */
-		protected void ReadContents() 
+		protected void ReadContents()
 		{
 			// read GIF file content blocks
 			bool done = false;
-			while (!(done || Error())) 
+			while (!(done || Error()))
 			{
 				int code = Read();
-				switch (code) 
+				switch (code)
 				{
 
-					case 0x2C : // image separator
+					case 0x2C: // image separator
 						ReadImage();
 						break;
 
-					case 0x21 : // extension
+					case 0x21: // extension
 						code = Read();
-					switch (code) 
-					{
-						case 0xf9 : // graphics control extension
-							ReadGraphicControlExt();
-							break;
+						switch (code)
+						{
+							case 0xf9: // graphics control extension
+								ReadGraphicControlExt();
+								break;
 
-						case 0xff : // application extension
-							ReadBlock();
-							String app = "";
-							for (int i = 0; i < 11; i++) 
-							{
-								app += (char) block[i];
-							}
-							if (app.Equals("NETSCAPE2.0")) 
-							{
-								ReadNetscapeExt();
-							}
-							else
-								Skip(); // don't care
-							break;
+							case 0xff: // application extension
+								ReadBlock();
+								String app = "";
+								for (int i = 0; i < 11; i++)
+								{
+									app += (char)block[i];
+								}
+								if (app.Equals("NETSCAPE2.0"))
+								{
+									ReadNetscapeExt();
+								}
+								else
+									Skip(); // don't care
+								break;
 
-						default : // uninteresting extension
-							Skip();
-							break;
-					}
+							default: // uninteresting extension
+								Skip();
+								break;
+						}
 						break;
 
-					case 0x3b : // terminator
+					case 0x3b: // terminator
 						done = true;
 						break;
 
-					case 0x00 : // bad byte, but keep going and see what happens
+					case 0x00: // bad byte, but keep going and see what happens
 						break;
 
-					default :
+					default:
 						status = STATUS_FORMAT_ERROR;
 						break;
 				}
@@ -715,12 +717,12 @@ namespace Gif.Components
 		/**
 		 * Reads Graphics Control Extension values
 		 */
-		protected void ReadGraphicControlExt() 
+		protected void ReadGraphicControlExt()
 		{
 			Read(); // block size
 			int packed = Read(); // packed fields
 			dispose = (packed & 0x1c) >> 2; // disposal method
-			if (dispose == 0) 
+			if (dispose == 0)
 			{
 				dispose = 1; // elect to keep old image if discretionary
 			}
@@ -733,21 +735,21 @@ namespace Gif.Components
 		/**
 		 * Reads GIF file header information.
 		 */
-		protected void ReadHeader() 
+		protected void ReadHeader()
 		{
 			String id = "";
-			for (int i = 0; i < 6; i++) 
+			for (int i = 0; i < 6; i++)
 			{
-				id += (char) Read();
+				id += (char)Read();
 			}
-			if (!id.StartsWith("GIF")) 
+			if (!id.StartsWith("GIF"))
 			{
 				status = STATUS_FORMAT_ERROR;
 				return;
 			}
 
 			ReadLSD();
-			if (gctFlag && !Error()) 
+			if (gctFlag && !Error())
 			{
 				gct = ReadColorTable(gctSize);
 				bgColor = gct[bgIndex];
@@ -757,7 +759,7 @@ namespace Gif.Components
 		/**
 		 * Reads next frame image
 		 */
-		protected void ReadImage() 
+		protected void ReadImage()
 		{
 			ix = ReadShort(); // (sub)image position & size
 			iy = ReadShort();
@@ -771,35 +773,37 @@ namespace Gif.Components
 			// 4-5 - reserved
 			lctSize = 2 << (packed & 7); // 6-8 - local color table size
 
-			if (lctFlag) 
+			if (lctFlag)
 			{
 				lct = ReadColorTable(lctSize); // read table
 				act = lct; // make local table active
-			} 
-			else 
+			}
+			else
 			{
 				act = gct; // make global table active
 				if (bgIndex == transIndex)
 					bgColor = 0;
 			}
 			int save = 0;
-			if (transparency) 
+			if (transparency)
 			{
 				save = act[transIndex];
 				act[transIndex] = 0; // set transparent color if specified
 			}
 
-			if (act == null) 
+			if (act == null)
 			{
 				status = STATUS_FORMAT_ERROR; // no color table defined
 			}
 
-			if (Error()) return;
+			if (Error())
+				return;
 
 			DecodeImageData(); // decode pixel data
 			Skip();
 
-			if (Error()) return;
+			if (Error())
+				return;
 
 			frameCount++;
 
@@ -807,13 +811,13 @@ namespace Gif.Components
 			//		image =
 			//			new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
 
-			bitmap = new Bitmap( width, height );
+			bitmap = new Bitmap(width, height);
 			image = bitmap;
 			SetPixels(); // transfer pixel data to image
 
 			frames.Add(new GifFrame(bitmap, delay)); // add image to frame list
 
-			if (transparency) 
+			if (transparency)
 			{
 				act[transIndex] = save;
 			}
@@ -824,7 +828,7 @@ namespace Gif.Components
 		/**
 		 * Reads Logical Screen Descriptor
 		 */
-		protected void ReadLSD() 
+		protected void ReadLSD()
 		{
 
 			// logical screen size
@@ -845,16 +849,16 @@ namespace Gif.Components
 		/**
 		 * Reads Netscape extenstion to obtain iteration count
 		 */
-		protected void ReadNetscapeExt() 
+		protected void ReadNetscapeExt()
 		{
-			do 
+			do
 			{
 				ReadBlock();
-				if (block[0] == 1) 
+				if (block[0] == 1)
 				{
 					// loop count sub-block
-					int b1 = ((int) block[1]) & 0xff;
-					int b2 = ((int) block[2]) & 0xff;
+					int b1 = ((int)block[1]) & 0xff;
+					int b2 = ((int)block[2]) & 0xff;
 					loopCount = (b2 << 8) | b1;
 				}
 			} while ((blockSize > 0) && !Error());
@@ -863,7 +867,7 @@ namespace Gif.Components
 		/**
 		 * Reads next 16-bit value, LSB first
 		 */
-		protected int ReadShort() 
+		protected int ReadShort()
 		{
 			// read 16-bit value, LSB first
 			return Read() | (Read() << 8);
@@ -872,15 +876,15 @@ namespace Gif.Components
 		/**
 		 * Resets frame state for reading next image.
 		 */
-		protected void ResetFrame() 
+		protected void ResetFrame()
 		{
 			lastDispose = dispose;
 			lastRect = new Rectangle(ix, iy, iw, ih);
 			lastImage = image;
 			lastBgColor = bgColor;
 			//		int dispose = 0;
-			bool transparency = false;
-			int delay = 0;
+			//bool transparency = false;
+			//int delay = 0;
 			lct = null;
 		}
 
@@ -888,9 +892,9 @@ namespace Gif.Components
 		 * Skips variable length blocks up to and including
 		 * next zero length block.
 		 */
-		protected void Skip() 
+		protected void Skip()
 		{
-			do 
+			do
 			{
 				ReadBlock();
 			} while ((blockSize > 0) && !Error());

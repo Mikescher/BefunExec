@@ -4,6 +4,10 @@ namespace BefungExec.Logic
 {
 	public static class RunOptions
 	{
+		public const int SH_NONE = 0;
+		public const int SH_SIMPLE = 1;
+		public const int SH_EXTENDED = 2;
+
 		public static bool INIT_PAUSED = true;
 		public static Rect2i INIT_ZOOM = null;
 
@@ -18,7 +22,7 @@ namespace BefungExec.Logic
 		public static int DECAY_TIME = 500;			// Time until decay
 		public static bool SHOW_DECAY = true;
 
-		public static bool SYNTAX_HIGHLIGHTING = true;
+		public static int SYNTAX_HIGHLIGHTING = SH_SIMPLE;
 		public static bool ASCII_STACK = true;
 		public static bool FOLLOW_MODE = false;
 

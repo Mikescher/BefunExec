@@ -43,21 +43,25 @@ namespace BefungExec.View.OpenGL
 
 		private void NOP() { }
 
-		public static FontRasterSheet create(bool color)
+		public static FontRasterSheet create(bool color, Color repl, Color background)
 		{
 			Bitmap b = new Bitmap(Resources.raster);
 			b = b.Clone(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-			if (!color)
+			if (!color || background != Color.White)
 			{
 				for (int x = 0; x < b.Width; x++)
 				{
 					for (int y = 0; y < b.Height; y++)
 					{
 						Color c = b.GetPixel(x, y);
-						if (c.R + c.G + c.B != (255 * 3))
+						if (c.R + c.G + c.B != (255 * 3)) // Foreground
 						{
-							b.SetPixel(x, y, Color.Black);
+							b.SetPixel(x, y, repl);
+						}
+						else // Background
+						{
+							b.SetPixel(x, y, background);
 						}
 					}
 				}

@@ -1,5 +1,6 @@
 ﻿using BefungExec.View;
 using BefungExec.View.OpenGL.OGLMath;
+using BefunHighlight;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
