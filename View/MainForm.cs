@@ -347,7 +347,15 @@ namespace BefungExec.View
 			}
 			else
 			{
-				Render_LQ(offx, offy, w, h);
+				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
+				{
+					//Render_LQ_sh(offx, offy, w, h);
+					//TODO implement
+				}
+				else
+				{
+					Render_LQ(offx, offy, w, h);
+				}
 			}
 
 			#endregion
@@ -572,7 +580,11 @@ namespace BefungExec.View
 
 		private void Render_HQ_sh(double offx, double offy, double w, double h)
 		{
-			if (ExtendedSHGraph == null) return;
+			if (ExtendedSHGraph == null)
+			{
+				initSyntaxHighlighting(); // re-init
+				return;
+			}
 
 			long now = Environment.TickCount;
 
@@ -750,6 +762,45 @@ namespace BefungExec.View
 				if (zoom.Count > 1)
 					zoom.Pop();
 				zoom.Push(z);
+			}
+
+			#endregion
+
+			#region SyntaxHighlighting
+
+			Tuple<int, int, int> sh_change; // <x, y, char>
+			if (prog.RasterChanges.TryDequeue(out sh_change))
+			{
+				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
+				{
+					if (sh_change.Item1 == -1 && sh_change.Item2 == -1 && sh_change.Item3 == -1)
+						ExtendedSHGraph.Calculate(BeGraphHelper.parse(prog.raster)); // recalc
+					else
+						ExtendedSHGraph.Update(sh_change.Item1, sh_change.Item2, BeGraphCommand.getCommand(sh_change.Item3), prog.PC.X, prog.PC.Y, prog.delta.X, prog.delta.Y);
+
+					if (prog.RasterChanges.Count > 4)
+					{
+						while (prog.RasterChanges.TryDequeue(out sh_change))
+						{
+							if (sh_change.Item1 == -1 && sh_change.Item2 == -1 && sh_change.Item3 == -1)
+								ExtendedSHGraph.Calculate(BeGraphHelper.parse(prog.raster)); // recalc
+							else
+							{
+								bool upd_result = ExtendedSHGraph.Update(sh_change.Item1, sh_change.Item2, BeGraphCommand.getCommand(sh_change.Item3), prog.PC.X, prog.PC.Y, prog.delta.X, prog.delta.Y);
+
+								if (upd_result)
+								{
+									syntaxHighlighting_simpleToolStripMenuItem.Checked = true; // EMERGENCY EXIT
+
+									Console.WriteLine();
+									Console.WriteLine("!> Too much updates - stopping ext. Highlighting ...");
+
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 
 			#endregion
@@ -992,6 +1043,7 @@ namespace BefungExec.View
 				case 5:
 					if (prog.curr_lvl_sleeptime != RunOptions.SLEEP_TIME_5)
 						prog.curr_lvl_sleeptime = RunOptions.SLEEP_TIME_5;
+
 					if (recheck)
 						fullToolStripMenuItem.Checked = true;
 					break;
@@ -1151,6 +1203,7 @@ namespace BefungExec.View
 					prog.running = false;
 
 					prog = new BefunProg(BefunProg.GetProg(init_code));
+					ExtendedSHGraph = null;
 					new Thread(new ThreadStart(prog.run)).Start();
 
 					zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
@@ -1361,3 +1414,7 @@ namespace BefungExec.View
 
 	}
 }
+
+//TODO Edit Code Dialog
+//TODO Edit Stack Dialog (?)
+//TODO Move PC (Change Direction) Dialog

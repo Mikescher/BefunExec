@@ -48,6 +48,7 @@ namespace BefungExec.Logic
 		public const int MODE_MOVEANDRUN = 3;
 
 		public ConcurrentQueue<char> InputCharacters = new ConcurrentQueue<char>();
+		public ConcurrentQueue<Tuple<int, int, int>> RasterChanges = new ConcurrentQueue<Tuple<int, int, int>>(); // <x, y, char>
 
 		public int curr_lvl_sleeptime;
 
@@ -274,7 +275,7 @@ namespace BefungExec.Logic
 			}
 			else
 			{
-				int tmp, tmp2;
+				int tmp, tmp2, tmp3;
 
 				switch (curr)
 				{
@@ -377,7 +378,11 @@ namespace BefungExec.Logic
 						tmp = pop();
 						tmp2 = pop();
 						if (tmp >= 0 && tmp2 >= 0 && tmp2 < Width && tmp < Height)
-							raster[tmp2, tmp] = pop();
+						{
+							tmp3 = pop();
+							raster[tmp2, tmp] = tmp3;
+							RasterChanges.Enqueue(Tuple.Create(tmp2, tmp, tmp3));
+						}
 						else
 							pop();
 						break;
@@ -457,6 +462,8 @@ namespace BefungExec.Logic
 			StepCount = 0;
 
 			InputCharacters = new ConcurrentQueue<char>();
+			RasterChanges = new ConcurrentQueue<Tuple<int, int, int>>();
+			RasterChanges.Enqueue(Tuple.Create(-1, -1, -1));
 
 			output.Clear();
 			simpleOutputHash++;
