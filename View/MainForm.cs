@@ -1,6 +1,6 @@
-﻿using BefungExec.Logic;
-using BefungExec.View.OpenGL;
-using BefungExec.View.OpenGL.OGLMath;
+﻿using BefunExec.Logic;
+using BefunExec.View.OpenGL;
+using BefunExec.View.OpenGL.OGLMath;
 using BefunHighlight;
 using OpenTK;
 using OpenTK.Graphics;
@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace BefungExec.View
+namespace BefunExec.View
 {
 	public partial class MainForm : Form
 	{

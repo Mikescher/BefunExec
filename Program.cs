@@ -1,13 +1,13 @@
-﻿using BefungExec.Logic;
-using BefungExec.View;
-using BefungExec.View.OpenGL.OGLMath;
+﻿using BefunExec.Logic;
+using BefunExec.View;
+using BefunExec.View.OpenGL.OGLMath;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace BefungExec
+namespace BefunExec
 {
 	class Program
 	{

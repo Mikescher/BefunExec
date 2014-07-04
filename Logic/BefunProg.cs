@@ -1,5 +1,5 @@
-﻿using BefungExec.View;
-using BefungExec.View.OpenGL.OGLMath;
+﻿using BefunExec.View;
+using BefunExec.View.OpenGL.OGLMath;
 using BefunHighlight;
 using System;
 using System.Collections.Concurrent;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace BefungExec.Logic
+namespace BefunExec.Logic
 {
 	public class BefunProg
 	{

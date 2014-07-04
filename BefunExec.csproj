@@ -7,8 +7,8 @@
     <ProjectGuid>{9CFFC63F-6F1B-44A8-B330-5367BC23BC0E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BefungExec</RootNamespace>
-    <AssemblyName>BefungExec</AssemblyName>
+    <RootNamespace>BefunExec</RootNamespace>
+    <AssemblyName>BefunExec</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

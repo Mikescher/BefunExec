@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace BefungExec.View
+namespace BefunExec.View
 {
 	public partial class AboutForm : Form
 	{

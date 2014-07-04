@@ -1,7 +1,7 @@
 ﻿using OpenTK;
 using System;
 
-namespace BefungExec.View.OpenGL.OGLMath
+namespace BefunExec.View.OpenGL.OGLMath
 {
 	public class Vec2d
 	{

@@ -1,10 +1,10 @@
-﻿using BefungExec.View.OpenGL.OGLMath;
+﻿using BefunExec.View.OpenGL.OGLMath;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace BefungExec.View
+namespace BefunExec.View
 {
 	public class OGLTextureSheet
 	{

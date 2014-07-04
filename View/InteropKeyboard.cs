@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace BefungExec.View
+namespace BefunExec.View
 {
 	public class InteropKeyboard
 	{

@@ -1,4 +1,4 @@
-﻿namespace BefungExec.View
+﻿namespace BefunExec.View
 {
 	partial class AboutForm
 	{
@@ -56,7 +56,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(194, 29);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "BefungExec 1.0";
+			this.label1.Text = "BefunExec 1.0";
 			// 
 			// linkLabel1
 			// 
@@ -140,7 +140,7 @@
 			this.MinimizeBox = false;
 			this.Name = "AboutForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "About BefungExec";
+			this.Text = "About BefunExec";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

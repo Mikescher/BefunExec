@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace BefungExec.Logic
+namespace BefunExec.Logic
 {
 	public static class BefungeFileHelper
 	{

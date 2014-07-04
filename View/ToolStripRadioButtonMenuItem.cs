@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
-namespace BefungExec.View
+namespace BefunExec.View
 {
 	public class ToolStripRadioButtonMenuItem : ToolStripMenuItem
 	{

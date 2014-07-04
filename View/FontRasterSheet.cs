@@ -1,9 +1,9 @@
-﻿using BefungExec.Properties;
-using BefungExec.View.OpenGL.OGLMath;
+﻿using BefunExec.Properties;
+using BefunExec.View.OpenGL.OGLMath;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 
-namespace BefungExec.View.OpenGL
+namespace BefunExec.View.OpenGL
 {
 	public class FontRasterSheet : OGLTextureSheet
 	{

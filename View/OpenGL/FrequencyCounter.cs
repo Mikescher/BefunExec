@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BefungExec.View
+namespace BefunExec.View
 {
 	public class FrequencyCounter
 	{

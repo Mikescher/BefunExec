@@ -1,6 +1,6 @@
-﻿using BefungExec.View.OpenGL.OGLMath;
+﻿using BefunExec.View.OpenGL.OGLMath;
 
-namespace BefungExec.Logic
+namespace BefunExec.Logic
 {
 	public static class RunOptions
 	{

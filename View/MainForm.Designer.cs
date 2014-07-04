@@ -1,4 +1,4 @@
-﻿namespace BefungExec.View
+﻿namespace BefunExec.View
 {
 	partial class MainForm
 	{
@@ -47,9 +47,9 @@
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.displayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.syntaxHighlightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.syntaxHighlighting_noneToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
-			this.syntaxHighlighting_simpleToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
-			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
+			this.syntaxHighlighting_noneToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
+			this.syntaxHighlighting_simpleToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
+			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
 			this.followCursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showTrailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aSCIIStackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,11 +64,11 @@
 			this.skipNOPsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
 			this.speedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.lowToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
-			this.middleToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
-			this.fastToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
-			this.veryFastToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
-			this.fullToolStripMenuItem = new BefungExec.View.ToolStripRadioButtonMenuItem();
+			this.lowToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
+			this.middleToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
+			this.fastToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
+			this.veryFastToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
+			this.fullToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
 			this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debugModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
@@ -554,7 +554,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "MainForm";
-			this.Text = "BefungExec";
+			this.Text = "BefunExec";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);

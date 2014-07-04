@@ -1,7 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 
-namespace BefungExec
+namespace BefunExec
 {
 	public class CommandLineArguments
 	{

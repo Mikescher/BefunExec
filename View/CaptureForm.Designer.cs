@@ -1,4 +1,4 @@
-﻿namespace BefungExec.View
+﻿namespace BefunExec.View
 {
 	partial class CaptureForm
 	{

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BefungExec.View
+namespace BefunExec.View
 {
 	public partial class TextDisplayForm : Form
 	{

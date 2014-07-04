@@ -1,12 +1,12 @@
-﻿using BefungExec.Logic;
-using BefungExec.View.OpenGL.OGLMath;
+﻿using BefunExec.Logic;
+using BefunExec.View.OpenGL.OGLMath;
 using Gif.Components;
 using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace BefungExec.View
+namespace BefunExec.View
 {
 	public partial class CaptureForm : Form
 	{

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BefungExec.View.OpenGL.OGLMath
+namespace BefunExec.View.OpenGL.OGLMath
 {
 	public class Rect2i
 	{
