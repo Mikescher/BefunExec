@@ -115,6 +115,8 @@ namespace BefunExec
 
 			//##############
 
+			bool customHighlight = cmda.IsSet("no_highlight") || cmda.IsSet("highlight") || cmda.IsSet("s-highlight") || cmda.IsSet("e-highlight");
+
 			if (cmda.IsSet("no_highlight"))
 				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_NONE;
 			if (cmda.IsSet("highlight") || cmda.IsSet("s-highlight"))
@@ -208,6 +210,19 @@ namespace BefunExec
 
 				code = demo;
 				//RunOptions.DEBUGRUN = false; // Please do not debug demo :/
+
+				if (!customHighlight)
+					RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_EXTENDED;
+			}
+			else // succ loaded
+			{
+				if (!customHighlight)
+				{
+					bool i_w = BefunProg.GetProgWidth(code) <= 80;
+					bool i_h = BefunProg.GetProgHeight(code) <= 80;
+					if (i_w && i_h)
+						RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_EXTENDED;
+				}
 			}
 
 			//Console.WriteLine();
@@ -219,7 +234,5 @@ namespace BefunExec
 	}
 }
 
-//TODO Compile to BefunExec.exe ( no _g_ )
 //TODO Add reload from file key (strg+r)
 //TODO Use long internal
-//TODO autom use SH_EXTENDED when programm_size <= 80x80 (and no Param)

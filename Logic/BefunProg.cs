@@ -1,6 +1,5 @@
 ﻿using BefunExec.View;
 using BefunExec.View.OpenGL.OGLMath;
-using BefunHighlight;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -469,12 +468,12 @@ namespace BefunExec.Logic
 			simpleOutputHash++;
 		}
 
-		private static int GetProgWidth(string pg)
+		public static int GetProgWidth(string pg)
 		{
 			return pg.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).Max(s => s.Length);
 		}
 
-		private static int GetProgHeight(string pg)
+		public static int GetProgHeight(string pg)
 		{
 			return pg.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).Length;
 		}
