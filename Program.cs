@@ -218,3 +218,8 @@ namespace BefungExec
 		}
 	}
 }
+
+//TODO Compile to BefunExec.exe ( no _g_ )
+//TODO Add reload from file key (strg+r)
+//TODO Use long internal
+//TODO autom use SH_EXTENDED when programm_size <= 80x80 (and no Param)
