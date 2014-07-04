@@ -20,7 +20,7 @@ namespace BefunExec.Logic
 
 		public FrequencyCounter freq = new FrequencyCounter();
 
-		public int[,] raster;
+		public long[,] raster;
 		public long[,] decay_raster;
 		public bool[,] breakpoints;
 
@@ -29,13 +29,13 @@ namespace BefunExec.Logic
 		public int Width { get { return raster.GetLength(0); } }
 		public int Height { get { return raster.GetLength(1); } }
 
-		public int this[int x, int y] { get { return raster[x, y]; } }
+		public long this[int x, int y] { get { return raster[x, y]; } }
 
 		public Vec2i PC = new Vec2i(0, 0);
 		public Vec2i delta = new Vec2i(1, 0);
 		public bool stringmode = false;
 
-		public Stack<int> Stack = new Stack<int>();
+		public Stack<long> Stack = new Stack<long>();
 
 		private Vec2i dimension;
 
@@ -47,7 +47,7 @@ namespace BefunExec.Logic
 		public const int MODE_MOVEANDRUN = 3;
 
 		public ConcurrentQueue<char> InputCharacters = new ConcurrentQueue<char>();
-		public ConcurrentQueue<Tuple<int, int, int>> RasterChanges = new ConcurrentQueue<Tuple<int, int, int>>(); // <x, y, char>
+		public ConcurrentQueue<Tuple<long, long, long>> RasterChanges = new ConcurrentQueue<Tuple<long, long, long>>(); // <x, y, char>
 
 		public int curr_lvl_sleeptime;
 
@@ -59,7 +59,7 @@ namespace BefunExec.Logic
 		public StringBuilder output = new StringBuilder();
 		public int simpleOutputHash = 0;
 
-		public BefunProg(int[,] iras)
+		public BefunProg(long[,] iras)
 		{
 			raster = iras;
 			decay_raster = new long[Width, Height];
@@ -193,7 +193,7 @@ namespace BefunExec.Logic
 			}
 		}
 
-		private int pop()
+		private long pop()
 		{
 			lock (Stack)
 			{
@@ -207,7 +207,7 @@ namespace BefunExec.Logic
 			}
 		}
 
-		private int peek()
+		private long peek()
 		{
 			lock (Stack)
 			{
@@ -236,7 +236,7 @@ namespace BefunExec.Logic
 			}
 		}
 
-		public void push(int a)
+		public void push(long a)
 		{
 			lock (Stack)
 			{
@@ -266,7 +266,7 @@ namespace BefunExec.Logic
 
 		private void calc()
 		{
-			int curr = raster[PC.X, PC.Y];
+			long curr = raster[PC.X, PC.Y];
 
 			if (stringmode && curr != '"')
 			{
@@ -274,7 +274,7 @@ namespace BefunExec.Logic
 			}
 			else
 			{
-				int tmp, tmp2, tmp3;
+				long tmp, tmp2, tmp3;
 
 				switch (curr)
 				{
@@ -461,8 +461,8 @@ namespace BefunExec.Logic
 			StepCount = 0;
 
 			InputCharacters = new ConcurrentQueue<char>();
-			RasterChanges = new ConcurrentQueue<Tuple<int, int, int>>();
-			RasterChanges.Enqueue(Tuple.Create(-1, -1, -1));
+			RasterChanges = new ConcurrentQueue<Tuple<long, long, long>>();
+			RasterChanges.Enqueue(Tuple.Create(-1L, -1L, -1L));
 
 			output.Clear();
 			simpleOutputHash++;
@@ -478,11 +478,11 @@ namespace BefunExec.Logic
 			return pg.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).Length;
 		}
 
-		public static int[,] GetProg(string pg)
+		public static long[,] GetProg(string pg)
 		{
 			int w, h;
 
-			int[,] prog = new int[w = GetProgWidth(pg), h = GetProgHeight(pg)];
+			long[,] prog = new long[w = GetProgWidth(pg), h = GetProgHeight(pg)];
 
 			string[] split = pg.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
 

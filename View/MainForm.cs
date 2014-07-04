@@ -43,7 +43,7 @@ namespace BefunExec.View
 		private QFont BoxFont;
 		private InteropKeyboard kb = new InteropKeyboard();
 
-		private List<int> currStack = new List<int>();
+		private List<long> currStack = new List<long>();
 
 		private char? lastInput = null;
 
@@ -496,7 +496,7 @@ namespace BefunExec.View
 
 			GL.Begin(BeginMode.Quads);
 
-			int last = 0;
+			long last = 0;
 
 			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
 			{
@@ -779,7 +779,7 @@ namespace BefunExec.View
 
 			#region SyntaxHighlighting
 
-			Tuple<int, int, int> sh_change; // <x, y, char>
+			Tuple<long, long, long> sh_change; // <x, y, char>
 			if (prog.RasterChanges.TryDequeue(out sh_change))
 			{
 				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
@@ -844,7 +844,7 @@ namespace BefunExec.View
 			float fh = 15 + RenderFont(glStackView.Height, new Vec2d(10f, 15f), "Stack<" + currStack.Count + ">", -1, StackFont, false) * 1.15f;
 			for (int i = 0; i < currStack.Count; i++)
 			{
-				int val = currStack[i];
+				long val = currStack[i];
 
 				string sval;
 				if (RunOptions.ASCII_STACK && val >= 32 && val <= 126)
@@ -1379,7 +1379,7 @@ namespace BefunExec.View
 
 			for (int i = 0; i < currStack.Count; i++)
 			{
-				int val = currStack[i];
+				long val = currStack[i];
 
 				if (RunOptions.ASCII_STACK && val >= 32 && val <= 126)
 					s.AppendLine(string.Format("{0:0000} <{1}>", val, (char)val));
@@ -1410,7 +1410,7 @@ namespace BefunExec.View
 			{
 				for (int x = 0; x < prog.Width; x++)
 				{
-					int chr = prog.raster[x, y];
+					long chr = prog.raster[x, y];
 
 					if (chr < ' ' || chr > '~')
 						chr = ' ';

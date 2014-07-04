@@ -96,9 +96,9 @@ namespace BefunExec.View.OpenGL
 			return GetPosition(c);
 		}
 
-		public void Render(Rect2d rect, double distance, int chr)
+		public void Render(Rect2d rect, double distance, long chr)
 		{
-			Rect2d coords = GetCharCoords(chr);
+			Rect2d coords = GetCharCoords((int)chr);
 
 			//##########
 			GL.Begin(BeginMode.Quads);
@@ -121,9 +121,9 @@ namespace BefunExec.View.OpenGL
 			//##########
 		}
 
-		public void RenderLQ(bool col, Rect2d rect, double distance, int chr)
+		public void RenderLQ(bool col, Rect2d rect, double distance, long chr)
 		{
-			Vec2i pos = GetCharPos(chr);
+			Vec2i pos = GetCharPos((int)chr);
 
 			//##########
 			//GL.Begin(BeginMode.Quads);

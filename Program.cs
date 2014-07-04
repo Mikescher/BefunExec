@@ -236,7 +236,3 @@ namespace BefunExec
 		}
 	}
 }
-
-//TODO Add reload from file key (strg+r)
-//TODO Use long internal
-//TODO SH fail on Euler-2
