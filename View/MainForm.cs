@@ -349,8 +349,7 @@ namespace BefunExec.View
 			{
 				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				{
-					//Render_LQ_sh(offx, offy, w, h);
-					//TODO implement
+					Render_LQ_sh(offx, offy, w, h);
 				}
 				else
 				{
@@ -523,6 +522,82 @@ namespace BefunExec.View
 					else if (last == prog.raster[x, y])
 					{
 						docol = false;
+					}
+
+					font.RenderLQ(docol, new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+
+					last = (decay_perc < 0.66 || prog.breakpoints[x, y]) ? int.MinValue : prog.raster[x, y];
+				}
+			}
+
+			GL.End();
+
+			GL.Enable(EnableCap.Texture2D);
+		}
+
+		private void Render_LQ_sh(double offx, double offy, double w, double h)
+		{
+			long now = Environment.TickCount;
+
+			GL.Disable(EnableCap.Texture2D);
+
+			GL.Begin(BeginMode.Quads);
+
+			long last = 0;
+
+			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+			{
+				for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
+				{
+					double decay_perc = (now - prog.decay_raster[x, y] * 1d) / RunOptions.DECAY_TIME;
+
+					if (!prog.breakpoints[x, y] && prog.raster[x, y] == ' ' && decay_perc >= 1)
+						continue;
+
+					bool docol = true;
+					if (prog.breakpoints[x, y])
+					{
+						GL.Color3(0.0, 0.0, 1.0);
+
+						docol = false;
+					}
+					else if (decay_perc < 0.66)
+					{
+						GL.Color3(1.0, 0.0, 0.0);
+
+						docol = false;
+					}
+					else if (last == prog.raster[x, y])
+					{
+						docol = false;
+					}
+					else
+					{
+						HighlightType type;
+						try
+						{
+							type = ExtendedSHGraph.fields[x, y].getType();
+						}
+						catch (Exception)
+						{
+							return; // safety quit
+						}
+
+						if (type == HighlightType.NOP)
+						{
+							if (prog[x, y] == ' ')
+								GL.Color3(0.95, 0.95, 0.95);
+							else
+								GL.Color3(Color.Black);
+
+							docol = false;
+						}
+						else if (type == HighlightType.String)
+						{
+							GL.Color3(Color.DarkGreen);
+
+							docol = false;
+						}
 					}
 
 					font.RenderLQ(docol, new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
@@ -943,8 +1018,6 @@ namespace BefunExec.View
 			{
 				reset();
 			}
-
-			//TODO
 		}
 
 		private void calcProgPos(out double offx, out double offy, out double w, out double h)

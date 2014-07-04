@@ -443,10 +443,6 @@ namespace Gif.Components
 				image = temp;
 				g.Dispose();
 			}
-			/*
-				ToDo:
-				improve performance: use unsafe code 
-			*/
 			pixels = new Byte[3 * image.Width * image.Height];
 			int count = 0;
 			Bitmap tempBitmap = new Bitmap(image);
