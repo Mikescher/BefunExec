@@ -38,6 +38,7 @@ namespace BefunExec
 
 			Console.WriteLine("C:             Remove all breakpoints");
 			Console.WriteLine("R:             Reset");
+			Console.WriteLine("Strg+R:        Reload");
 			Console.WriteLine("F:             Follow Cursor Mode");
 
 			Console.WriteLine("1:             Debug speed");
@@ -216,6 +217,8 @@ namespace BefunExec
 			}
 			else // succ loaded
 			{
+				RunOptions.FILEPATH = cmda["file"].Trim('"');
+
 				if (!customHighlight)
 				{
 					bool i_w = BefunProg.GetProgWidth(code) <= 80;
@@ -236,3 +239,4 @@ namespace BefunExec
 
 //TODO Add reload from file key (strg+r)
 //TODO Use long internal
+//TODO SH fail on Euler-2

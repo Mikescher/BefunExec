@@ -79,6 +79,7 @@
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.captureGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -236,6 +237,7 @@
 			this.fIleToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
             this.resetToolStripMenuItem,
+            this.reloadToolStripMenuItem,
             this.toolStripMenuItem3,
             this.exitToolStripMenuItem});
 			this.fIleToolStripMenuItem.Name = "fIleToolStripMenuItem";
@@ -245,26 +247,26 @@
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
 			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.resetToolStripMenuItem.Text = "Reset";
 			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(100, 6);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -293,28 +295,28 @@
 			this.syntaxHighlightingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.syntaxHighlightingToolStripMenuItem.Text = "Syntax Highlighting";
 			// 
-			// noneToolStripMenuItem
+			// syntaxHighlighting_noneToolStripMenuItem
 			// 
 			this.syntaxHighlighting_noneToolStripMenuItem.CheckOnClick = true;
-			this.syntaxHighlighting_noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+			this.syntaxHighlighting_noneToolStripMenuItem.Name = "syntaxHighlighting_noneToolStripMenuItem";
 			this.syntaxHighlighting_noneToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.syntaxHighlighting_noneToolStripMenuItem.Text = "None";
 			this.syntaxHighlighting_noneToolStripMenuItem.CheckedChanged += new System.EventHandler(this.syntaxhighlightingToolStripMenuItem_CheckedChanged);
 			// 
-			// simpleToolStripMenuItem
+			// syntaxHighlighting_simpleToolStripMenuItem
 			// 
 			this.syntaxHighlighting_simpleToolStripMenuItem.Checked = true;
 			this.syntaxHighlighting_simpleToolStripMenuItem.CheckOnClick = true;
 			this.syntaxHighlighting_simpleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.syntaxHighlighting_simpleToolStripMenuItem.Name = "simpleToolStripMenuItem";
+			this.syntaxHighlighting_simpleToolStripMenuItem.Name = "syntaxHighlighting_simpleToolStripMenuItem";
 			this.syntaxHighlighting_simpleToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.syntaxHighlighting_simpleToolStripMenuItem.Text = "Simple";
 			this.syntaxHighlighting_simpleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.syntaxhighlightingToolStripMenuItem_CheckedChanged);
 			// 
-			// extendedBefunHighlightToolStripMenuItem
+			// syntaxHighlighting_extendedBefunHighlightToolStripMenuItem
 			// 
 			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.CheckOnClick = true;
-			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Name = "extendedBefunHighlightToolStripMenuItem";
+			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Name = "syntaxHighlighting_extendedBefunHighlightToolStripMenuItem";
 			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Text = "Extended (BefunHighlight)";
 			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.CheckedChanged += new System.EventHandler(this.syntaxhighlightingToolStripMenuItem_CheckedChanged);
@@ -430,7 +432,7 @@
 			// 
 			this.lowToolStripMenuItem.CheckOnClick = true;
 			this.lowToolStripMenuItem.Name = "lowToolStripMenuItem";
-			this.lowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.lowToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
 			this.lowToolStripMenuItem.Text = "Low";
 			this.lowToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -438,7 +440,7 @@
 			// 
 			this.middleToolStripMenuItem.CheckOnClick = true;
 			this.middleToolStripMenuItem.Name = "middleToolStripMenuItem";
-			this.middleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.middleToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
 			this.middleToolStripMenuItem.Text = "Middle";
 			this.middleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -446,7 +448,7 @@
 			// 
 			this.fastToolStripMenuItem.CheckOnClick = true;
 			this.fastToolStripMenuItem.Name = "fastToolStripMenuItem";
-			this.fastToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.fastToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
 			this.fastToolStripMenuItem.Text = "Fast";
 			this.fastToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -454,7 +456,7 @@
 			// 
 			this.veryFastToolStripMenuItem.CheckOnClick = true;
 			this.veryFastToolStripMenuItem.Name = "veryFastToolStripMenuItem";
-			this.veryFastToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.veryFastToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
 			this.veryFastToolStripMenuItem.Text = "Very Fast";
 			this.veryFastToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -462,7 +464,7 @@
 			// 
 			this.fullToolStripMenuItem.CheckOnClick = true;
 			this.fullToolStripMenuItem.Name = "fullToolStripMenuItem";
-			this.fullToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.fullToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
 			this.fullToolStripMenuItem.Text = "Full";
 			this.fullToolStripMenuItem.CheckedChanged += new System.EventHandler(this.speedToolStripMenuItem_CheckedChanged);
 			// 
@@ -532,16 +534,23 @@
 			// captureGIFToolStripMenuItem
 			// 
 			this.captureGIFToolStripMenuItem.Name = "captureGIFToolStripMenuItem";
-			this.captureGIFToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.captureGIFToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.captureGIFToolStripMenuItem.Text = "Capture GIF";
 			this.captureGIFToolStripMenuItem.Click += new System.EventHandler(this.captureGIFToolStripMenuItem_Click);
 			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.aboutToolStripMenuItem.Text = "About ...";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+			// 
+			// reloadToolStripMenuItem
+			// 
+			this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
+			this.reloadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.reloadToolStripMenuItem.Text = "Reload";
+			this.reloadToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -621,5 +630,6 @@
 		private ToolStripRadioButtonMenuItem syntaxHighlighting_noneToolStripMenuItem;
 		private ToolStripRadioButtonMenuItem syntaxHighlighting_simpleToolStripMenuItem;
 		private ToolStripRadioButtonMenuItem syntaxHighlighting_extendedBefunHighlightToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
 	}
 }

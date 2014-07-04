@@ -617,7 +617,15 @@ namespace BefunExec.View
 					}
 					else
 					{
-						HighlightType type = ExtendedSHGraph.fields[x, y].getType();
+						HighlightType type;
+						try
+						{
+							type = ExtendedSHGraph.fields[x, y].getType();
+						}
+						catch (Exception)
+						{
+							return; // safety quit
+						}
 
 						if (type == HighlightType.NOP)
 						{
@@ -737,7 +745,10 @@ namespace BefunExec.View
 			if (isrun && kb[Keys.D5])
 				setSpeed(5, true);
 
-			if (isrun && kb[Keys.R])
+			if (isrun && kb[Keys.R] & kb.isDown(Keys.ControlKey)) // no shortcut eval on purpose
+				reload();
+
+			if (isrun && kb[Keys.R] & !kb.isDown(Keys.ControlKey)) // no shortcut eval on purpose
 				reset();
 
 			if (isrun && kb[Keys.C])
@@ -872,7 +883,6 @@ namespace BefunExec.View
 
 		private void reset()
 		{
-
 			prog.reset_freeze_request = true;
 
 			while (!prog.reset_freeze_answer)
@@ -891,6 +901,50 @@ namespace BefunExec.View
 			Console.WriteLine();
 
 			prog.reset_freeze_request = false;
+		}
+
+		private void reload() // Not sure if threadsyfe :-/
+		{
+			if (RunOptions.FILEPATH != null)
+			{
+				string code = BefungeFileHelper.LoadTextFile(RunOptions.FILEPATH);
+
+				if (code == null)
+				{
+					Console.WriteLine();
+					Console.WriteLine("Could not load program from Filepath: ");
+					Console.WriteLine(RunOptions.FILEPATH);
+
+					reset();
+				}
+				else
+				{
+					loaded_pv = false;
+
+					init_code = code;
+
+					prog.reset_freeze_request = true;
+					while (!prog.reset_freeze_answer)
+						Thread.Sleep(0);
+					prog.running = false;
+					Thread.Sleep(250 + prog.curr_lvl_sleeptime);
+
+					prog = new BefunProg(BefunProg.GetProg(init_code));
+					zoom.Clear();
+					zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
+					initSyntaxHighlighting();
+
+					new Thread(new ThreadStart(prog.run)).Start();
+
+					loaded_pv = true;
+				}
+			}
+			else
+			{
+				reset();
+			}
+
+			//TODO
 		}
 
 		private void calcProgPos(out double offx, out double offy, out double w, out double h)
@@ -1183,6 +1237,11 @@ namespace BefunExec.View
 			reset();
 		}
 
+		private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			reload();
+		}
+
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog fd = new OpenFileDialog();
@@ -1411,7 +1470,6 @@ namespace BefunExec.View
 		}
 
 		#endregion
-
 	}
 }
 

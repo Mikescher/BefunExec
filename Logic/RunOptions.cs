@@ -8,6 +8,8 @@ namespace BefunExec.Logic
 		public const int SH_SIMPLE = 1;
 		public const int SH_EXTENDED = 2;
 
+
+
 		public static bool INIT_PAUSED = true;
 		public static Rect2i INIT_ZOOM = null;
 
@@ -25,6 +27,8 @@ namespace BefunExec.Logic
 		public static int SYNTAX_HIGHLIGHTING = SH_SIMPLE;
 		public static bool ASCII_STACK = true;
 		public static bool FOLLOW_MODE = false;
+
+		public static string FILEPATH = null;
 
 		public static bool SKIP_NOP = true;
 		public static bool DEBUGRUN = false;
