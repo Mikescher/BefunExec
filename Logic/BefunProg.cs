@@ -24,7 +24,7 @@ namespace BefunExec.Logic
 		public long[,] decay_raster;
 		public bool[,] breakpoints;
 
-		public int StepCount = 0;
+		public ulong StepCount = 0; // MAX_ULONG = 18.446.744.073.709.551.615
 
 		public int Width { get { return raster.GetLength(0); } }
 		public int Height { get { return raster.GetLength(1); } }
