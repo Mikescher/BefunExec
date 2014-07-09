@@ -416,24 +416,27 @@ namespace BefunExec.View
 					}
 				}
 
-				Rect2d rect = new Rect2d(box, boy, bw, bh);
+				if (prog.mode == BefunProg.MODE_IN_INT || showInputASCIIMessageToolStripMenuItem.Checked)
+				{
+					Rect2d rect = new Rect2d(box, boy, bw, bh);
 
-				GL.Disable(EnableCap.Texture2D);
-				GL.Begin(BeginMode.Quads);
-				GL.Translate(0, 0, -3);
-				GL.Color4(Color.FromArgb(255, 128, 128, 128));
-				GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
-				GL.Vertex3(rect.bl.X, rect.bl.Y, 0);
-				GL.Vertex3(rect.br.X, rect.br.Y, 0);
-				GL.Vertex3(rect.tr.X, rect.tr.Y, 0);
-				GL.Color3(1.0, 1.0, 1.0);
-				GL.Translate(0, 0, 3);
-				GL.End();
-				GL.Enable(EnableCap.Texture2D);
+					GL.Disable(EnableCap.Texture2D);
+					GL.Begin(BeginMode.Quads);
+					GL.Translate(0, 0, -3);
+					GL.Color4(Color.FromArgb(255, 128, 128, 128));
+					GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
+					GL.Vertex3(rect.bl.X, rect.bl.Y, 0);
+					GL.Vertex3(rect.br.X, rect.br.Y, 0);
+					GL.Vertex3(rect.tr.X, rect.tr.Y, 0);
+					GL.Color3(1.0, 1.0, 1.0);
+					GL.Translate(0, 0, 3);
+					GL.End();
+					GL.Enable(EnableCap.Texture2D);
 
-				RenderFont(glProgramView.Height, new Vec2d(box, boy), "Please enter a " + ((prog.mode == BefunProg.MODE_IN_INT) ? "number" : "character"), -1, BoxFont, true);
+					RenderFont(glProgramView.Height, new Vec2d(box, boy), "Please enter a " + ((prog.mode == BefunProg.MODE_IN_INT) ? "number" : "character"), -1, BoxFont, true);
 
-				RenderFont(glProgramView.Height, new Vec2d(box, boy + 64), currInput, -1, BoxFont, true);
+					RenderFont(glProgramView.Height, new Vec2d(box, boy + 64), currInput, -1, BoxFont, true);
+				}
 			}
 			else
 			{
@@ -1532,6 +1535,16 @@ namespace BefunExec.View
 		#region Controls
 
 		private void btnAddInput_Click(object sender, EventArgs e)
+		{
+			performBufferedInput();
+		}
+
+		private void edInput_KeyUp(object sender, KeyEventArgs e)
+		{
+			performBufferedInput();
+		}
+
+		private void performBufferedInput()
 		{
 			string s = edInput.Text;
 			edInput.Text = "";
