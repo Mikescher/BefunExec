@@ -1562,3 +1562,4 @@ namespace BefunExec.View
 //TODO Edit Code Dialog
 //TODO Edit Stack Dialog (?)
 //TODO Move PC (Change Direction) Dialog
+//Create Full res screenshot
