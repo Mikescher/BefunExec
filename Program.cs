@@ -88,9 +88,9 @@ namespace BefunExec
 				Console.WriteLine("debug | no_debug           : Activates additional debug-messages");
 				Console.WriteLine("follow | no_follow         : Activates the follow-cursor mode");
 
-				Console.WriteLine("no-highlight               : Set Syntax-Highlighting to [none]");
-				Console.WriteLine("highlight | s-highlight    : Set Syntax-Highlighting to [simple]");
-				Console.WriteLine("e-highlight                : Set Syntax-Highlighting to [extended]");
+				Console.WriteLine("p_highlight | no_highlight : Set Syntax-Highlighting to [none]");
+				Console.WriteLine("s_highlight | highlight    : Set Syntax-Highlighting to [simple]");
+				Console.WriteLine("e_highlight                : Set Syntax-Highlighting to [extended]");
 
 				Console.WriteLine("speed=?                    : Set the initial speed (index)");
 
@@ -116,13 +116,13 @@ namespace BefunExec
 
 			//##############
 
-			bool customHighlight = cmda.IsSet("no_highlight") || cmda.IsSet("highlight") || cmda.IsSet("s-highlight") || cmda.IsSet("e-highlight");
+			bool customHighlight = cmda.IsSet("p_highlight") || cmda.IsSet("no_highlight") || cmda.IsSet("highlight") || cmda.IsSet("s_highlight") || cmda.IsSet("e_highlight");
 
-			if (cmda.IsSet("no_highlight"))
+			if (cmda.IsSet("p_highlight") | cmda.IsSet("no_highlight"))
 				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_NONE;
-			if (cmda.IsSet("highlight") || cmda.IsSet("s-highlight"))
+			if (cmda.IsSet("s_highlight") | cmda.IsSet("highlight"))
 				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_SIMPLE;
-			if (cmda.IsSet("e-highlight"))
+			if (cmda.IsSet("e_highlight"))
 				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_EXTENDED;
 
 			//##############
