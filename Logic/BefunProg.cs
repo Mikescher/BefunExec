@@ -21,6 +21,7 @@ namespace BefunExec.Logic
 		public FrequencyCounter freq = new FrequencyCounter();
 
 		public long[,] raster;
+		public Vec2i decay_raster_last = new Vec2i(-1, -1);
 		public long[,] decay_raster;
 		public bool[,] breakpoints;
 
@@ -423,12 +424,13 @@ namespace BefunExec.Logic
 		{
 			if (!RunOptions.SHOW_DECAY)
 			{
-				for (int x = 0; x < Width; x++)
+				if (decay_raster_last.X >= 0 && decay_raster_last.Y >= 0)
+					decay_raster[decay_raster_last.X, decay_raster_last.Y] = 0;
+
+				if (PC.X >= 0 && PC.Y >= 0)
 				{
-					for (int y = 0; y < Height; y++)
-					{
-						decay_raster[x, y] = (PC.X == x && PC.Y == y) ? Environment.TickCount : 0;
-					}
+					decay_raster[PC.X, PC.Y] = Environment.TickCount;
+					decay_raster_last.Set(PC.X, PC.Y);
 				}
 			}
 			else
@@ -436,7 +438,7 @@ namespace BefunExec.Logic
 				long now = Environment.TickCount;
 
 				if (PC.X >= 0 && PC.Y >= 0)
-					decay_raster[PC.X, PC.Y] = Environment.TickCount;
+					decay_raster[PC.X, PC.Y] = now;
 			}
 		}
 
