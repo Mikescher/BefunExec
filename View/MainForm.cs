@@ -478,6 +478,7 @@ namespace BefunExec.View
 				RenderFont(glProgramView.Height, new Vec2d(0f, 00f), String.Format("FPS: {0}", (int)fps.Frequency), -1, DebugFont, true);
 				RenderFont(glProgramView.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted()), -1, DebugFont, true);
 				RenderFont(glProgramView.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0}", prog.StepCount), -1, DebugFont, true);
+				RenderFont(glProgramView.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.getExecutedTime()), -1, DebugFont, true);
 			}
 
 			#endregion
@@ -1056,13 +1057,13 @@ namespace BefunExec.View
 
 		public float RenderFont(int CompHeight, Vec2d pos, string text, int distance, QFont fnt, bool backg)
 		{
-			float w = fnt.Measure(text).Width;
 			float h = fnt.Measure(text).Height;
-
-			Rect2d rect = new Rect2d(pos.X, pos.Y + CompHeight - h, w, h);
 
 			if (backg)
 			{
+				float w = fnt.Measure(text).Width;
+				Rect2d rect = new Rect2d(pos.X, CompHeight - pos.Y - h, w, h);
+
 				GL.Disable(EnableCap.Texture2D);
 				GL.Begin(BeginMode.Quads);
 				GL.Translate(0, 0, -4);
@@ -1563,3 +1564,8 @@ namespace BefunExec.View
 //TODO Edit Stack Dialog (?)
 //TODO Move PC (Change Direction) Dialog
 //Create Full res screenshot
+
+//###############################
+
+//TODO Idle CPU = 100%   (fix it)
+//TODO Memory Leak - after minutes of execution Gigabytes of RAM

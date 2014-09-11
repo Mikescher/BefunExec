@@ -27,6 +27,9 @@ namespace BefunExec.Logic
 
 		public ulong StepCount = 0; // MAX_ULONG = 18.446.744.073.709.551.615
 
+		public long StartTime = -1;
+		public long EndTime = -1;
+
 		public int Width { get { return raster.GetLength(0); } }
 		public int Height { get { return raster.GetLength(1); } }
 
@@ -126,6 +129,9 @@ namespace BefunExec.Logic
 
 				if (mode == MODE_RUN)
 				{
+					if (StartTime < 0)
+						StartTime = Environment.TickCount;
+
 					calc();
 					debug();
 
@@ -265,6 +271,11 @@ namespace BefunExec.Logic
 			}
 		}
 
+		public long getExecutedTime()
+		{
+			return (StartTime < 0) ? (0) : ((EndTime < 0) ? (Environment.TickCount - StartTime) : (EndTime - StartTime));
+		}
+
 		private void calc()
 		{
 			long curr = raster[PC.X, PC.Y];
@@ -394,6 +405,8 @@ namespace BefunExec.Logic
 						break;
 					case '@':
 						delta.Set(0, 0);
+						if (EndTime < 0)
+							EndTime = Environment.TickCount;
 						break;
 					default:
 						err = String.Format("Unknown Operation at {0}|{1}: {2}({3})", PC.X, PC.Y, curr, (char)curr);
@@ -461,6 +474,8 @@ namespace BefunExec.Logic
 			running = true;
 			dimension = new Vec2i(Width, Height);
 			StepCount = 0;
+			StartTime = -1;
+			EndTime = -1;
 
 			InputCharacters = new ConcurrentQueue<char>();
 			RasterChanges = new ConcurrentQueue<Tuple<long, long, long>>();
