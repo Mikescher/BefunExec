@@ -1337,6 +1337,9 @@ namespace BefunExec.View
 				string c = BefungeFileHelper.LoadTextFile(fd.FileName);
 				if (c != null)
 				{
+					loaded_pv = false;
+					loaded_sv = false;
+
 					while (zoom.Count > 0)
 						zoom.Pop();
 
@@ -1347,8 +1350,14 @@ namespace BefunExec.View
 					prog = new BefunProg(BefunProg.GetProg(init_code));
 					ExtendedSHGraph = null;
 					new Thread(new ThreadStart(prog.run)).Start();
+					initSyntaxHighlighting();
+
 
 					zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
+
+
+					loaded_pv = true;
+					loaded_sv = true;
 				}
 			}
 		}
