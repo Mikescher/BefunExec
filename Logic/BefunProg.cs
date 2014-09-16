@@ -513,5 +513,11 @@ namespace BefunExec.Logic
 
 			return prog;
 		}
+
+		public bool isBefunge93()
+		{
+			return Width <= 80 && Height <= 25;
+		}
+
 	}
 }

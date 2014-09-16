@@ -479,6 +479,7 @@ namespace BefunExec.View
 				RenderFont(glProgramView.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted()), -1, DebugFont, true);
 				RenderFont(glProgramView.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0}", prog.StepCount), -1, DebugFont, true);
 				RenderFont(glProgramView.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.getExecutedTime()), -1, DebugFont, true);
+				RenderFont(glProgramView.Height, new Vec2d(0f, 80f), (prog.isBefunge93()) ? "Befunge-93" : "Befunge-98", -1, DebugFont, true);
 			}
 
 			#endregion
@@ -890,6 +891,11 @@ namespace BefunExec.View
 							}
 						}
 					}
+				}
+				else
+				{
+					while (prog.RasterChanges.TryDequeue(out sh_change))
+						;
 				}
 			}
 
@@ -1568,4 +1574,3 @@ namespace BefunExec.View
 //###############################
 
 //TODO Idle CPU = 100%   (fix it)
-//TODO Memory Leak - after minutes of execution Gigabytes of RAM
