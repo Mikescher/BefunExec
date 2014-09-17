@@ -79,8 +79,10 @@
 			this.showCompleteOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showCurrentStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.captureGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.captureGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.createHDScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -227,6 +229,7 @@
             this.displayToolStripMenuItem,
             this.simulationToolStripMenuItem,
             this.debugToolStripMenuItem,
+            this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -544,25 +547,40 @@
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.captureGIFToolStripMenuItem,
             this.aboutToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
 			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.helpToolStripMenuItem.Text = "Help";
 			// 
-			// captureGIFToolStripMenuItem
-			// 
-			this.captureGIFToolStripMenuItem.Name = "captureGIFToolStripMenuItem";
-			this.captureGIFToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-			this.captureGIFToolStripMenuItem.Text = "Capture GIF";
-			this.captureGIFToolStripMenuItem.Click += new System.EventHandler(this.captureGIFToolStripMenuItem_Click);
-			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.aboutToolStripMenuItem.Text = "About ...";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+			// 
+			// toolsToolStripMenuItem
+			// 
+			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.captureGIFToolStripMenuItem,
+            this.createHDScreenshotToolStripMenuItem});
+			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+			this.toolsToolStripMenuItem.Text = "Tools";
+			// 
+			// captureGIFToolStripMenuItem
+			// 
+			this.captureGIFToolStripMenuItem.Name = "captureGIFToolStripMenuItem";
+			this.captureGIFToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.captureGIFToolStripMenuItem.Text = "Capture GIF";
+			this.captureGIFToolStripMenuItem.Click += new System.EventHandler(this.captureGIFToolStripMenuItem_Click);
+			// 
+			// createHDScreenshotToolStripMenuItem
+			// 
+			this.createHDScreenshotToolStripMenuItem.Name = "createHDScreenshotToolStripMenuItem";
+			this.createHDScreenshotToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.createHDScreenshotToolStripMenuItem.Text = "Create HD Screenshot";
+			this.createHDScreenshotToolStripMenuItem.Click += new System.EventHandler(this.createHDScreenshotToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -644,5 +662,7 @@
 		private ToolStripRadioButtonMenuItem syntaxHighlighting_extendedBefunHighlightToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showInputASCIIMessageToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem createHDScreenshotToolStripMenuItem;
 	}
 }

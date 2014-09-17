@@ -24,7 +24,7 @@ namespace BefunExec.Logic
 		public static int DECAY_TIME = 500;			// Time until decay
 		public static bool SHOW_DECAY = true;
 
-		public static int SYNTAX_HIGHLIGHTING = SH_SIMPLE;
+		public static int SYNTAX_HIGHLIGHTING = SH_EXTENDED;
 		public static bool ASCII_STACK = true;
 		public static bool FOLLOW_MODE = false;
 

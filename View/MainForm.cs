@@ -9,6 +9,7 @@ using QuickFont;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -755,12 +756,67 @@ namespace BefunExec.View
 
 			Bitmap bmp = new Bitmap(w, h);
 			System.Drawing.Imaging.BitmapData data = bmp.LockBits(new Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-			GL.ReadPixels(0, 0, w, h, PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
+			GL.ReadPixels(0, 0, w, h, OpenTK.Graphics.OpenGL.PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
 			bmp.UnlockBits(data);
 
 			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
 			return bmp.Clone(new Rectangle((int)r_offx, (int)r_offy, (int)r_w, (int)r_h), bmp.PixelFormat);
+		}
+
+		public Bitmap GrabFullResScreenshot()
+		{
+			int pixel_w = 8 * prog.Width;
+			int pixel_h = 12 * prog.Height;
+
+			double r_offx;
+			double r_offy;
+			double r_w;
+			double r_h;
+			calcProgPos(out r_offx, out r_offy, out r_w, out r_h);
+
+			int w = pixel_w;
+			int h = pixel_h;
+
+			r_offx = 0;
+			r_offy = 0;
+
+			r_w = 8;
+			r_h = 12;
+
+			GL.Viewport(0, 0, pixel_w, pixel_h);
+
+			glProgramView.MakeCurrent();
+
+			//##################################################
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+			GL.ClearColor(Color.FromArgb(244, 244, 244));
+
+			GL.MatrixMode(MatrixMode.Projection);
+			GL.LoadIdentity();
+			GL.Ortho(0.0, pixel_w, 0.0, pixel_h, 0.0, 4.0);
+
+			GL.Color3(1.0, 1.0, 1.0);
+
+			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
+				Render_HQ_sh(r_offx, r_offy, r_w, r_h);
+			else
+				Render_HQ(r_offx, r_offy, r_w, r_h);
+			//##################################################
+
+			if (GraphicsContext.CurrentContext == null)
+				throw new GraphicsContextMissingException();
+
+			Bitmap bmp = new Bitmap(w, h);
+			System.Drawing.Imaging.BitmapData data = bmp.LockBits(new Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+			GL.ReadPixels(0, 0, w, h, OpenTK.Graphics.OpenGL.PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
+			bmp.UnlockBits(data);
+
+			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
+			GL.Viewport(0, 0, glProgramView.Width, glProgramView.Height);
+
+			return bmp;
 		}
 
 		private void updateProgramView()
@@ -1546,6 +1602,24 @@ namespace BefunExec.View
 			initSyntaxHighlighting();
 		}
 
+		private void createHDScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filter = "PNG-Image|*.png";
+
+			if (sfd.ShowDialog() == DialogResult.OK)
+			{
+				string fn = sfd.FileName;
+
+				if (!fn.ToLower().EndsWith(".png"))
+					fn += ".png";
+
+				Bitmap b = GrabFullResScreenshot();
+
+				b.Save(fn, ImageFormat.Png);
+			}
+		}
+
 		#endregion
 
 		#region Controls
@@ -1578,8 +1652,3 @@ namespace BefunExec.View
 //TODO Edit Code Dialog
 //TODO Edit Stack Dialog (?)
 //TODO Move PC (Change Direction) Dialog
-//Create Full res screenshot
-
-//###############################
-
-//TODO Idle CPU = 100%   (fix it)
