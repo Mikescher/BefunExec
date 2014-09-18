@@ -11,6 +11,7 @@ namespace BefunExec
 {
 	class Program
 	{
+		public static string TITLE = "BefunExec";
 		private static string demo = Properties.Resources.demoProg;
 
 		[STAThread]
@@ -40,6 +41,7 @@ namespace BefunExec
 			Console.WriteLine("R:             Reset");
 			Console.WriteLine("Strg+R:        Reload");
 			Console.WriteLine("F:             Follow Cursor Mode");
+			Console.WriteLine("P:             Zoom in on program code");
 
 			Console.WriteLine("1:             Debug speed");
 			Console.WriteLine("2:             Normal speed");

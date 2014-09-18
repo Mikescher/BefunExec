@@ -65,6 +65,7 @@ namespace BefunExec.View
 		public MainForm(BefunProg bp, string code)
 		{
 			InitializeComponent();
+			this.Text = Program.TITLE;
 
 			prog = bp;
 			init_code = code;
@@ -480,7 +481,7 @@ namespace BefunExec.View
 				RenderFont(glProgramView.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted()), -1, DebugFont, true);
 				RenderFont(glProgramView.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0}", prog.StepCount), -1, DebugFont, true);
 				RenderFont(glProgramView.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.getExecutedTime()), -1, DebugFont, true);
-				RenderFont(glProgramView.Height, new Vec2d(0f, 80f), (prog.isBefunge93()) ? "Befunge-93" : "Befunge-98", -1, DebugFont, true);
+				RenderFont(glProgramView.Height, new Vec2d(0f, 80f), getCodeTypeString(), -1, DebugFont, true);
 			}
 
 			#endregion
@@ -892,6 +893,9 @@ namespace BefunExec.View
 
 			if (isrun && kb[Keys.F])
 				setFollowMode(!RunOptions.FOLLOW_MODE);
+
+			if (isrun && kb[Keys.P] && RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED && ExtendedSHGraph.isEffectiveSizeCalculated())
+				zoom.Push(new Rect2i(0, 0, ExtendedSHGraph.EffectiveWidth, ExtendedSHGraph.EffectiveHeight));
 
 			#endregion
 
@@ -1362,6 +1366,20 @@ namespace BefunExec.View
 			}
 		}
 
+		private string getCodeTypeString()
+		{
+			return prog.isBefunge93() ?
+				"Befunge-93" :
+				("Befunge-98" + (
+					(RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED &&
+					ExtendedSHGraph.EffectiveWidth <= 80 &&
+					ExtendedSHGraph.EffectiveHeight <= 25) ?
+						" (effective Befunge-93)" :
+						""
+					)
+				);
+		}
+
 		#endregion
 
 		#region Menubar
@@ -1408,9 +1426,9 @@ namespace BefunExec.View
 					new Thread(new ThreadStart(prog.run)).Start();
 					initSyntaxHighlighting();
 
+					this.Text = fd.FileName + " - " + Program.TITLE;
 
 					zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
-
 
 					loaded_pv = true;
 					loaded_sv = true;
