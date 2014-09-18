@@ -519,5 +519,17 @@ namespace BefunExec.Logic
 			return Width <= 80 && Height <= 25;
 		}
 
+		public int getBreakPointCount()
+		{
+			int c = 0;
+			foreach (var x in breakpoints)
+			{
+				if (x)
+					c++;
+			}
+
+			return c;
+		}
+
 	}
 }

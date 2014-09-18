@@ -32,6 +32,7 @@ namespace BefunExec.View
 
 		private BefunProg prog;
 		private string init_code;
+		private int currentSpeedLevel = RunOptions.INIT_SPEED;
 
 		private FrequencyCounter fps = new FrequencyCounter();
 		private FontRasterSheet font;
@@ -196,6 +197,8 @@ namespace BefunExec.View
 			bwfont = FontRasterSheet.create(false, Color.Black, Color.White);
 
 			loaded_pv = true;
+
+			updateStatusbar();
 		}
 
 		private void glProgramView_Resize(object sender, EventArgs e)
@@ -240,6 +243,8 @@ namespace BefunExec.View
 			{
 				selectionStart = null;
 			}
+
+			updateStatusbar();
 		}
 
 		private void glProgramView_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -255,6 +260,8 @@ namespace BefunExec.View
 
 				updateSelectionCalculation(selx, sely);
 			}
+
+			updateStatusbar();
 		}
 
 		private void glProgramView_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -282,6 +289,8 @@ namespace BefunExec.View
 
 			selectionStart = null;
 			selection = null;
+
+			updateStatusbar();
 		}
 
 		private void glProgramView_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
@@ -301,6 +310,8 @@ namespace BefunExec.View
 				else if (e.Delta < 0)
 					zoomOut();
 			}
+
+			updateStatusbar();
 		}
 
 		#endregion
@@ -897,6 +908,9 @@ namespace BefunExec.View
 			if (isrun && kb[Keys.P] && RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED && ExtendedSHGraph.isEffectiveSizeCalculated())
 				zoom.Push(new Rect2i(0, 0, ExtendedSHGraph.EffectiveWidth, ExtendedSHGraph.EffectiveHeight));
 
+			if (kb.AnyKey())
+				updateStatusbar();
+
 			#endregion
 
 			#region Follow Mode
@@ -1211,6 +1225,8 @@ namespace BefunExec.View
 
 		private void setSpeed(int i, bool recheck)
 		{
+			currentSpeedLevel = i;
+
 			switch (i)
 			{
 				case 1:
@@ -1378,6 +1394,40 @@ namespace BefunExec.View
 						""
 					)
 				);
+		}
+
+		private void updateStatusbar()
+		{
+			int posx, posy;
+			Point mp = glProgramView.PointToClient(Cursor.Position);
+			getPointInProgram(mp.X, mp.Y, out posx, out posy);
+			bool inControl = posx >= 0 && posy >= 0;
+
+			if (inControl)
+			{
+				toolStripLabelPosition.Text = String.Format("Position: ({0:000}|{1:000})", posx, posy);
+				toolStripLabelValue.Text = String.Format("Value: {0:0000}", prog.raster[posx, posy]);
+			}
+			else
+			{
+				toolStripLabelPosition.Text = String.Format("Position: ({0}|{1})", "???", "???");
+				toolStripLabelValue.Text = String.Format("Value: {0}", "????");
+			}
+			toolStripLabelSize.Text = String.Format("Size: {0}x{1}", prog.Width, prog.Height);
+
+			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED && ExtendedSHGraph.isEffectiveSizeCalculated())
+				toolStripLabelEffectiveSize.Text = String.Format("Effective size: {0}x{1}", ExtendedSHGraph.EffectiveWidth, ExtendedSHGraph.EffectiveHeight);
+			else
+				toolStripLabelEffectiveSize.Text = String.Format("Effective size: {0}x{1}", '?', '?');
+
+			toolStripLabelZoom.Text = String.Format("Zoom: x{0:0.##}", getZoomFactor());
+			toolStripLabelBreakpoints.Text = String.Format("Breakpoints: {0}", prog.getBreakPointCount());
+			toolStripLabelSpeed.Text = String.Format("Speed level: {0:}", currentSpeedLevel);
+		}
+
+		private double getZoomFactor()
+		{
+			return Math.Min(prog.Width * 1.0 / zoom.Peek().Width, prog.Height * 1.0 / zoom.Peek().Height);
 		}
 
 		#endregion

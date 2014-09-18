@@ -83,10 +83,32 @@
 			this.createHDScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStripLabelType = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelPosition = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelValue = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelSize = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelEffectiveSize = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelZoom = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelBreakpoints = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelSpeed = new System.Windows.Forms.ToolStripLabel();
+			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
+			this.toolStrip1.SuspendLayout();
+			this.mainToolStripContainer.BottomToolStripPanel.SuspendLayout();
+			this.mainToolStripContainer.ContentPanel.SuspendLayout();
+			this.mainToolStripContainer.TopToolStripPanel.SuspendLayout();
+			this.mainToolStripContainer.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -97,12 +119,12 @@
 			this.tableLayoutPanel1.Controls.Add(this.glProgramView, 1, 0);
 			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 627F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(882, 627);
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 604F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(882, 604);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// glProgramView
@@ -112,7 +134,7 @@
 			this.glProgramView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.glProgramView.Location = new System.Drawing.Point(253, 3);
 			this.glProgramView.Name = "glProgramView";
-			this.glProgramView.Size = new System.Drawing.Size(626, 621);
+			this.glProgramView.Size = new System.Drawing.Size(626, 598);
 			this.glProgramView.TabIndex = 0;
 			this.glProgramView.TabStop = false;
 			this.glProgramView.VSync = false;
@@ -142,7 +164,7 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 140F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(244, 621);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(244, 598);
 			this.tableLayoutPanel2.TabIndex = 2;
 			// 
 			// glStackView
@@ -151,7 +173,7 @@
 			this.glStackView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.glStackView.Location = new System.Drawing.Point(3, 3);
 			this.glStackView.Name = "glStackView";
-			this.glStackView.Size = new System.Drawing.Size(238, 389);
+			this.glStackView.Size = new System.Drawing.Size(238, 366);
 			this.glStackView.TabIndex = 1;
 			this.glStackView.TabStop = false;
 			this.glStackView.VSync = false;
@@ -161,7 +183,7 @@
 			// edInputQueque
 			// 
 			this.edInputQueque.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.edInputQueque.Location = new System.Drawing.Point(3, 398);
+			this.edInputQueque.Location = new System.Drawing.Point(3, 375);
 			this.edInputQueque.Name = "edInputQueque";
 			this.edInputQueque.ReadOnly = true;
 			this.edInputQueque.Size = new System.Drawing.Size(238, 20);
@@ -173,7 +195,7 @@
 			this.flowLayoutPanel1.Controls.Add(this.edInput);
 			this.flowLayoutPanel1.Controls.Add(this.btnAddInput);
 			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 424);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 401);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(238, 34);
 			this.flowLayoutPanel1.TabIndex = 5;
@@ -202,7 +224,7 @@
 			// edOutput
 			// 
 			this.edOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.edOutput.Location = new System.Drawing.Point(3, 484);
+			this.edOutput.Location = new System.Drawing.Point(3, 461);
 			this.edOutput.Name = "edOutput";
 			this.edOutput.ReadOnly = true;
 			this.edOutput.Size = new System.Drawing.Size(238, 134);
@@ -215,7 +237,7 @@
 			this.label1.AutoSize = true;
 			this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(3, 461);
+			this.label1.Location = new System.Drawing.Point(3, 438);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(238, 20);
 			this.label1.TabIndex = 7;
@@ -224,6 +246,7 @@
 			// menuStrip1
 			// 
 			this.menuStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
+			this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fIleToolStripMenuItem,
             this.displayToolStripMenuItem,
@@ -582,14 +605,147 @@
 			this.aboutToolStripMenuItem.Text = "About ...";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
+			// toolStrip1
+			// 
+			this.toolStrip1.CanOverflow = false;
+			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
+			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabelType,
+            this.toolStripSeparator2,
+            this.toolStripLabelPosition,
+            this.toolStripSeparator1,
+            this.toolStripLabelValue,
+            this.toolStripSeparator3,
+            this.toolStripLabelSize,
+            this.toolStripSeparator4,
+            this.toolStripLabelEffectiveSize,
+            this.toolStripSeparator7,
+            this.toolStripLabelZoom,
+            this.toolStripSeparator5,
+            this.toolStripLabelBreakpoints,
+            this.toolStripSeparator6,
+            this.toolStripLabelSpeed});
+			this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
+			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+			this.toolStrip1.Name = "toolStrip1";
+			this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+			this.toolStrip1.Size = new System.Drawing.Size(882, 23);
+			this.toolStrip1.Stretch = true;
+			this.toolStrip1.TabIndex = 0;
+			this.toolStrip1.Text = "toolStrip1";
+			// 
+			// toolStripLabelType
+			// 
+			this.toolStripLabelType.Name = "toolStripLabelType";
+			this.toolStripLabelType.Size = new System.Drawing.Size(100, 15);
+			this.toolStripLabelType.Text = "Befunge program";
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 23);
+			// 
+			// toolStripLabelPosition
+			// 
+			this.toolStripLabelPosition.Name = "toolStripLabelPosition";
+			this.toolStripLabelPosition.Size = new System.Drawing.Size(78, 15);
+			this.toolStripLabelPosition.Text = "Position: (x|y)";
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 23);
+			// 
+			// toolStripLabelValue
+			// 
+			this.toolStripLabelValue.Name = "toolStripLabelValue";
+			this.toolStripLabelValue.Size = new System.Drawing.Size(48, 15);
+			this.toolStripLabelValue.Text = "Value: v";
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 23);
+			// 
+			// toolStripLabelSize
+			// 
+			this.toolStripLabelSize.Name = "toolStripLabelSize";
+			this.toolStripLabelSize.Size = new System.Drawing.Size(58, 15);
+			this.toolStripLabelSize.Text = "Size: WxH";
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 23);
+			// 
+			// toolStripLabelEffectiveSize
+			// 
+			this.toolStripLabelEffectiveSize.Name = "toolStripLabelEffectiveSize";
+			this.toolStripLabelEffectiveSize.Size = new System.Drawing.Size(105, 15);
+			this.toolStripLabelEffectiveSize.Text = "Effective size: WxH";
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 23);
+			// 
+			// toolStripLabelZoom
+			// 
+			this.toolStripLabelZoom.Name = "toolStripLabelZoom";
+			this.toolStripLabelZoom.Size = new System.Drawing.Size(55, 15);
+			this.toolStripLabelZoom.Text = "Zoom: x?";
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 23);
+			// 
+			// toolStripLabelBreakpoints
+			// 
+			this.toolStripLabelBreakpoints.Name = "toolStripLabelBreakpoints";
+			this.toolStripLabelBreakpoints.Size = new System.Drawing.Size(82, 15);
+			this.toolStripLabelBreakpoints.Text = "Breakpoints: b";
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 23);
+			// 
+			// toolStripLabelSpeed
+			// 
+			this.toolStripLabelSpeed.Name = "toolStripLabelSpeed";
+			this.toolStripLabelSpeed.Size = new System.Drawing.Size(77, 15);
+			this.toolStripLabelSpeed.Text = "Speed level: ?";
+			// 
+			// mainToolStripContainer
+			// 
+			// 
+			// mainToolStripContainer.BottomToolStripPanel
+			// 
+			this.mainToolStripContainer.BottomToolStripPanel.Controls.Add(this.toolStrip1);
+			// 
+			// mainToolStripContainer.ContentPanel
+			// 
+			this.mainToolStripContainer.ContentPanel.Controls.Add(this.tableLayoutPanel1);
+			this.mainToolStripContainer.ContentPanel.Size = new System.Drawing.Size(882, 604);
+			this.mainToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.mainToolStripContainer.Location = new System.Drawing.Point(0, 0);
+			this.mainToolStripContainer.Name = "mainToolStripContainer";
+			this.mainToolStripContainer.Size = new System.Drawing.Size(882, 651);
+			this.mainToolStripContainer.TabIndex = 3;
+			this.mainToolStripContainer.Text = "toolStripContainer2";
+			// 
+			// mainToolStripContainer.TopToolStripPanel
+			// 
+			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.menuStrip1);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(244)))), ((int)(((byte)(244)))));
 			this.ClientSize = new System.Drawing.Size(882, 651);
-			this.Controls.Add(this.tableLayoutPanel1);
-			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.mainToolStripContainer);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "MainForm";
@@ -602,8 +758,16 @@
 			this.flowLayoutPanel1.PerformLayout();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.toolStrip1.ResumeLayout(false);
+			this.toolStrip1.PerformLayout();
+			this.mainToolStripContainer.BottomToolStripPanel.ResumeLayout(false);
+			this.mainToolStripContainer.BottomToolStripPanel.PerformLayout();
+			this.mainToolStripContainer.ContentPanel.ResumeLayout(false);
+			this.mainToolStripContainer.TopToolStripPanel.ResumeLayout(false);
+			this.mainToolStripContainer.TopToolStripPanel.PerformLayout();
+			this.mainToolStripContainer.ResumeLayout(false);
+			this.mainToolStripContainer.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -663,5 +827,22 @@
 		private System.Windows.Forms.ToolStripMenuItem showInputASCIIMessageToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem createHDScreenshotToolStripMenuItem;
+		private System.Windows.Forms.ToolStrip toolStrip1;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelType;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelPosition;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelValue;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelSize;
+		private System.Windows.Forms.ToolStripContainer mainToolStripContainer;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelEffectiveSize;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelZoom;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelBreakpoints;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelSpeed;
 	}
 }

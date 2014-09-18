@@ -1,6 +1,7 @@
 ﻿using BefunGen.MathExtensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -84,6 +85,11 @@ namespace BefunExec.View
 		private bool IsKeyDown(Keys key)
 		{
 			return KeyStates.Down == (GetKeyState(key) & KeyStates.Down);
+		}
+
+		public bool AnyKey()
+		{
+			return now.Any(p => p.Value);
 		}
 	}
 }
