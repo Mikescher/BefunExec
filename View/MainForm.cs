@@ -66,7 +66,10 @@ namespace BefunExec.View
 		public MainForm(BefunProg bp, string code)
 		{
 			InitializeComponent();
-			this.Text = Program.TITLE;
+			if (RunOptions.FILEPATH != null)
+				this.Text = RunOptions.FILEPATH + " - " + Program.TITLE;
+			else
+				this.Text = Program.TITLE;
 
 			prog = bp;
 			init_code = code;
@@ -1062,7 +1065,7 @@ namespace BefunExec.View
 			prog.reset_freeze_request = false;
 		}
 
-		private void reload() // Not sure if threadsyfe :-/
+		private void reload() // Not sure if threadsafe :-/
 		{
 			if (RunOptions.FILEPATH != null)
 			{

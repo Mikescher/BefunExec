@@ -219,14 +219,12 @@ namespace BefunExec
 			}
 			else // succ loaded
 			{
-				RunOptions.FILEPATH = cmda["file"].Trim('"');
+				RunOptions.FILEPATH = Path.GetFullPath(cmda["file"].Trim('"'));
 
 				if (!customHighlight)
 				{
 					bool i_w = BefunProg.GetProgWidth(code) <= 80;
 					bool i_h = BefunProg.GetProgHeight(code) <= 80;
-					if (i_w && i_h)
-						RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_EXTENDED;
 				}
 			}
 
