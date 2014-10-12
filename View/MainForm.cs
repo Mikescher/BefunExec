@@ -1471,6 +1471,7 @@ namespace BefunExec.View
 						zoom.Pop();
 
 					init_code = c;
+					RunOptions.FILEPATH = fd.FileName;
 
 					prog.running = false;
 
