@@ -100,6 +100,7 @@ namespace BefunExec.View
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			prog.running = false;
+			Application.Exit();
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
