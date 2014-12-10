@@ -792,46 +792,56 @@ namespace BefunExec.View
 			else
 			{
 				bool vert = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_bottom
-					| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_bottom
-					| sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_top
-					| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_top;
+					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_bottom
+					|| sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_top
+					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_top;
 
 				bool horz = sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_right
-					| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_right
-					| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_left
-					| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_left;
+					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_right
+					|| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_left
+					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_left;
 
 				bool curve_tl = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_left
-					| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_left
-					| sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_top
-					| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_top;
+					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_left
+					|| sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_top
+					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_top;
 
 				bool curve_tr = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_right
-					| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_right
-					| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_top
-					| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_top;
+					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_right
+					|| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_top
+					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_top;
 
 				bool curve_br = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_right
-					| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_right
-					| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_bottom
-					| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_bottom;
+					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_right
+					|| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_bottom
+					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_bottom;
 
 				bool curve_bl = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_left
-					| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_left
-					| sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_bottom
-					| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_bottom;
+					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_left
+					|| sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_bottom
+					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_bottom;
 
 				bool left = sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_left
-					| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_left;
+					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_left;
 
 				bool right = sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_right
-					| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_right;
+					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_right;
 
 				bool top = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_top
-					| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_top;
+					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_top;
 
 				bool bottom = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_bottom
-					| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_bottom;
+					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_bottom;
+
+				bool jump_horz = sh_field.information[(int)BeGraphDirection.LeftRight].hl_jumpover
+					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].hl_jumpover
+					|| sh_field.information[(int)BeGraphDirection.RightLeft].hl_jumpover
+					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].hl_jumpover;
+
+				bool jump_vert = sh_field.information[(int)BeGraphDirection.TopBottom].hl_jumpover
+					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].hl_jumpover
+					|| sh_field.information[(int)BeGraphDirection.BottomTop].hl_jumpover
+					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].hl_jumpover;
 
 				if (horz)
 					renderPipeHorz(renderRect, 0, 0, w / 3);
@@ -858,6 +868,12 @@ namespace BefunExec.View
 					renderPipeVert(renderRect, 0, h / 2, w / 3);
 				if (bottom)
 					renderPipeVert(renderRect, h / 2, 0, w / 3);
+
+				if (jump_horz)
+					renderPipeDottedHorz(renderRect, w / 3, w / 8);
+				if (jump_vert)
+					renderPipeDottedVert(renderRect, w / 8, w / 3);
+
 			}
 		}
 
@@ -1318,6 +1334,59 @@ namespace BefunExec.View
 			GL.Vertex3(cx + width / 2, renderRect.bl.Y + insetY_b, 0);
 			GL.Vertex3(cx - width / 2, renderRect.br.Y + insetY_b, 0);
 			GL.Vertex3(cx - width / 2, renderRect.tr.Y - insetY_t, 0);
+
+			GL.Color3(1.0, 1.0, 1.0);
+			GL.Translate(0, 0, 3);
+			GL.End();
+			GL.Enable(EnableCap.Texture2D);
+		}
+
+		private void renderPipeDottedHorz(Rect2d renderRect, double height, double width)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Begin(BeginMode.Quads);
+			GL.Translate(0, 0, -3);
+			GL.Color4(Color.FromArgb(192, 255, 000, 000));
+
+			double cy = (renderRect.tl.Y + renderRect.br.Y) / 2;
+
+			double x = renderRect.bl.X;
+
+			while ((x + width) < renderRect.tr.X)
+			{
+				GL.Vertex3(x + width, cy - height / 2, 0);
+				GL.Vertex3(x + width, cy + height / 2, 0);
+				GL.Vertex3(x, cy + height / 2, 0);
+				GL.Vertex3(x, cy - height / 2, 0);
+
+				x += 2 * width;
+			}
+
+			GL.Color3(1.0, 1.0, 1.0);
+			GL.Translate(0, 0, 3);
+			GL.End();
+			GL.Enable(EnableCap.Texture2D);
+		}
+
+		private void renderPipeDottedVert(Rect2d renderRect, double height, double width)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Begin(BeginMode.Quads);
+			GL.Translate(0, 0, -3);
+			GL.Color4(Color.FromArgb(192, 255, 000, 000));
+			double cx = (renderRect.tl.X + renderRect.br.X) / 2;
+
+			double y = renderRect.bl.Y;
+
+			while ((y + height) < renderRect.tr.Y)
+			{
+				GL.Vertex3(cx + width / 2, y, 0);
+				GL.Vertex3(cx + width / 2, y + height, 0);
+				GL.Vertex3(cx - width / 2, y + height, 0);
+				GL.Vertex3(cx - width / 2, y, 0);
+
+				y += 2 * height;
+			}
 
 			GL.Color3(1.0, 1.0, 1.0);
 			GL.Translate(0, 0, 3);
