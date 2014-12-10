@@ -337,6 +337,8 @@ namespace BefunExec.View
 
 			GL.Color3(1.0, 1.0, 1.0);
 
+			bool renderDebug = kb.isDown(Keys.Tab);
+
 			#endregion
 
 			#region SIZE
@@ -355,7 +357,7 @@ namespace BefunExec.View
 			{
 				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				{
-					Render_HQ_sh(offx, offy, w, h);
+					Render_HQ_sh(offx, offy, w, h, renderDebug);
 				}
 				else
 				{
@@ -490,7 +492,7 @@ namespace BefunExec.View
 
 			#region DEBUG
 
-			if (kb.isDown(Keys.Tab))
+			if (renderDebug)
 			{
 				RenderFont(glProgramView.Height, new Vec2d(0f, 00f), String.Format("FPS: {0}", (int)fps.Frequency), -1, DebugFont, true);
 				RenderFont(glProgramView.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted()), -1, DebugFont, true);
@@ -657,25 +659,27 @@ namespace BefunExec.View
 					if (p_r != r || p_g != g || p_b != b)
 						GL.Color3(p_r = r, p_g = g, p_b = b);
 
+					Rect2d renderRect = new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h);
+
 					if (prog.breakpoints[x, y] || decay_perc > 0.25)
 					{
 						if (f_binded != 1)
 							bwfont.bind();
-						bwfont.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+						bwfont.Render(renderRect, -4, prog[x, y]);
 						f_binded = 1;
 					}
 					else
 					{
 						if (f_binded != 2)
 							font.bind();
-						font.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+						font.Render(renderRect, -4, prog[x, y]);
 						f_binded = 2;
 					}
 				}
 			}
 		}
 
-		private void Render_HQ_sh(double offx, double offy, double w, double h)
+		private void Render_HQ_sh(double offx, double offy, double w, double h, bool renderDebug)
 		{
 			if (ExtendedSHGraph == null)
 			{
@@ -705,11 +709,13 @@ namespace BefunExec.View
 					if (p_r != r || p_g != g || p_b != b)
 						GL.Color3(p_r = r, p_g = g, p_b = b);
 
+					Rect2d renderRect = new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h);
+
 					if (prog.breakpoints[x, y] || decay_perc > 0.25)
 					{
 						if (f_binded != 1)
 							bwfont.bind();
-						bwfont.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+						bwfont.Render(renderRect, -4, prog[x, y]);
 						f_binded = 1;
 					}
 					else
@@ -728,25 +734,130 @@ namespace BefunExec.View
 						{
 							if (f_binded != 4)
 								nop_font.bind();
-							nop_font.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+							nop_font.Render(renderRect, -4, prog[x, y]);
 							f_binded = 4;
 						}
 						else if (type == HighlightType.Command || type == HighlightType.String_and_Command)
 						{
 							if (f_binded != 2)
 								font.bind();
-							font.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+							font.Render(renderRect, -4, prog[x, y]);
 							f_binded = 2;
 						}
 						else if (type == HighlightType.String)
 						{
 							if (f_binded != 3)
 								stringfont.bind();
-							stringfont.Render(new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+							stringfont.Render(renderRect, -4, prog[x, y]);
 							f_binded = 3;
 						}
+
 					}
+
+					if (renderDebug)
+						renderBeGraphDebug(w, h, x, y, renderRect);
+
 				}
+			}
+		}
+
+		private void renderBeGraphDebug(double w, double h, int x, int y, Rect2d renderRect)
+		{
+			HighlightField sh_field;
+
+			try
+			{
+				sh_field = ExtendedSHGraph.fields[x, y];
+				if (sh_field == null)
+					return;
+			}
+			catch (Exception)
+			{
+				return; // safety quit
+			}
+
+			if (sh_field.incoming_information && !sh_field.outgoing_information)
+			{
+				if (sh_field.incoming_information_left)
+					renderPipeHorz(renderRect, 0, w / 2, w / 3);
+				if (sh_field.incoming_information_right)
+					renderPipeHorz(renderRect, w / 2, 0, w / 3);
+				if (sh_field.incoming_information_top)
+					renderPipeVert(renderRect, 0, h / 2, w / 3);
+				if (sh_field.incoming_information_bottom)
+					renderPipeVert(renderRect, h / 2, 0, w / 3);
+
+				renderInsetEllipse(renderRect, w / 9, w / 9, true);
+			}
+			else
+			{
+				bool vert = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_bottom
+					| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_bottom
+					| sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_top
+					| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_top;
+
+				bool horz = sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_right
+					| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_right
+					| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_left
+					| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_left;
+
+				bool curve_tl = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_left
+					| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_left
+					| sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_top
+					| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_top;
+
+				bool curve_tr = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_right
+					| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_right
+					| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_top
+					| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_top;
+
+				bool curve_br = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_right
+					| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_right
+					| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_bottom
+					| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_bottom;
+
+				bool curve_bl = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_left
+					| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_left
+					| sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_bottom
+					| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_bottom;
+
+				bool left = sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_left
+					| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_left;
+
+				bool right = sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_right
+					| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_right;
+
+				bool top = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_top
+					| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_top;
+
+				bool bottom = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_bottom
+					| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_bottom;
+
+				if (horz)
+					renderPipeHorz(renderRect, 0, 0, w / 3);
+				if (vert)
+					renderPipeVert(renderRect, 0, 0, w / 3);
+
+				if (curve_bl)
+					renderCurve(renderRect.bl, w / 2, h / 2, w / 3, 0, 4, 16);
+
+				if (curve_tl)
+					renderCurve(renderRect.tl, w / 2, h / 2, w / 3, 4, 8, 16);
+
+				if (curve_tr)
+					renderCurve(renderRect.tr, w / 2, h / 2, w / 3, 8, 12, 16);
+
+				if (curve_br)
+					renderCurve(renderRect.br, w / 2, h / 2, w / 3, 12, 16, 16);
+
+				if (left)
+					renderPipeHorz(renderRect, 0, w / 2, w / 3);
+				if (right)
+					renderPipeHorz(renderRect, w / 2, 0, w / 3);
+				if (top)
+					renderPipeVert(renderRect, 0, h / 2, w / 3);
+				if (bottom)
+					renderPipeVert(renderRect, h / 2, 0, w / 3);
 			}
 		}
 
@@ -815,7 +926,7 @@ namespace BefunExec.View
 			GL.Color3(1.0, 1.0, 1.0);
 
 			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
-				Render_HQ_sh(r_offx, r_offy, r_w, r_h);
+				Render_HQ_sh(r_offx, r_offy, r_w, r_h, false);
 			else
 				Render_HQ(r_offx, r_offy, r_w, r_h);
 			//##################################################
@@ -1174,6 +1285,96 @@ namespace BefunExec.View
 			GL.Color3(1.0, 1.0, 1.0);
 
 			return h;
+		}
+
+		private void renderPipeHorz(Rect2d renderRect, double insetX_l, double insetX_r, double height)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Begin(BeginMode.Quads);
+			GL.Translate(0, 0, -3);
+			GL.Color4(Color.FromArgb(192, 255, 000, 000));
+			double cy = (renderRect.tl.Y + renderRect.br.Y) / 2;
+
+			GL.Vertex3(renderRect.tl.X + insetX_l, cy - height / 2, 0);
+			GL.Vertex3(renderRect.bl.X + insetX_l, cy + height / 2, 0);
+			GL.Vertex3(renderRect.br.X - insetX_r, cy + height / 2, 0);
+			GL.Vertex3(renderRect.tr.X - insetX_r, cy - height / 2, 0);
+
+			GL.Color3(1.0, 1.0, 1.0);
+			GL.Translate(0, 0, 3);
+			GL.End();
+			GL.Enable(EnableCap.Texture2D);
+		}
+
+		private void renderPipeVert(Rect2d renderRect, double insetY_t, double insetY_b, double width)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Begin(BeginMode.Quads);
+			GL.Translate(0, 0, -3);
+			GL.Color4(Color.FromArgb(192, 255, 000, 000));
+			double cx = (renderRect.tl.X + renderRect.br.X) / 2;
+
+			GL.Vertex3(cx + width / 2, renderRect.tl.Y - insetY_t, 0);
+			GL.Vertex3(cx + width / 2, renderRect.bl.Y + insetY_b, 0);
+			GL.Vertex3(cx - width / 2, renderRect.br.Y + insetY_b, 0);
+			GL.Vertex3(cx - width / 2, renderRect.tr.Y - insetY_t, 0);
+
+			GL.Color3(1.0, 1.0, 1.0);
+			GL.Translate(0, 0, 3);
+			GL.End();
+			GL.Enable(EnableCap.Texture2D);
+		}
+
+		private void renderInsetEllipse(Rect2d renderRect, double insetX, double insetY, bool circle)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Begin(BeginMode.TriangleFan);
+			GL.Translate(0, 0, -3);
+			GL.Color4(Color.FromArgb(192, 255, 000, 000));
+
+			double cx = (renderRect.tl.X + renderRect.tr.X) / 2;
+			double cy = (renderRect.tl.Y + renderRect.br.Y) / 2;
+
+			double w = (renderRect.tr.X - renderRect.tl.X) - insetX * 2;
+			double h = (renderRect.tl.Y - renderRect.bl.Y) - insetY * 2;
+
+			if (circle)
+			{
+				w = Math.Min(w, h);
+				h = w;
+			}
+
+			GL.Vertex3(cx, cy, 0);
+
+			const int VCOUNT = 23;
+			for (int i = 0; i <= VCOUNT; i++)
+			{
+				GL.Vertex3(cx + Math.Sin((i * 2 * Math.PI) / VCOUNT) * w / 2, cy + Math.Cos((i * 2 * Math.PI) / VCOUNT) * h / 2, 0);
+			}
+
+			GL.Color3(1.0, 1.0, 1.0);
+			GL.Translate(0, 0, 3);
+			GL.End();
+			GL.Enable(EnableCap.Texture2D);
+		}
+
+		private void renderCurve(Vec2d center, double rad_x, double rad_y, double thickness, int beginCurveSeg, int endCurveSeg, int curveSegCount)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Begin(BeginMode.TriangleStrip);
+			GL.Translate(0, 0, -3);
+			GL.Color4(Color.FromArgb(192, 255, 000, 000));
+
+			for (int i = beginCurveSeg; i <= endCurveSeg; i++)
+			{
+				GL.Vertex3(center.X + Math.Sin((i * 2 * Math.PI) / curveSegCount) * (rad_x - thickness / 2), center.Y + Math.Cos((i * 2 * Math.PI) / curveSegCount) * (rad_y - thickness / 2), 0);
+				GL.Vertex3(center.X + Math.Sin((i * 2 * Math.PI) / curveSegCount) * (rad_x + thickness / 2), center.Y + Math.Cos((i * 2 * Math.PI) / curveSegCount) * (rad_y + thickness / 2), 0);
+			}
+
+			GL.Color3(1.0, 1.0, 1.0);
+			GL.Translate(0, 0, 3);
+			GL.End();
+			GL.Enable(EnableCap.Texture2D);
 		}
 
 		private String getFreqFormatted()

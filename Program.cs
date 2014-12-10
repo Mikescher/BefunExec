@@ -48,7 +48,8 @@ namespace BefunExec
 			Console.WriteLine("3:             High speed");
 			Console.WriteLine("4:             Very High speed");
 			Console.WriteLine("5:             Full speed");
-
+			Console.WriteLine();
+			Console.WriteLine("TAB:           Debug View  (TRY IT OUT !)");
 
 			Console.WriteLine();
 			Console.WriteLine();
