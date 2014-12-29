@@ -190,7 +190,7 @@ namespace BefunExec.View
 
 		#endregion
 
-		#region Render & Update
+		#region Update
 
 		private void updateProgramView()
 		{
@@ -206,14 +206,7 @@ namespace BefunExec.View
 			{
 				setFollowMode(false);
 
-				if (glProgramView.zoom.Count > 1)
-				{
-					glProgramView.zoom.Pop();
-				}
-				else
-				{
-					//Exit();
-				}
+				glProgramView.zoom.Pop();
 			}
 
 			if (isrun && kb[Keys.Space] && prog.mode == BefunProg.MODE_RUN)
@@ -284,8 +277,7 @@ namespace BefunExec.View
 				z.ForceInside(prog_rect);
 				z.setInsideRatio_Expanding((12.0 * glProgramView.Width) / (8.0 * glProgramView.Height), prog_rect);
 
-				if (glProgramView.zoom.Count > 1)
-					glProgramView.zoom.Pop();
+				glProgramView.zoom.Pop();
 				glProgramView.zoom.Push(z);
 			}
 
@@ -302,7 +294,6 @@ namespace BefunExec.View
 			}
 
 			#endregion
-
 
 			#region INPUT
 
@@ -420,8 +411,6 @@ namespace BefunExec.View
 
 					prog = new BefunProg(BefunProg.GetProg(init_code));
 					glProgramView.resetProg(prog, null);
-					glProgramView.zoom.Clear();
-					glProgramView.zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
 					glProgramView.initSyntaxHighlighting();
 
 					new Thread(new ThreadStart(prog.run)).Start();
@@ -489,8 +478,7 @@ namespace BefunExec.View
 			}
 			else
 			{
-				if (glProgramView.zoom.Count > 1)
-					glProgramView.zoom.Pop();
+				glProgramView.zoom.Pop();
 			}
 		}
 
@@ -518,7 +506,7 @@ namespace BefunExec.View
 			else
 				toolStripLabelEffectiveSize.Text = String.Format("Effective size: {0}x{1}", '?', '?');
 
-			toolStripLabelZoom.Text = String.Format("Zoom: x{0:0.##}", glProgramView.getZoomFactor());
+			toolStripLabelZoom.Text = String.Format("Zoom: x{0:0.##}", glProgramView.zoom.getZoomFactor());
 			toolStripLabelBreakpoints.Text = String.Format("Breakpoints: {0}", prog.getBreakPointCount());
 			toolStripLabelSpeed.Text = String.Format("Speed level: {0:}", currentSpeedLevel);
 		}
@@ -562,8 +550,6 @@ namespace BefunExec.View
 					glProgramView.loaded = false;
 					glStackView.loaded = false;
 
-					glProgramView.zoom.Clear();
-
 					init_code = c;
 					RunOptions.FILEPATH = fd.FileName;
 
@@ -577,8 +563,6 @@ namespace BefunExec.View
 					glProgramView.initSyntaxHighlighting();
 
 					this.Text = fd.FileName + " - " + Program.TITLE;
-
-					glProgramView.zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
 
 					glProgramView.loaded = true;
 					glStackView.loaded = true;
@@ -615,14 +599,9 @@ namespace BefunExec.View
 			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
 				return;
 
-			while (glProgramView.zoom.Count > 1)
-			{
-				glProgramView.zoom.Pop();
-			}
+			glProgramView.zoom.PopToBase();
 
 			glProgramView.zoom.Push(RunOptions.INIT_ZOOM);
-			if (glProgramView.zoom.Peek() == null || glProgramView.zoom.Peek().bl.X < 0 || glProgramView.zoom.Peek().bl.Y < 0 || glProgramView.zoom.Peek().tr.X > prog.Width || glProgramView.zoom.Peek().tr.Y > prog.Height)
-				glProgramView.zoom.Pop();
 		}
 
 		private void zoomOutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -630,10 +609,8 @@ namespace BefunExec.View
 			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
 				return;
 
-			if (glProgramView.zoom.Count > 1)
-			{
-				glProgramView.zoom.Pop();
-			}
+
+			glProgramView.zoom.Pop();
 		}
 
 		private void zoomCompleteOutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -641,10 +618,7 @@ namespace BefunExec.View
 			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
 				return;
 
-			while (glProgramView.zoom.Count > 1)
-			{
-				glProgramView.zoom.Pop();
-			}
+			glProgramView.zoom.PopToBase();
 		}
 
 		private void runToolStripMenuItem_Click(object sender, EventArgs e)
