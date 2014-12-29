@@ -32,6 +32,7 @@ namespace BefunExec
 			Console.WriteLine();
 			Console.WriteLine("Space:         Pause | Resume");
 			Console.WriteLine("Right:         Step Forward");
+			Console.WriteLine("Left:          Undo last Step (needs undo enabled)");
 
 			Console.WriteLine("Mouse (Click): Breakpoint");
 			Console.WriteLine("Mouse (Drag):  Zoom in");
@@ -98,6 +99,7 @@ namespace BefunExec
 				Console.WriteLine("s_highlight | highlight    : Set Syntax-Highlighting to [simple]");
 				Console.WriteLine("e_highlight                : Set Syntax-Highlighting to [extended]");
 
+				Console.WriteLine("undo                       : Enables the undo log");
 				Console.WriteLine("revstack                   : Show the stack reversed");
 
 				Console.WriteLine("speed=?                    : Set the initial speed (index 0..15)");
@@ -135,6 +137,9 @@ namespace BefunExec
 				RunOptions.ASCII_STACK = false;
 
 			//##############
+
+			if (cmda.IsSet("undo"))
+				RunOptions.ENABLEUNDO = true;
 
 			if (cmda.IsSet("revstack"))
 				RunOptions.SHOW_STACK_REVERSED = true;

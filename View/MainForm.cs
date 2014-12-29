@@ -60,6 +60,9 @@ namespace BefunExec.View
 			debugModeToolStripMenuItem.Checked = RunOptions.DEBUGRUN;
 			showTrailToolStripMenuItem.Checked = RunOptions.SHOW_DECAY;
 			showStackReversedToolStripMenuItem.Checked = RunOptions.SHOW_STACK_REVERSED;
+			enableUndoToolStripMenuItem.Checked = RunOptions.ENABLEUNDO;
+			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
+			prog.undoLog.enabled = RunOptions.ENABLEUNDO;
 			setSpeed(RunOptions.RUN_FREQUENCY_IDX, true);
 
 			Application.Idle += Application_Idle;
@@ -230,6 +233,9 @@ namespace BefunExec.View
 
 			if (isrun && kb[Keys.Right])
 				prog.doSingleStep = true;
+
+			if (isrun && kb[Keys.Left])
+				prog.doSingleUndo = true;
 
 			if (isrun && kb[Keys.D1])
 				setSpeed(RunOptions.STANDARDFREQ_1, true);
@@ -416,7 +422,10 @@ namespace BefunExec.View
 					Thread.Sleep(250 + (int)prog.getActualSleepTime());
 
 					prog = new BefunProg(BefunProg.GetProg(init_code));
+
 					glProgramView.resetProg(prog, null);
+					prog.undoLog.enabled = RunOptions.ENABLEUNDO;
+
 					glProgramView.initSyntaxHighlighting();
 
 					new Thread(new ThreadStart(prog.run)).Start();
@@ -548,6 +557,7 @@ namespace BefunExec.View
 					prog = new BefunProg(BefunProg.GetProg(init_code));
 
 					glProgramView.resetProg(prog, null);
+					prog.undoLog.enabled = RunOptions.ENABLEUNDO;
 
 					new Thread(new ThreadStart(prog.run)).Start();
 					glProgramView.initSyntaxHighlighting();
@@ -798,6 +808,20 @@ namespace BefunExec.View
 		private void showStackReversedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RunOptions.SHOW_STACK_REVERSED = showStackReversedToolStripMenuItem.Checked;
+		}
+
+		private void enableUndoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RunOptions.ENABLEUNDO = enableUndoToolStripMenuItem.Checked;
+
+			prog.undoLog.enabled = RunOptions.ENABLEUNDO;
+			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
+		}
+
+		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (prog.mode == BefunProg.MODE_RUN)
+				prog.doSingleUndo = true;
 		}
 
 	}

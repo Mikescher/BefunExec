@@ -167,7 +167,8 @@ namespace BefunExec.View
 				RenderFont(this.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted(prog.freq.Frequency)), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0}", prog.StepCount), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.getExecutedTime()), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 80f), getCodeTypeString(), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 80f), String.Format("UndoLog: {0}", prog.undoLog.enabled ? prog.undoLog.size.ToString() : "disabled"), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 100f), getCodeTypeString(), -1, DebugFont, true);
 			}
 
 			#endregion

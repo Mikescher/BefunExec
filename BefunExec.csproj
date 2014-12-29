@@ -73,6 +73,14 @@
     <Compile Include="GIFEncoder\GifDecoder.cs" />
     <Compile Include="GIFEncoder\LZWEncoder.cs" />
     <Compile Include="GIFEncoder\NeuQuant.cs" />
+    <Compile Include="Logic\Log\BefunLog.cs" />
+    <Compile Include="Logic\Log\BefunLogAction.cs" />
+    <Compile Include="Logic\Log\BefunLogActionGridChange.cs" />
+    <Compile Include="Logic\Log\BefunLogActionPCMove.cs" />
+    <Compile Include="Logic\Log\BefunLogActionStackAdd.cs" />
+    <Compile Include="Logic\Log\BefunLogActionStackRemove.cs" />
+    <Compile Include="Logic\Log\BefunLogActionDeltaChange.cs" />
+    <Compile Include="Logic\Log\BefunLogActionChangeStringmode.cs" />
     <Compile Include="View\GLExtendedViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

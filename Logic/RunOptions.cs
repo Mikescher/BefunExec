@@ -33,11 +33,11 @@ namespace BefunExec.Logic
 
 		public static int RUN_FREQUENCY_IDX = 6;
 
-		public const int STANDARDFREQ_1 = 1;  // 7.5
-		public const int STANDARDFREQ_2 = 2;  // 25
-		public const int STANDARDFREQ_3 = 6;  // 1000
-		public const int STANDARDFREQ_4 = 9;  // 50000;
-		public const int STANDARDFREQ_5 = 15; // +INF
+		public const int STANDARDFREQ_1 = 1;		// 7.5
+		public const int STANDARDFREQ_2 = 2;		// 25
+		public const int STANDARDFREQ_3 = 6;		// 1000
+		public const int STANDARDFREQ_4 = 9;		// 50000;
+		public const int STANDARDFREQ_5 = 15;		// +INF
 
 		public static int DECAY_TIME = 500;			// Time until decay
 		public static bool SHOW_DECAY = true;
@@ -51,6 +51,8 @@ namespace BefunExec.Logic
 		public static string FILEPATH = null;
 
 		public static bool SKIP_NOP = true;
+
+		public static bool ENABLEUNDO = false;
 		public static bool DEBUGRUN = false;
 
 		public static double getRunFrequency()

@@ -1,4 +1,5 @@
-﻿using BefunExec.View;
+﻿using BefunExec.Logic.Log;
+using BefunExec.View;
 using BefunExec.View.OpenGL.OGLMath;
 using System;
 using System.Collections.Concurrent;
@@ -15,6 +16,7 @@ namespace BefunExec.Logic
 
 		public bool running;
 		public bool doSingleStep = false;
+		public bool doSingleUndo = false;
 		public bool paused;
 		public int mode = 0;
 
@@ -39,6 +41,7 @@ namespace BefunExec.Logic
 		public Vec2i delta = new Vec2i(1, 0);
 		public bool stringmode = false;
 
+		public BefunLog undoLog = new BefunLog();
 		public Stack<long> Stack = new Stack<long>();
 
 		private Vec2i dimension;
@@ -98,13 +101,20 @@ namespace BefunExec.Logic
 			running = true;
 
 			long start = Environment.TickCount;
-			int sleeptime;
 
 			bool paused_cached;
 
 			while (running)
 			{
 				paused_cached = paused;
+
+				undoLog.update();
+
+				if (paused && doSingleUndo && mode == MODE_RUN)
+				{
+					undoLog.Reverse(this);
+					doSingleUndo = false;
+				}
 
 				if ((paused_cached && !doSingleStep) || mode != MODE_RUN)
 				{
@@ -119,7 +129,9 @@ namespace BefunExec.Logic
 					}
 					else if (mode == MODE_MOVEANDRUN)
 					{
+						undoLog.startCollecting();
 						move();
+						undoLog.endCollecting();
 						mode = MODE_RUN;
 					}
 					else
@@ -140,18 +152,31 @@ namespace BefunExec.Logic
 					if (StartTime < 0)
 						StartTime = Environment.TickCount;
 
+					undoLog.startCollecting();
 					calc();
 					debug();
 
 					if (mode == MODE_RUN && (!paused_cached || doSingleStep))
 					{
+						move();
+						decay();
+						conditionalbreak();
+						debug();
+					}
+
+					undoLog.endCollecting();
+
+					if (mode == MODE_RUN && (!paused_cached || doSingleStep))
+					{
 						skipcount = 0;
-						do
+						while (RunOptions.SKIP_NOP && raster[PC.X, PC.Y] == ' ' && !stringmode && (!paused_cached || doSingleStep))
 						{
+							undoLog.startCollecting();
 							move();
 							decay();
 							conditionalbreak();
 							debug();
+							undoLog.endCollecting();
 
 							skipcount++;
 							if (skipcount > Width * 2)
@@ -161,8 +186,9 @@ namespace BefunExec.Logic
 								break; // Even when no debug - no infinite loop in this thread
 							}
 						}
-						while (RunOptions.SKIP_NOP && raster[PC.X, PC.Y] == ' ' && !stringmode && (!paused_cached || doSingleStep));
-
+					}
+					else
+					{
 
 					}
 				}
@@ -218,7 +244,7 @@ namespace BefunExec.Logic
 			}
 		}
 
-		private long pop()
+		public long pop(bool log = true)
 		{
 			lock (Stack)
 			{
@@ -228,7 +254,11 @@ namespace BefunExec.Logic
 					return 0;
 				}
 				else
+				{
+					if (log)
+						undoLog.collectStackRemove(Stack.Peek());
 					return Stack.Pop();
+				}
 			}
 		}
 
@@ -247,7 +277,7 @@ namespace BefunExec.Logic
 			}
 		}
 
-		private bool popBool()
+		private bool popBool(bool log = true)
 		{
 			lock (Stack)
 			{
@@ -257,16 +287,25 @@ namespace BefunExec.Logic
 					return false;
 				}
 				else
+				{
+					if (log)
+						undoLog.collectStackRemove(Stack.Peek());
 					return (Stack.Pop() != 0);
+				}
 			}
+
+
 		}
 
-		public void push(long a)
+		public void push(long a, bool log = true)
 		{
 			lock (Stack)
 			{
 				Stack.Push(a);
 			}
+
+			if (log)
+				undoLog.collectStackAdd();
 		}
 
 		public void Out(string c)
@@ -281,12 +320,15 @@ namespace BefunExec.Logic
 			simpleOutputHash++;
 		}
 
-		public void push(bool a)
+		public void push(bool a, bool log = true)
 		{
 			lock (Stack)
 			{
 				Stack.Push(a ? 1 : 0);
 			}
+
+			if (log)
+				undoLog.collectStackAdd();
 		}
 
 		public long getExecutedTime()
@@ -348,31 +390,32 @@ namespace BefunExec.Logic
 						push(pop() > tmp);
 						break;
 					case '>':
-						delta.Set(1, 0);
+						changeDelta(1, 0);
 						break;
 					case '<':
-						delta.Set(-1, 0);
+						changeDelta(-1, 0);
 						break;
 					case '^':
-						delta.Set(0, -1);
+						changeDelta(0, -1);
 						break;
 					case 'v':
-						delta.Set(0, 1);
+						changeDelta(0, 1);
 						break;
 					case '?':
 						tmp = rnd.Next(4);
-						delta.Set(randDelta[tmp, 0], randDelta[tmp, 1]);
+						changeDelta(randDelta[tmp, 0], randDelta[tmp, 1]);
 						break;
 					case '_':
 						tmp = popBool() ? 2 : 0;
-						delta.Set(randDelta[tmp, 0], randDelta[tmp, 1]);
+						changeDelta(randDelta[tmp, 0], randDelta[tmp, 1]);
 						break;
 					case '|':
 						tmp = popBool() ? 1 : 3;
-						delta.Set(randDelta[tmp, 0], randDelta[tmp, 1]);
+						changeDelta(randDelta[tmp, 0], randDelta[tmp, 1]);
 						break;
 					case '"':
 						stringmode = !stringmode;
+						undoLog.collectChangeStringmode();
 						break;
 					case ':':
 						push(peek());
@@ -409,8 +452,7 @@ namespace BefunExec.Logic
 						if (tmp >= 0 && tmp2 >= 0 && tmp2 < Width && tmp < Height)
 						{
 							tmp3 = pop();
-							raster[tmp2, tmp] = tmp3;
-							RasterChanges.Enqueue(Tuple.Create(tmp2, tmp, tmp3));
+							ChangeRaster(tmp2, tmp, tmp3);
 						}
 						else
 							pop();
@@ -437,8 +479,27 @@ namespace BefunExec.Logic
 				StepCount++;
 		}
 
+		private void changeDelta(int dx, int dy)
+		{
+			undoLog.collectDeltaChange(delta.X, delta.Y);
+
+			delta.Set(dx, dy);
+		}
+
+		public void ChangeRaster(long posX, long posY, long v, bool log = true)
+		{
+			long old = raster[posX, posY];
+			raster[posX, posY] = v;
+			RasterChanges.Enqueue(Tuple.Create(posX, posY, v));
+
+			if (log)
+				undoLog.collectGridChange(posX, posY, old);
+		}
+
 		public void move()
 		{
+			undoLog.collectPCMove(PC.X, PC.Y);
+
 			int pcx = (PC.X + delta.X + dimension.X) % dimension.X;
 			int pcy = (PC.Y + delta.Y + dimension.Y) % dimension.Y;
 
@@ -485,6 +546,8 @@ namespace BefunExec.Logic
 				{
 					decay_raster[x, y] = 0;
 				}
+
+			undoLog.reset();
 			Stack.Clear();
 			stringmode = false;
 			delta = new Vec2i(1, 0);
