@@ -8,18 +8,36 @@ namespace BefunExec.Logic
 		public const int SH_SIMPLE = 1;
 		public const int SH_EXTENDED = 2;
 
-
-
 		public static bool INIT_PAUSED = true;
 		public static Rect2i INIT_ZOOM = null;
 
-		public static int INIT_SPEED = 3;
+		public static readonly double[] FREQUENCY_SLIDER = 
+		{
+			1,
+			7.5,
+			25,
+			100,
+			250,
+			500,
+			1 * 1000,
+			5 * 1000,
+			25 * 1000,
+			50 * 1000,
+			100 * 1000,
+			250 * 1000,
+			500 * 1000,
+			1 * 1000 * 1000,
+			3 * 1000 * 1000,
+			float.PositiveInfinity,
+		};
 
-		public static int SLEEP_TIME_5 = 0;			// Time (ms) per Cycle
-		public static int SLEEP_TIME_4 = 1;			// Time (ms) per Cycle
-		public static int SLEEP_TIME_3 = 50;		// Time (ms) per Cycle
-		public static int SLEEP_TIME_2 = 150;		// Time (ms) per Cycle
-		public static int SLEEP_TIME_1 = 500;		// Time (ms) per Cycle
+		public static int RUN_FREQUENCY_IDX = 6;
+
+		public const int STANDARDFREQ_1 = 1;  // 7.5
+		public const int STANDARDFREQ_2 = 2;  // 25
+		public const int STANDARDFREQ_3 = 6;  // 1000
+		public const int STANDARDFREQ_4 = 9;  // 50000;
+		public const int STANDARDFREQ_5 = 15; // +INF
 
 		public static int DECAY_TIME = 500;			// Time until decay
 		public static bool SHOW_DECAY = true;
@@ -33,23 +51,9 @@ namespace BefunExec.Logic
 		public static bool SKIP_NOP = true;
 		public static bool DEBUGRUN = false;
 
-		public static int GetSleep(int idx)
+		public static double getRunFrequency()
 		{
-			switch (idx)
-			{
-				case 1:
-					return SLEEP_TIME_1;
-				case 2:
-					return SLEEP_TIME_2;
-				case 3:
-					return SLEEP_TIME_3;
-				case 4:
-					return SLEEP_TIME_4;
-				case 5:
-					return SLEEP_TIME_5;
-				default:
-					return SLEEP_TIME_3;
-			}
+			return FREQUENCY_SLIDER[RUN_FREQUENCY_IDX];
 		}
 	}
 }

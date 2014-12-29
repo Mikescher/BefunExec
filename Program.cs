@@ -95,13 +95,7 @@ namespace BefunExec
 				Console.WriteLine("s_highlight | highlight    : Set Syntax-Highlighting to [simple]");
 				Console.WriteLine("e_highlight                : Set Syntax-Highlighting to [extended]");
 
-				Console.WriteLine("speed=?                    : Set the initial speed (index)");
-
-				Console.WriteLine("speed_5=?                  : Set the speed (ms) for speed-5");
-				Console.WriteLine("speed_4=?                  : Set the speed (ms) for speed-4");
-				Console.WriteLine("speed_3=?                  : Set the speed (ms) for speed-3");
-				Console.WriteLine("speed_2=?                  : Set the speed (ms) for speed-2");
-				Console.WriteLine("speed_1=?                  : Set the speed (ms) for speed-1");
+				Console.WriteLine("speed=?                    : Set the initial speed (index 0..15)");
 
 				Console.WriteLine("decay=?                    : Time (ms) for the decay effect");
 				Console.WriteLine("dodecay | no_decay         : Show decay trail");
@@ -166,20 +160,7 @@ namespace BefunExec
 			//##############
 
 			if (cmda.IsInt("speed"))
-				RunOptions.INIT_SPEED = int.Parse(cmda["speed"]);
-
-			//##############
-
-			if (cmda.IsInt("speed_1"))
-				RunOptions.SLEEP_TIME_1 = int.Parse(cmda["speed_1"]);
-			if (cmda.IsInt("speed_2"))
-				RunOptions.SLEEP_TIME_2 = int.Parse(cmda["speed_2"]);
-			if (cmda.IsInt("speed_3"))
-				RunOptions.SLEEP_TIME_3 = int.Parse(cmda["speed_3"]);
-			if (cmda.IsInt("speed_4"))
-				RunOptions.SLEEP_TIME_4 = int.Parse(cmda["speed_4"]);
-			if (cmda.IsInt("speed_5"))
-				RunOptions.SLEEP_TIME_5 = int.Parse(cmda["speed_5"]);
+				RunOptions.RUN_FREQUENCY_IDX = int.Parse(cmda["speed"]) % 15;
 
 			//##############
 

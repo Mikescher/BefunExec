@@ -25,7 +25,6 @@ namespace BefunExec.View
 
 		private BefunProg prog;
 		private string init_code;
-		private int currentSpeedLevel = RunOptions.INIT_SPEED;
 
 		private InteropKeyboard kb = new InteropKeyboard();
 
@@ -60,7 +59,7 @@ namespace BefunExec.View
 			skipNOPsToolStripMenuItem.Checked = RunOptions.SKIP_NOP;
 			debugModeToolStripMenuItem.Checked = RunOptions.DEBUGRUN;
 			showTrailToolStripMenuItem.Checked = RunOptions.SHOW_DECAY;
-			setSpeed(RunOptions.INIT_SPEED, true);
+			setSpeed(RunOptions.RUN_FREQUENCY_IDX, true);
 
 			Application.Idle += Application_Idle;
 		}
@@ -232,19 +231,19 @@ namespace BefunExec.View
 				prog.doSingleStep = true;
 
 			if (isrun && kb[Keys.D1])
-				setSpeed(1, true);
+				setSpeed(RunOptions.STANDARDFREQ_1, true);
 
 			if (isrun && kb[Keys.D2])
-				setSpeed(2, true);
+				setSpeed(RunOptions.STANDARDFREQ_2, true);
 
 			if (isrun && kb[Keys.D3])
-				setSpeed(3, true);
+				setSpeed(RunOptions.STANDARDFREQ_3, true);
 
 			if (isrun && kb[Keys.D4])
-				setSpeed(4, true);
+				setSpeed(RunOptions.STANDARDFREQ_4, true);
 
 			if (isrun && kb[Keys.D5])
-				setSpeed(5, true);
+				setSpeed(RunOptions.STANDARDFREQ_5, true);
 
 			if (isrun && kb[Keys.R] & kb.isDown(Keys.ControlKey)) // no shortcut eval on purpose
 				reload();
@@ -407,7 +406,7 @@ namespace BefunExec.View
 					while (!prog.reset_freeze_answer)
 						Thread.Sleep(0);
 					prog.running = false;
-					Thread.Sleep(250 + prog.curr_lvl_sleeptime);
+					Thread.Sleep(250 + (int)prog.getActualSleepTime());
 
 					prog = new BefunProg(BefunProg.GetProg(init_code));
 					glProgramView.resetProg(prog, null);
@@ -424,44 +423,15 @@ namespace BefunExec.View
 			}
 		}
 
-		private void setSpeed(int i, bool recheck)
+		private void setSpeed(int freqIdx, bool recheck)
 		{
-			currentSpeedLevel = i;
+			RunOptions.RUN_FREQUENCY_IDX = freqIdx;
+			prog.curr_sleeptime_freq = RunOptions.FREQUENCY_SLIDER[freqIdx];
 
-			switch (i)
-			{
-				case 1:
-					if (prog.curr_lvl_sleeptime != RunOptions.SLEEP_TIME_1)
-						prog.curr_lvl_sleeptime = RunOptions.SLEEP_TIME_1;
-					if (recheck)
-						lowToolStripMenuItem.Checked = true;
-					break;
-				case 2:
-					if (prog.curr_lvl_sleeptime != RunOptions.SLEEP_TIME_2)
-						prog.curr_lvl_sleeptime = RunOptions.SLEEP_TIME_2;
-					if (recheck)
-						middleToolStripMenuItem.Checked = true;
-					break;
-				case 3:
-					if (prog.curr_lvl_sleeptime != RunOptions.SLEEP_TIME_3)
-						prog.curr_lvl_sleeptime = RunOptions.SLEEP_TIME_3;
-					if (recheck)
-						fastToolStripMenuItem.Checked = true;
-					break;
-				case 4:
-					if (prog.curr_lvl_sleeptime != RunOptions.SLEEP_TIME_4)
-						prog.curr_lvl_sleeptime = RunOptions.SLEEP_TIME_4;
-					if (recheck)
-						veryFastToolStripMenuItem.Checked = true;
-					break;
-				case 5:
-					if (prog.curr_lvl_sleeptime != RunOptions.SLEEP_TIME_5)
-						prog.curr_lvl_sleeptime = RunOptions.SLEEP_TIME_5;
+			if (recheck)
+				speedFreqBar.Value = freqIdx;
 
-					if (recheck)
-						fullToolStripMenuItem.Checked = true;
-					break;
-			}
+			updateStatusbar();
 		}
 
 		private void setFollowMode(bool v)
@@ -484,6 +454,9 @@ namespace BefunExec.View
 
 		private void updateStatusbar()
 		{
+			if (!loaded)
+				return;
+
 			int posx, posy;
 			Point mp = glProgramView.PointToClient(Cursor.Position);
 			glProgramView.getPointInProgram(mp.X, mp.Y, out posx, out posy);
@@ -508,7 +481,7 @@ namespace BefunExec.View
 
 			toolStripLabelZoom.Text = String.Format("Zoom: x{0:0.##}", glProgramView.zoom.getZoomFactor());
 			toolStripLabelBreakpoints.Text = String.Format("Breakpoints: {0}", prog.getBreakPointCount());
-			toolStripLabelSpeed.Text = String.Format("Speed level: {0:}", currentSpeedLevel);
+			toolStripLabelSpeed.Text = String.Format("Speed level: {0:}", GLExtendedViewControl.getFreqFormatted(RunOptions.getRunFrequency()));
 		}
 
 		public Bitmap GrabScreenshot()
@@ -578,20 +551,6 @@ namespace BefunExec.View
 		private void followCursorToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
 			setFollowMode(followCursorToolStripMenuItem.Checked);
-		}
-
-		private void speedToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			if (lowToolStripMenuItem.Checked)
-				setSpeed(1, false);
-			else if (middleToolStripMenuItem.Checked)
-				setSpeed(2, false);
-			else if (fastToolStripMenuItem.Checked)
-				setSpeed(3, false);
-			else if (veryFastToolStripMenuItem.Checked)
-				setSpeed(4, false);
-			else if (fullToolStripMenuItem.Checked)
-				setSpeed(5, false);
 		}
 
 		private void zoomToInitialToolStripMenuItem_Click(object sender, EventArgs e)
@@ -762,6 +721,36 @@ namespace BefunExec.View
 			}
 		}
 
+		private void lowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			setSpeed(RunOptions.STANDARDFREQ_1, true);
+		}
+
+		private void middleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			setSpeed(RunOptions.STANDARDFREQ_2, true);
+		}
+
+		private void fastToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			setSpeed(RunOptions.STANDARDFREQ_3, true);
+		}
+
+		private void veryFastToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			setSpeed(RunOptions.STANDARDFREQ_4, true);
+		}
+
+		private void fullToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			setSpeed(RunOptions.STANDARDFREQ_5, true);
+		}
+
+		private void speedFreqBar_ValueChanged(object sender, EventArgs e)
+		{
+			setSpeed(speedFreqBar.Value, false);
+		}
+
 		#endregion
 
 		#region Controls
@@ -788,6 +777,7 @@ namespace BefunExec.View
 		}
 
 		#endregion
+
 	}
 }
 

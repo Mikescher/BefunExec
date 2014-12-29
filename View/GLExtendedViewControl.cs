@@ -198,8 +198,15 @@ namespace BefunExec.View
 			GL.Enable(EnableCap.Texture2D);
 		}
 
-		protected String getFreqFormatted(double freq)
+		public static String getFreqFormatted(double freq, string nan = "NaN", string pi = "MAX", string ni = "MIN")
 		{
+			if (freq == float.PositiveInfinity)
+				return pi;
+			if (freq == float.NegativeInfinity)
+				return ni;
+			if (freq == float.NaN)
+				return nan;
+
 			string pref = "";
 
 			if (freq > 1000)

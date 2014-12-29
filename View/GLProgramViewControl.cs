@@ -6,7 +6,6 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using QuickFont;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -350,6 +349,8 @@ namespace BefunExec.View
 				{
 					double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.decay_raster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.decay_raster[x, y]);
 					decay_perc = Math.Min(1, decay_perc);
+					if (x == prog.PC.X && y == prog.PC.Y)
+						decay_perc = 1;
 
 					double r = prog.breakpoints[x, y] ? decay_perc : 1;
 					double g = prog.breakpoints[x, y] ? 0 : (1 - decay_perc);
@@ -400,6 +401,8 @@ namespace BefunExec.View
 				{
 					double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.decay_raster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.decay_raster[x, y]);
 					decay_perc = Math.Min(1, decay_perc);
+					if (x == prog.PC.X && y == prog.PC.Y)
+						decay_perc = 1;
 
 					double r = prog.breakpoints[x, y] ? decay_perc : 1;
 					double g = prog.breakpoints[x, y] ? 0 : (1 - decay_perc);

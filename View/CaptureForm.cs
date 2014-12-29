@@ -46,7 +46,7 @@ namespace BefunExec.View
 
 		private void run_Count()
 		{
-			prog.curr_lvl_sleeptime = RunOptions.SLEEP_TIME_5;
+			prog.curr_sleeptime_freq = RunOptions.FREQUENCY_SLIDER[15]; // +INF
 			prog.paused = true;
 			Thread.Sleep(250);
 
@@ -84,7 +84,7 @@ namespace BefunExec.View
 		{
 			Vec2i initial = new Vec2i(prog.PC);
 
-			prog.curr_lvl_sleeptime = RunOptions.SLEEP_TIME_5;
+			prog.curr_sleeptime_freq = RunOptions.FREQUENCY_SLIDER[15]; // +INF
 			prog.paused = true;
 			Thread.Sleep(250);
 

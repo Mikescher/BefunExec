@@ -53,7 +53,15 @@ namespace BefunExec.Logic
 		public ConcurrentQueue<char> InputCharacters = new ConcurrentQueue<char>();
 		public ConcurrentQueue<Tuple<long, long, long>> RasterChanges = new ConcurrentQueue<Tuple<long, long, long>>(); // <x, y, char>
 
-		public int curr_lvl_sleeptime;
+		private double _curr_sleeptime_freq;
+		public double curr_sleeptime_freq
+		{
+			get { return _curr_sleeptime_freq; }
+			set { _curr_sleeptime_freq = value; actual_current_sleep_time = (value == float.PositiveInfinity) ? (0.0) : (1000.0 / value); }
+		}
+
+		private double sleep_time_accu = 0;
+		private double actual_current_sleep_time = 0;
 
 		public bool reset_freeze_request = false;
 		public bool reset_freeze_answer = false;
@@ -80,7 +88,7 @@ namespace BefunExec.Logic
 
 			paused = RunOptions.INIT_PAUSED;
 
-			curr_lvl_sleeptime = RunOptions.GetSleep(RunOptions.INIT_SPEED);
+			curr_sleeptime_freq = RunOptions.getRunFrequency();
 		}
 
 		public void run()
@@ -116,7 +124,7 @@ namespace BefunExec.Logic
 					}
 					else
 					{
-						Thread.Sleep(curr_lvl_sleeptime);
+						sleep();
 						decay();
 
 						testForFreeze();
@@ -161,15 +169,25 @@ namespace BefunExec.Logic
 
 				doSingleStep = false;
 
-				sleeptime = (int)Math.Max(0, curr_lvl_sleeptime - (Environment.TickCount - start));
-				if (curr_lvl_sleeptime != 0)
-				{
-					Thread.Sleep(sleeptime);
-				}
+				sleep();
 
 				testForFreeze();
 
 				start = Environment.TickCount;
+			}
+		}
+
+		private void sleep()
+		{
+			if (actual_current_sleep_time != 0)
+			{
+				sleep_time_accu += actual_current_sleep_time;
+
+				if (sleep_time_accu >= 1)
+				{
+					Thread.Sleep((int)sleep_time_accu);
+					sleep_time_accu -= (int)sleep_time_accu;
+				}
 			}
 		}
 
@@ -531,5 +549,9 @@ namespace BefunExec.Logic
 			return c;
 		}
 
+		public double getActualSleepTime()
+		{
+			return actual_current_sleep_time;
+		}
 	}
 }
