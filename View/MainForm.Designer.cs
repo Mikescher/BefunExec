@@ -30,9 +30,9 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.glProgramView = new OpenTK.GLControl();
+			this.glProgramView = new GLProgramViewControl();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.glStackView = new OpenTK.GLControl();
+			this.glStackView = new GLStackViewControl();
 			this.edInputQueque = new System.Windows.Forms.TextBox();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.edInput = new System.Windows.Forms.TextBox();
@@ -776,7 +776,7 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fIleToolStripMenuItem;
-		private OpenTK.GLControl glProgramView;
+		private BefunExec.View.GLProgramViewControl glProgramView;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
@@ -797,7 +797,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
 		private System.Windows.Forms.ToolStripMenuItem zoomToInitialToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem zoomOutToolStripMenuItem;
-		private OpenTK.GLControl glStackView;
+		private BefunExec.View.GLStackViewControl glStackView;
 		private System.Windows.Forms.ToolStripMenuItem showCompleteOutputToolStripMenuItem;
 		private ToolStripRadioButtonMenuItem lowToolStripMenuItem;
 		private ToolStripRadioButtonMenuItem middleToolStripMenuItem;

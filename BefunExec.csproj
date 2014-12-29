@@ -73,6 +73,12 @@
     <Compile Include="GIFEncoder\GifDecoder.cs" />
     <Compile Include="GIFEncoder\LZWEncoder.cs" />
     <Compile Include="GIFEncoder\NeuQuant.cs" />
+    <Compile Include="View\GLExtendedViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\GLProgramViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Logic\BefungeFileHelper.cs" />
     <Compile Include="Logic\BefunProg.cs" />
     <Compile Include="Logic\RunOptions.cs" />
@@ -97,6 +103,9 @@
       <DependentUpon>CaptureForm.cs</DependentUpon>
     </Compile>
     <Compile Include="View\FontRasterSheet.cs" />
+    <Compile Include="View\GLStackViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="View\InteropKeyboard.cs" />
     <Compile Include="View\MainForm.cs">
       <SubType>Form</SubType>
