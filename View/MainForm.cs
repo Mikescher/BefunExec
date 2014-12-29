@@ -59,6 +59,7 @@ namespace BefunExec.View
 			skipNOPsToolStripMenuItem.Checked = RunOptions.SKIP_NOP;
 			debugModeToolStripMenuItem.Checked = RunOptions.DEBUGRUN;
 			showTrailToolStripMenuItem.Checked = RunOptions.SHOW_DECAY;
+			showStackReversedToolStripMenuItem.Checked = RunOptions.SHOW_STACK_REVERSED;
 			setSpeed(RunOptions.RUN_FREQUENCY_IDX, true);
 
 			Application.Idle += Application_Idle;
@@ -254,6 +255,12 @@ namespace BefunExec.View
 			if (isrun && kb[Keys.C])
 				resetBPs();
 
+			if (isrun && kb[Keys.PageUp])
+				incSpeed();
+
+			if (isrun && kb[Keys.PageDown])
+				decSpeed();
+
 			if (isrun && kb[Keys.F])
 				setFollowMode(!RunOptions.FOLLOW_MODE);
 
@@ -432,6 +439,16 @@ namespace BefunExec.View
 				speedFreqBar.Value = freqIdx;
 
 			updateStatusbar();
+		}
+
+		private void incSpeed()
+		{
+			setSpeed(Math.Min(RunOptions.RUN_FREQUENCY_IDX + 1, 15), true);
+		}
+
+		private void decSpeed()
+		{
+			setSpeed(Math.Max(RunOptions.RUN_FREQUENCY_IDX - 1, 0), true);
 		}
 
 		private void setFollowMode(bool v)
@@ -777,6 +794,11 @@ namespace BefunExec.View
 		}
 
 		#endregion
+
+		private void showStackReversedToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RunOptions.SHOW_STACK_REVERSED = showStackReversedToolStripMenuItem.Checked;
+		}
 
 	}
 }

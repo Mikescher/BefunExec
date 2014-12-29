@@ -70,6 +70,22 @@ namespace BefunExec.View
 				currStack.AddRange(prog.Stack);
 			}
 
+			if (RunOptions.SHOW_STACK_REVERSED)
+				renderStackFromTail();
+			else
+				renderStackFromHead();
+
+			#endregion
+
+			#region FINISH
+
+			this.SwapBuffers();
+
+			#endregion
+		}
+
+		private void renderStackFromHead()
+		{
 			float fh = 15 + RenderFont(this.Height, new Vec2d(10f, 15f), "Stack<" + currStack.Count + ">", -1, StackFont, false) * 1.15f;
 			for (int i = 0; i < currStack.Count; i++)
 			{
@@ -85,14 +101,25 @@ namespace BefunExec.View
 				if (fh > 2 * this.Height)
 					break;
 			}
+		}
 
-			#endregion
+		private void renderStackFromTail()
+		{
+			float fh = 15 + RenderFont(this.Height, new Vec2d(10f, 15f), "Stack<" + currStack.Count + ">", -1, StackFont, false) * 1.15f;
+			for (int i = 0; i < currStack.Count; i++)
+			{
+				long val = currStack[currStack.Count - i - 1];
 
-			#region FINISH
+				string sval;
+				if (RunOptions.ASCII_STACK && val >= 32 && val <= 126)
+					sval = string.Format("{0} <{1}>", val, (char)val);
+				else
+					sval = "" + val;
 
-			this.SwapBuffers();
-
-			#endregion
+				fh += RenderFont(this.Height, new Vec2d(10f, fh), sval, -1, StackFont, false) * 1.15f;
+				if (fh > 2 * this.Height)
+					break;
+			}
 		}
 	}
 }

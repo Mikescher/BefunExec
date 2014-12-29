@@ -98,6 +98,12 @@ namespace BefunExec
 			return IsSet(p) && int.TryParse(Parameters[p], out a);
 		}
 
+		public bool IsUInt(string p)
+		{
+			uint a;
+			return IsSet(p) && uint.TryParse(Parameters[p], out a);
+		}
+
 		public bool isEmpty()
 		{
 			return Parameters.Count == 0;

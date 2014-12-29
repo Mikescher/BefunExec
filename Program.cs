@@ -33,13 +33,14 @@ namespace BefunExec
 			Console.WriteLine("Space:         Pause | Resume");
 			Console.WriteLine("Right:         Step Forward");
 
-			Console.WriteLine("Mouse:         Zoom in | Breakpoint");
+			Console.WriteLine("Mouse (Click): Breakpoint");
+			Console.WriteLine("Mouse (Drag):  Zoom in");
 			Console.WriteLine("MouseWheel:    Zoom In/Out");
-			Console.WriteLine("Esc:           Zoom out | Exit");
+			Console.WriteLine("Esc:           Zoom out");
 
 			Console.WriteLine("C:             Remove all breakpoints");
-			Console.WriteLine("R:             Reset");
-			Console.WriteLine("Strg+R:        Reload");
+			Console.WriteLine("R:             Reset program");
+			Console.WriteLine("Strg+R:        Reload file");
 			Console.WriteLine("F:             Follow Cursor Mode");
 			Console.WriteLine("P:             Zoom in on program code");
 
@@ -48,6 +49,8 @@ namespace BefunExec
 			Console.WriteLine("3:             High speed");
 			Console.WriteLine("4:             Very High speed");
 			Console.WriteLine("5:             Full speed");
+			Console.WriteLine("Pg-Up:         Increase Speed");
+			Console.WriteLine("Pg-Down:       Decrease Speed");
 			Console.WriteLine();
 			Console.WriteLine("TAB:           Debug View  (TRY IT OUT !)");
 
@@ -95,6 +98,8 @@ namespace BefunExec
 				Console.WriteLine("s_highlight | highlight    : Set Syntax-Highlighting to [simple]");
 				Console.WriteLine("e_highlight                : Set Syntax-Highlighting to [extended]");
 
+				Console.WriteLine("revstack                   : Show the stack reversed");
+
 				Console.WriteLine("speed=?                    : Set the initial speed (index 0..15)");
 
 				Console.WriteLine("decay=?                    : Time (ms) for the decay effect");
@@ -131,6 +136,11 @@ namespace BefunExec
 
 			//##############
 
+			if (cmda.IsSet("revstack"))
+				RunOptions.SHOW_STACK_REVERSED = true;
+
+			//##############
+
 			if (cmda.IsSet("no_skipnop") || cmda.IsSet("executenop"))
 				RunOptions.SKIP_NOP = false;
 			if (cmda.IsSet("skipnop"))
@@ -159,8 +169,8 @@ namespace BefunExec
 
 			//##############
 
-			if (cmda.IsInt("speed"))
-				RunOptions.RUN_FREQUENCY_IDX = int.Parse(cmda["speed"]) % 15;
+			if (cmda.IsUInt("speed"))
+				RunOptions.RUN_FREQUENCY_IDX = (int)(uint.Parse(cmda["speed"]) % 15);
 
 			//##############
 

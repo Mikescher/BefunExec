@@ -44,6 +44,8 @@ namespace BefunExec.Logic
 
 		public static int SYNTAX_HIGHLIGHTING = SH_EXTENDED;
 		public static bool ASCII_STACK = true;
+		public static bool SHOW_STACK_REVERSED = false;
+
 		public static bool FOLLOW_MODE = false;
 
 		public static string FILEPATH = null;
