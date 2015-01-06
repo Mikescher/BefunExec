@@ -34,5 +34,7 @@ You can download the binaries from my website [www.mikescher.de](http://www.mike
 Set Up
 ======
 
-You need the other [BefunUtils](https://github.com/Mikescher/BefunUtils) projects to run this.  
+*This program was developed under Windows with Visual Studio.*
+
+You need the other [BefunUtils](https://github.com/Mikescher/BefunUtils) projects *(especially BefunHighlight)* to run this.  
 Follow the setup instructions from BefunUtils: [README](https://github.com/Mikescher/BefunUtils/blob/master/README.md)
