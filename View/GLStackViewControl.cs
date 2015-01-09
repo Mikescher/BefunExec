@@ -3,11 +3,8 @@ using BefunExec.View.OpenGL.OGLMath;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using QuickFont;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace BefunExec.View
 {
@@ -42,6 +39,15 @@ namespace BefunExec.View
 			StackFont = new QFont(new Font("Arial", 24));
 			StackFont.Options.DropShadowActive = true;
 			StackFont.Options.Colour = Color4.White;
+
+			loaded = true;
+		}
+
+		public void ReInit(BefunProg p)
+		{
+			loaded = false;
+
+			this.prog = p;
 
 			loaded = true;
 		}

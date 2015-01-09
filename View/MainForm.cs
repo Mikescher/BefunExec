@@ -425,6 +425,7 @@ namespace BefunExec.View
 
 					glProgramView.resetProg(prog, null);
 					prog.undoLog.enabled = RunOptions.ENABLEUNDO;
+					glStackView.ReInit(prog);
 
 					glProgramView.initSyntaxHighlighting();
 
@@ -558,6 +559,7 @@ namespace BefunExec.View
 
 					glProgramView.resetProg(prog, null);
 					prog.undoLog.enabled = RunOptions.ENABLEUNDO;
+					glStackView.ReInit(prog);
 
 					new Thread(new ThreadStart(prog.run)).Start();
 					glProgramView.initSyntaxHighlighting();
