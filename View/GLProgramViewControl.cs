@@ -13,6 +13,9 @@ namespace BefunExec.View
 {
 	public class GLProgramViewControl : GLExtendedViewControl
 	{
+		public DebugTimer updateTimer = new DebugTimer();
+		public DebugTimer renderTimer = new DebugTimer();
+
 		public ZoomController zoom;
 
 		private FontRasterSheet font;
@@ -163,7 +166,7 @@ namespace BefunExec.View
 
 			if (renderDebug)
 			{
-				RenderFont(this.Height, new Vec2d(0f, 00f), String.Format("FPS: {0}", (int)fps.Frequency), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 00f), String.Format("FPS: {0} (U := {1}ms | R := {2}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted(prog.freq.Frequency)), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0}", prog.StepCount), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.getExecutedTime()), -1, DebugFont, true);

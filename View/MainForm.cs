@@ -98,9 +98,17 @@ namespace BefunExec.View
 					QFontViewportState = 0;
 				}
 
-				updateProgramView();
+				glProgramView.updateTimer.Start();
+				{
+					updateProgramView();
+				}
+				glProgramView.updateTimer.Stop();
 
-				glProgramView.DoRender(true, kb.isDown(Keys.Tab), currInput);
+				glProgramView.renderTimer.Start();
+				{
+					glProgramView.DoRender(true, kb.isDown(Keys.Tab), currInput);
+				}
+				glProgramView.renderTimer.Stop();
 
 			}
 
@@ -200,7 +208,6 @@ namespace BefunExec.View
 			if (glProgramView.ContainsFocus)
 				kb.update();
 
-			Rect2i prog_rect = new Rect2i(0, 0, prog.Width, prog.Height);
 			bool isrun = (prog.mode == BefunProg.MODE_RUN);
 
 			#region Keys
@@ -282,8 +289,8 @@ namespace BefunExec.View
 
 			if (isrun && RunOptions.FOLLOW_MODE)
 			{
+				Rect2i prog_rect = new Rect2i(0, 0, prog.Width, prog.Height);
 				Vec2i p = new Vec2i(prog.PC);
-
 				Rect2i z = new Rect2i(p.X - FOLLOW_MODE_RADIUS, p.Y - FOLLOW_MODE_RADIUS, FOLLOW_MODE_RADIUS * 2, FOLLOW_MODE_RADIUS * 2);
 
 				z.ForceInside(prog_rect);

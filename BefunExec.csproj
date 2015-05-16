@@ -121,6 +121,7 @@
     <Compile Include="View\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\OpenGL\DebugTimer.cs" />
     <Compile Include="View\OpenGL\FrequencyCounter.cs" />
     <Compile Include="View\OpenGL\OGLMath\Rect2d.cs" />
     <Compile Include="View\OpenGL\OGLMath\Rect2i.cs" />

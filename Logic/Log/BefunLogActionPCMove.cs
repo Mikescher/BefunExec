@@ -5,7 +5,6 @@ namespace BefunExec.Logic.Log
 	{
 		private readonly int px;
 		private readonly int py;
-		private readonly long vold;
 
 		public BefunLogActionPCMove(int oldx, int oldy)
 		{
