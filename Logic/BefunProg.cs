@@ -21,6 +21,7 @@ namespace BefunExec.Logic
 		public int mode = 0;
 
 		public FrequencyCounter freq = new FrequencyCounter();
+		public DebugTimer logicTimer = new DebugTimer();
 
 		public long[,] raster;
 		public Vec2i decay_raster_last = new Vec2i(-1, -1);
@@ -106,6 +107,9 @@ namespace BefunExec.Logic
 
 			while (running)
 			{
+				logicTimer.Reset();
+				logicTimer.Start();
+
 				paused_cached = paused;
 
 				undoLog.update();
@@ -194,6 +198,8 @@ namespace BefunExec.Logic
 				}
 
 				doSingleStep = false;
+
+				logicTimer.Stop();
 
 				sleep();
 

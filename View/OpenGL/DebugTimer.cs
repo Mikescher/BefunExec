@@ -4,13 +4,14 @@ namespace BefunExec.View
 {
 	public class DebugTimer
 	{
-		private const int MAX_COUNTER = 20;
+		private const int MAX_COUNTER = 10;
 
 		public double Time { get; private set; }
 
 		private long timeSum;
 		private long startTime;
 		private int count;
+		private bool running = false;
 
 		public DebugTimer()
 		{
@@ -21,17 +22,31 @@ namespace BefunExec.View
 
 		public void Start()
 		{
-			count++;
-			startTime = Environment.TickCount;
+			if (!running)
+			{
+				startTime = Environment.TickCount;
+
+				running = true;
+			}
 		}
 
 		public void Stop()
 		{
-			count++;
-			timeSum += Environment.TickCount - startTime;
+			if (running)
+			{
+				count++;
+				timeSum += Environment.TickCount - startTime;
 
-			if (count > MAX_COUNTER)
-				calc();
+				if (count > MAX_COUNTER)
+					calc();
+
+				running = false;
+			}
+		}
+
+		public void Reset()
+		{
+			running = false;
 		}
 
 		private void calc()

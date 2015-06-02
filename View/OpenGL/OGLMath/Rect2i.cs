@@ -8,6 +8,8 @@ namespace BefunExec.View.OpenGL.OGLMath
 		public int Width { get; set; }
 		public int Height { get; set; }
 
+		public int Area { get { return Width * Height; } }
+
 		public Vec2i tl { get { return new Vec2i(position.X, position.Y + Height); } }
 
 		public Vec2i bl { get { return new Vec2i(position.X, position.Y); } }

@@ -13,6 +13,10 @@ namespace BefunExec.View
 {
 	public class GLProgramViewControl : GLExtendedViewControl
 	{
+		public const int MAX_HQ_CELLCOUNT = 16 * 1000;
+		public const int MAX_MQ_CELLCOUNT = 400 * 1000;
+		public const int LQ_CELLCOUNT = 50 * 1000;
+
 		public DebugTimer updateTimer = new DebugTimer();
 		public DebugTimer renderTimer = new DebugTimer();
 
@@ -91,16 +95,22 @@ namespace BefunExec.View
 
 			double offx;
 			double offy;
-			double w;
+			double w; // width & height of an single cell
 			double h;
 			calcProgPos(out offx, out offy, out w, out h);
+
+			int cellcount = zoom.Peek().Width * zoom.Peek().Height;
 
 			#endregion
 
 			#region RENDER
 
-			if (h > 6)
+			int quality = -1;
+
+			if (cellcount < MAX_HQ_CELLCOUNT)
 			{
+				quality = 0;
+
 				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				{
 					Render_HQ_sh(offx, offy, w, h, renderDebug);
@@ -110,16 +120,24 @@ namespace BefunExec.View
 					Render_HQ(offx, offy, w, h);
 				}
 			}
-			else
+			else if (cellcount < MAX_MQ_CELLCOUNT)
 			{
+				quality = 1;
+
 				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				{
-					Render_LQ_sh(offx, offy, w, h);
+					Render_MQ_sh(offx, offy, w, h);
 				}
 				else
 				{
-					Render_LQ(offx, offy, w, h);
+					Render_MQ(offx, offy, w, h);
 				}
+			}
+			else
+			{
+				quality = 2;
+
+				Render_LQ(offx, offy, w, h);
 			}
 
 			#endregion
@@ -166,12 +184,13 @@ namespace BefunExec.View
 
 			if (renderDebug)
 			{
-				RenderFont(this.Height, new Vec2d(0f, 00f), String.Format("FPS: {0} (U := {1}ms | R := {2}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 00f), String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.logicTimer.Time), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted(prog.freq.Frequency)), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0}", prog.StepCount), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.getExecutedTime()), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 80f), String.Format("UndoLog: {0}", prog.undoLog.enabled ? prog.undoLog.size.ToString() : "disabled"), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 100f), getCodeTypeString(), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 100f), String.Format("Rendermode: [{0}] {1} (= {2:#,0} sprites)", quality, (new[] { "High Quality", "Low Quality", "Spritemap" })[quality], cellcount), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 120f), getCodeTypeString(), -1, DebugFont, true);
 			}
 
 			#endregion
@@ -214,6 +233,64 @@ namespace BefunExec.View
 		}
 
 		private void Render_LQ(double offx, double offy, double w, double h)
+		{
+			long now = Environment.TickCount;
+
+			double oldW = w;
+			double oldH = h;
+
+			double targetW = zoom.Peek().Width * w;
+			double targetH = zoom.Peek().Height * h;
+
+			double ratio = (zoom.Peek().Width * 1.0) / zoom.Peek().Height;
+			double frenderH = Math.Sqrt(LQ_CELLCOUNT / ratio);
+			double frenderW = LQ_CELLCOUNT / frenderH;
+
+			int renderW = (int)Math.Ceiling(frenderW);
+			int renderH = (int)Math.Ceiling(frenderH);
+
+			int ox = zoom.Peek().bl.X;
+			int oy = zoom.Peek().bl.Y;
+
+			renderW = Math.Min(prog.Width, ox + renderW) - ox;
+			renderH = Math.Min(prog.Height, oy + renderH) - oy;
+
+			renderW = Math.Min(zoom.Peek().Width, renderW);
+			renderH = Math.Min(zoom.Peek().Height, renderH);
+
+			w = targetW / renderW;
+			h = targetH / renderH;
+
+			double scaleX = w / oldW;
+			double scaleY = h / oldH;
+
+			GL.Disable(EnableCap.Texture2D);
+
+			GL.Begin(BeginMode.Quads);
+
+			long last = 0;
+
+			for (int sx = 0; sx < renderW; sx++)
+			{
+				for (int sy = 0; sy < renderH; sy++)
+				{
+					int x = ox + (int)(sx * scaleX);
+					int y = oy + (int)(sy * scaleY);
+
+					bool docol = last != prog.raster[x, y];
+
+					font.RenderLQ(docol, new Rect2d(offx + sx * w, offy - sy * h + targetH - oldH, w, h), -4, prog[x, y]);
+
+					last = prog.raster[x, y];
+				}
+			}
+
+			GL.End();
+
+			GL.Enable(EnableCap.Texture2D);
+		}
+
+		private void Render_MQ(double offx, double offy, double w, double h)
 		{
 			long now = Environment.TickCount;
 
@@ -261,7 +338,7 @@ namespace BefunExec.View
 			GL.Enable(EnableCap.Texture2D);
 		}
 
-		private void Render_LQ_sh(double offx, double offy, double w, double h)
+		private void Render_MQ_sh(double offx, double offy, double w, double h)
 		{
 			long now = Environment.TickCount;
 
