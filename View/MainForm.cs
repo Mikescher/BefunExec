@@ -378,6 +378,7 @@ namespace BefunExec.View
 					prog.breakpoints[x, y] = false;
 				}
 			}
+			prog.breakpointcount = 0;
 		}
 
 		private void reset()

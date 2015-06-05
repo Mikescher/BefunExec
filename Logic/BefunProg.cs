@@ -27,6 +27,7 @@ namespace BefunExec.Logic
 		public Vec2i decay_raster_last = new Vec2i(-1, -1);
 		public long[,] decay_raster;
 		public bool[,] breakpoints;
+		public int breakpointcount = 0;
 
 		public ulong StepCount = 0; // MAX_ULONG = 18.446.744.073.709.551.615
 
@@ -87,6 +88,7 @@ namespace BefunExec.Logic
 					decay_raster[x, y] = 0;
 					breakpoints[x, y] = false;
 				}
+			breakpointcount = 0;
 
 			dimension = new Vec2i(Width, Height);
 
@@ -608,14 +610,7 @@ namespace BefunExec.Logic
 
 		public int getBreakPointCount()
 		{
-			int c = 0;
-			foreach (var x in breakpoints)
-			{
-				if (x)
-					c++;
-			}
-
-			return c;
+			return breakpointcount;
 		}
 
 		public double getActualSleepTime()

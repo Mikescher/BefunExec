@@ -15,6 +15,7 @@ namespace BefunExec.View
 	{
 		public const int MAX_HQ_CELLCOUNT = 16 * 1000;
 		public const int MAX_MQ_CELLCOUNT = 400 * 1000;
+
 		public const int LQ_CELLCOUNT = 50 * 1000;
 
 		public const int MAX_EXTENDEDSH_SIZE = 3 * 1000 * 1000;
@@ -188,7 +189,7 @@ namespace BefunExec.View
 			{
 				RenderFont(this.Height, new Vec2d(0f, 00f), String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.logicTimer.Time), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted(prog.freq.Frequency)), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0}", prog.StepCount), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0} {1}", prog.StepCount, prog.delta.isZero() ? "(stopped)" : ""), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.getExecutedTime()), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 80f), String.Format("UndoLog: {0}", prog.undoLog.enabled ? prog.undoLog.size.ToString() : "disabled"), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 100f), String.Format("Rendermode: [{0}] {1} (= {2:#,0} sprites)", quality, (new[] { "High Quality", "Low Quality", "Spritemap" })[quality], cellcount), -1, DebugFont, true);
@@ -701,20 +702,18 @@ namespace BefunExec.View
 			double h;
 			calcProgPos(out offx, out offy, out w, out h);
 
-			selx = -1;
-			sely = -1;
+			int iselx = (int)((px - offx + zoom.Peek().bl.X * w) / w);
+			int isely = (int)((py - offy + zoom.Peek().bl.Y * h) / h);
 
-			for (int x = 0; x < prog.Width; x++)
+			if (iselx >= 0 && isely >= 0 && iselx < prog.Width && isely < prog.Height)
 			{
-				for (int y = 0; y < prog.Height; y++)
-				{
-					if (new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + (y - zoom.Peek().bl.Y) * h, w, h).Includes(new Vec2d(px, py)))
-					{
-						selx = x;
-						sely = y;
-						return;
-					}
-				}
+				selx = iselx;
+				sely = isely;
+			}
+			else
+			{
+				selx = -1;
+				sely = -1;
 			}
 		}
 
