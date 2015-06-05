@@ -213,20 +213,15 @@ namespace BefunExec
 				Console.WriteLine("Using Demo ...");
 
 				code = demo;
-				//RunOptions.DEBUGRUN = false; // Please do not debug demo :/
-
-				if (!customHighlight)
-					RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_EXTENDED;
 			}
 			else // succ loaded
 			{
 				RunOptions.FILEPATH = Path.GetFullPath(cmda["file"].Trim('"'));
+			}
 
-				if (!customHighlight)
-				{
-					bool i_w = BefunProg.GetProgWidth(code) <= 80;
-					bool i_h = BefunProg.GetProgHeight(code) <= 80;
-				}
+			if (!customHighlight && BefunProg.GetProgWidth(code) * BefunProg.GetProgHeight(code) > GLProgramViewControl.MAX_EXTENDEDSH_SIZE)
+			{
+				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_SIMPLE;
 			}
 
 			//Console.WriteLine();

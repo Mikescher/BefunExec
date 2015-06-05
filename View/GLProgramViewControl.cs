@@ -17,6 +17,8 @@ namespace BefunExec.View
 		public const int MAX_MQ_CELLCOUNT = 400 * 1000;
 		public const int LQ_CELLCOUNT = 50 * 1000;
 
+		public const int MAX_EXTENDEDSH_SIZE = 3 * 1000 * 1000;
+
 		public DebugTimer updateTimer = new DebugTimer();
 		public DebugTimer renderTimer = new DebugTimer();
 
@@ -723,9 +725,17 @@ namespace BefunExec.View
 			ExtendedSHGraph = null;
 			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 			{
-				ExtendedSHGraph = new BeGraph(prog.Width, prog.Height);
+				if (prog.Width * prog.Height > MAX_EXTENDEDSH_SIZE)
+				{
+					RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_SIMPLE;
+				}
+				else
+				{
+					ExtendedSHGraph = new BeGraph(prog.Width, prog.Height);
+					ExtendedSHGraph.Calculate(BeGraphHelper.parse(prog.raster));
+				}
 
-				ExtendedSHGraph.Calculate(BeGraphHelper.parse(prog.raster));
+
 			}
 		}
 

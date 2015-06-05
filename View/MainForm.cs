@@ -458,6 +458,16 @@ namespace BefunExec.View
 			updateStatusbar();
 		}
 
+		private void setSyntaxHighlighting(int sh, bool recheck)
+		{
+			if (sh == RunOptions.SH_NONE)
+				syntaxHighlighting_noneToolStripMenuItem.Checked = true;
+			if (sh == RunOptions.SH_SIMPLE)
+				syntaxHighlighting_simpleToolStripMenuItem.Checked = true;
+			if (sh == RunOptions.SH_EXTENDED)
+				syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Checked = true;
+		}
+
 		private void incSpeed()
 		{
 			setSpeed(Math.Min(RunOptions.RUN_FREQUENCY_IDX + 1, 15), true);
@@ -562,7 +572,14 @@ namespace BefunExec.View
 
 					prog.running = false;
 
-					prog = new BefunProg(BefunProg.GetProg(init_code));
+					var arrprog = BefunProg.GetProg(init_code);
+
+					if (arrprog.GetLength(0) * arrprog.GetLength(1) > GLProgramViewControl.MAX_EXTENDEDSH_SIZE)
+					{
+						setSyntaxHighlighting(RunOptions.SH_SIMPLE, true);
+					}
+
+					prog = new BefunProg(arrprog);
 
 					glProgramView.resetProg(prog, null);
 					prog.undoLog.enabled = RunOptions.ENABLEUNDO;
