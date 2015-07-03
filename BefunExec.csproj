@@ -54,9 +54,6 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
     <Reference Include="OpenTK.GLControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
-    <Reference Include="QuickFont">
-      <HintPath>lib\QuickFont.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -128,6 +125,7 @@
     <Compile Include="View\OpenGL\OGLMath\Vec2d.cs" />
     <Compile Include="View\OpenGL\OGLMath\Vec2i.cs" />
     <Compile Include="View\OpenGL\OGLTextureSheet.cs" />
+    <Compile Include="View\StringFontRasterSheet.cs" />
     <Compile Include="View\TextDisplayForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,6 +143,8 @@
   <ItemGroup>
     <None Include="Resources\demoProg.txt" />
     <Content Include="icon_BefunExec.ico" />
+    <Content Include="Resources\font.png" />
+    <Content Include="Resources\font_bold.png" />
     <Content Include="Resources\license.txt" />
     <Content Include="Resources\raster.bmp" />
   </ItemGroup>

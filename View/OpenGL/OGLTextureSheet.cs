@@ -32,7 +32,7 @@ namespace BefunExec.View
 
 		public static OGLTextureSheet LoadTextureFromBitmap(Bitmap bmp, int width, int height)
 		{
-			return new OGLTextureSheet(LoadResourceIntoUID(bmp), width, height);
+			return new OGLTextureSheet(LoadResourceIntoUID(bmp, TextureMinFilter.Nearest), width, height);
 		}
 
 		public static OGLTextureSheet LoadTextureFromRessourceID(int id, int width, int height)
@@ -90,7 +90,7 @@ namespace BefunExec.View
 			return id;
 		}
 
-		public static int LoadResourceIntoUID(Bitmap bmp)
+		public static int LoadResourceIntoUID(Bitmap bmp, TextureMinFilter filter)
 		{
 			if (bmp == null)
 				throw new ArgumentException();
@@ -104,8 +104,8 @@ namespace BefunExec.View
 
 			bmp.UnlockBits(bmp_data);
 
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)filter);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)filter);
 
 			return id;
 		}

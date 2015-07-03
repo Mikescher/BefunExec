@@ -4,7 +4,6 @@ using BefunExec.View.OpenGL.OGLMath;
 using BefunHighlight;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using QuickFont;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -30,8 +29,8 @@ namespace BefunExec.View
 		private FontRasterSheet stringfont;
 		private FontRasterSheet bwfont;
 
-		private QFont DebugFont;
-		private QFont BoxFont;
+		private StringFontRasterSheet DebugFont;
+		private StringFontRasterSheet BoxFont;
 
 		public BeGraph ExtendedSHGraph = null;
 		private BefunProg prog;
@@ -53,18 +52,9 @@ namespace BefunExec.View
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 			GL.Disable(EnableCap.CullFace);
 			GL.Disable(EnableCap.DepthTest);
-
-			QFontBuilderConfiguration builderConfig = new QFontBuilderConfiguration(true);
-			builderConfig.ShadowConfig.blurRadius = 1; //reduce blur radius because font is very small
-			builderConfig.TextGenerationRenderHint = TextGenerationRenderHint.ClearTypeGridFit; //best render hint for this font
-
-			DebugFont = new QFont(new Font("Arial", 8));
-			DebugFont.Options.DropShadowActive = true;
-			DebugFont.Options.Colour = Color4.Black;
-
-			BoxFont = new QFont(new Font("Arial", 16));
-			BoxFont.Options.DropShadowActive = true;
-			BoxFont.Options.Colour = Color4.Black;
+            
+		    DebugFont = StringFontRasterSheet.create(Properties.Resources.font_bold, 16, Color.Black);
+			BoxFont = StringFontRasterSheet.create(Properties.Resources.font, 32, Color.Black);
 
 			initSyntaxHighlighting();
 
@@ -176,6 +166,9 @@ namespace BefunExec.View
 				GL.End();
 				GL.Enable(EnableCap.Texture2D);
 
+
+                BoxFont.bind();
+
 				RenderFont(this.Height, new Vec2d(box, boy), "Please enter a " + ((prog.mode == BefunProg.MODE_IN_INT) ? "number" : "character"), -1, BoxFont, true);
 
 				RenderFont(this.Height, new Vec2d(box, boy + 64), currInput, -1, BoxFont, true);
@@ -186,8 +179,10 @@ namespace BefunExec.View
 			#region DEBUG
 
 			if (renderDebug)
-			{
-				RenderFont(this.Height, new Vec2d(0f, 00f), String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.logicTimer.Time), -1, DebugFont, true);
+            {
+                DebugFont.bind();
+
+                RenderFont(this.Height, new Vec2d(0f, 00f), String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.logicTimer.Time), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted(prog.freq.Frequency)), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0} {1}", prog.StepCount, prog.delta.isZero() ? "(stopped)" : ""), -1, DebugFont, true);
 				RenderFont(this.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.getExecutedTime()), -1, DebugFont, true);

@@ -1,7 +1,6 @@
 ﻿using BefunExec.Logic;
 using BefunExec.View.OpenGL.OGLMath;
 using OpenTK.Graphics.OpenGL;
-using QuickFont;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -33,8 +32,6 @@ namespace BefunExec.View
 		private string currInput = "";
 
 		private int currOutputHash = -1;
-
-		private int QFontViewportState = -1; // 0=>glProgram  // 1=>glStack
 
 		#endregion
 
@@ -92,12 +89,6 @@ namespace BefunExec.View
 			{
 				glProgramView.MakeCurrent();
 
-				if (QFontViewportState != 0 && (prog.mode != BefunProg.MODE_RUN || kb.isDown(Keys.Tab))) // Only update when Font is rendered
-				{
-					QFont.InvalidateViewport();
-					QFontViewportState = 0;
-				}
-
 				glProgramView.updateTimer.Start();
 				{
 					updateProgramView();
@@ -115,12 +106,6 @@ namespace BefunExec.View
 			if (glStackView.IsIdle)
 			{
 				glStackView.MakeCurrent();
-
-				if (QFontViewportState != 1)
-				{
-					QFont.InvalidateViewport();
-					QFontViewportState = 1;
-				}
 
 				glStackView.DoRender();
 
@@ -151,7 +136,6 @@ namespace BefunExec.View
 			glProgramView.MakeCurrent();
 
 			GL.Viewport(0, 0, glProgramView.Width, glProgramView.Height);
-			QFont.InvalidateViewport();
 
 			glProgramView.Invalidate();
 		}
@@ -161,7 +145,6 @@ namespace BefunExec.View
 			glStackView.MakeCurrent();
 
 			GL.Viewport(0, 0, glStackView.Width, glStackView.Height);
-			QFont.InvalidateViewport();
 
 			glStackView.Invalidate();
 		}

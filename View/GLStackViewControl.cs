@@ -1,16 +1,14 @@
 ﻿using BefunExec.Logic;
 using BefunExec.View.OpenGL.OGLMath;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using QuickFont;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace BefunExec.View
 {
-	public class GLStackViewControl : GLExtendedViewControl
+    public class GLStackViewControl : GLExtendedViewControl
 	{
-		private QFont StackFont;
+		private StringFontRasterSheet StackFont;
 
 		public List<long> currStack = new List<long>();
 		private BefunProg prog;
@@ -32,13 +30,7 @@ namespace BefunExec.View
 			GL.Disable(EnableCap.CullFace);
 			GL.Disable(EnableCap.DepthTest);
 
-			QFontBuilderConfiguration builderConfig = new QFontBuilderConfiguration(true);
-			builderConfig.ShadowConfig.blurRadius = 1; //reduce blur radius because font is very small
-			builderConfig.TextGenerationRenderHint = TextGenerationRenderHint.ClearTypeGridFit; //best render hint for this font
-
-			StackFont = new QFont(new Font("Arial", 24));
-			StackFont.Options.DropShadowActive = true;
-			StackFont.Options.Colour = Color4.White;
+		    StackFont = StringFontRasterSheet.create(Properties.Resources.font, 24, Color.White);
 
 			loaded = true;
 		}
@@ -75,6 +67,8 @@ namespace BefunExec.View
 			{
 				currStack.AddRange(prog.Stack);
 			}
+
+            StackFont.bind();
 
 			if (RunOptions.SHOW_STACK_REVERSED)
 				renderStackFromTail();

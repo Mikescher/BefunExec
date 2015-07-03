@@ -1,9 +1,9 @@
 ﻿using BefunExec.View.OpenGL.OGLMath;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using QuickFont;
 using System;
 using System.Drawing;
+using BefunExec.View.OpenGL;
 
 namespace BefunExec.View
 {
@@ -12,50 +12,44 @@ namespace BefunExec.View
 		public bool loaded = false;
 
 		protected FrequencyCounter fps = new FrequencyCounter();
+        
+        protected float RenderFont(int CompHeight, Vec2d pos, string text, int distance, StringFontRasterSheet fnt, bool backg)
+        {
+            float h = fnt.Size;
 
-		public GLExtendedViewControl()
-		{
+            if (backg)
+            {
+                float w = fnt.MeasureWidth(text);
+                Rect2d rect = new Rect2d(pos.X, CompHeight - pos.Y - h, w, h);
 
-		}
+                GL.Disable(EnableCap.Texture2D);
+                GL.Begin(BeginMode.Quads);
+                GL.Translate(0, 0, -4);
+                GL.Color4(Color.FromArgb(245, 255, 255, 255));
+                GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
+                GL.Vertex3(rect.bl.X, rect.bl.Y, 0);
+                GL.Vertex3(rect.br.X, rect.br.Y, 0);
+                GL.Vertex3(rect.tr.X, rect.tr.Y, 0);
+                GL.Color3(1.0, 1.0, 1.0);
+                GL.Translate(0, 0, 4);
+                GL.End();
+                GL.Enable(EnableCap.Texture2D);
+            }
+            
+            GL.PushMatrix();
 
-		protected float RenderFont(int CompHeight, Vec2d pos, string text, int distance, QFont fnt, bool backg)
-		{
-			float h = fnt.Measure(text).Height;
+            GL.Translate(0, 0, distance);
 
-			if (backg)
-			{
-				float w = fnt.Measure(text).Width;
-				Rect2d rect = new Rect2d(pos.X, CompHeight - pos.Y - h, w, h);
+            fnt.Print(text, pos.X, CompHeight - pos.Y - h);
 
-				GL.Disable(EnableCap.Texture2D);
-				GL.Begin(BeginMode.Quads);
-				GL.Translate(0, 0, -4);
-				GL.Color4(Color.FromArgb(235, 255, 255, 255));
-				GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
-				GL.Vertex3(rect.bl.X, rect.bl.Y, 0);
-				GL.Vertex3(rect.br.X, rect.br.Y, 0);
-				GL.Vertex3(rect.tr.X, rect.tr.Y, 0);
-				GL.Color3(1.0, 1.0, 1.0);
-				GL.Translate(0, 0, 4);
-				GL.End();
-				GL.Enable(EnableCap.Texture2D);
-			}
+            GL.PopMatrix();
 
-			QFont.Begin();
-			GL.PushMatrix();
+            GL.Color3(1.0, 1.0, 1.0);
 
-			GL.Translate(0, 0, distance);
-			fnt.Print(text, new Vector2((float)pos.X, (float)pos.Y));
+            return h;
+        }
 
-			GL.PopMatrix();
-			QFont.End();
-
-			GL.Color3(1.0, 1.0, 1.0);
-
-			return h;
-		}
-
-		protected void renderPipeHorz(Rect2d renderRect, double insetX_l, double insetX_r, double height)
+        protected void renderPipeHorz(Rect2d renderRect, double insetX_l, double insetX_r, double height)
 		{
 			GL.Disable(EnableCap.Texture2D);
 			GL.Begin(BeginMode.Quads);

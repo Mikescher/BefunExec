@@ -67,7 +67,7 @@ namespace BefunExec.View.OpenGL
 				}
 			}
 
-			return new FontRasterSheet(LoadResourceIntoUID(b), 80, 2, b);
+			return new FontRasterSheet(LoadResourceIntoUID(b, TextureMinFilter.Nearest), 80, 2, b);
 		}
 
 		public Rect2d GetCharCoords(int c)
