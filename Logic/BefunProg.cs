@@ -384,11 +384,13 @@ namespace BefunExec.Logic
 						break;
 					case '/':
 						tmp = pop();
-						push(tmp != 0 ? (pop() / tmp) : 0);
+						tmp2 = pop();
+						push(tmp != 0 ? (tmp2 / tmp) : 0);
 						break;
 					case '%':
 						tmp = pop();
-						push(tmp != 0 ? (pop() % tmp) : 0);
+						tmp2 = pop();
+						push(tmp != 0 ? (tmp2 % tmp) : 0);
 						break;
 					case '!':
 						push(!popBool());
