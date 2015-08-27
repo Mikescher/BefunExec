@@ -840,3 +840,8 @@ namespace BefunExec.View
 //TODO Edit Code Dialog
 //TODO Edit Stack Dialog (?)
 //TODO Move PC (Change Direction) Dialog
+
+//TODO [Low Prio] einzelne Felder zu einem "Watch" Window hinzufügen um ihren Wert zu tracken
+//TODO Conditional Breakpoints
+//TODO Copy Executiontime | Steps | ...
+//TODO Show Avg Frequency (Steps / Exectime)
