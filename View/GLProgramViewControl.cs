@@ -6,6 +6,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 
 namespace BefunExec.View
@@ -881,6 +882,21 @@ namespace BefunExec.View
 
 			if (! keepView)
 			this.zoom = new ZoomController(prog);
+		}
+
+		public string GetExecutionData()
+		{
+			StringBuilder buildr = new StringBuilder();
+
+			buildr.AppendLine(String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.LogicTimer.Time));
+			buildr.AppendLine(String.Format("SPEED: {0}", getFreqFormatted(prog.Freq.Frequency)));
+			buildr.AppendLine(String.Format("STEPS: {0:n0} {1} (Average: {2})", prog.StepCount, prog.Delta.isZero() ? "(stopped)" : "", getFreqFormatted(((double)prog.StepCount / (prog.GetExecutedTime() + 1)) * 1000)));
+			buildr.AppendLine(String.Format("SPEED (avg): {0}", getFreqFormatted((double)prog.StepCount / (prog.GetExecutedTime() + 1))));
+			buildr.AppendLine(String.Format("Time: {0:n0} ms", prog.GetExecutedTime()));
+			buildr.AppendLine(String.Format("UndoLog: {0}", prog.UndoLog.enabled ? prog.UndoLog.size.ToString() : "disabled"));
+			buildr.AppendLine(getCodeTypeString());
+
+			return buildr.ToString();
 		}
 	}
 }

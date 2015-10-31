@@ -863,6 +863,10 @@ namespace BefunExec.View
 				prog.DoSingleUndo = true;
 		}
 
+		private void copyExecutiondataToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(glProgramView.GetExecutionData());
+		}
 	}
 }
 
@@ -872,4 +876,3 @@ namespace BefunExec.View
 
 //TODO [Low Prio] einzelne Felder zu einem "Watch" Window hinzufügen um ihren Wert zu tracken
 //TODO Conditional Breakpoints
-//TODO Copy Executiontime | Steps | ...
