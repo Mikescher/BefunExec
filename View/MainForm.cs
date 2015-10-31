@@ -214,7 +214,7 @@ namespace BefunExec.View
 			{
 				if (prog.Mode == BefunProg.MODE_IN_INT && currInput.Length > 0 && currInput != "-")
 				{
-					prog.push(int.Parse(currInput));
+					prog.Push(int.Parse(currInput));
 					currInput = "";
 					lastInput = null;
 					prog.Mode = BefunProg.MODE_MOVEANDRUN;
@@ -410,7 +410,7 @@ namespace BefunExec.View
 					while (!prog.ResetFreezeAnswer)
 						Thread.Sleep(0);
 					prog.Running = false;
-					Thread.Sleep(250 + (int)prog.getActualSleepTime());
+					Thread.Sleep(250 + (int)prog.GetActualSleepTime());
 
 					prog = new BefunProg(BefunProg.GetProg(init_code));
 
@@ -508,7 +508,7 @@ namespace BefunExec.View
 				toolStripLabelEffectiveSize.Text = String.Format("Effective size: {0}x{1}", '?', '?');
 
 			toolStripLabelZoom.Text = String.Format("Zoom: x{0:0.##}", glProgramView.zoom.getZoomFactor());
-			toolStripLabelBreakpoints.Text = String.Format("Breakpoints: {0}", prog.getBreakPointCount());
+			toolStripLabelBreakpoints.Text = String.Format("Breakpoints: {0}", prog.GetBreakPointCount());
 			toolStripLabelSpeed.Text = String.Format("Speed level: {0:}", GLExtendedViewControl.getFreqFormatted(RunOptions.getRunFrequency()));
 		}
 

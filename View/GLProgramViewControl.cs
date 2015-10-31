@@ -735,7 +735,7 @@ namespace BefunExec.View
 
 		public string getCodeTypeString()
 		{
-			return prog.isBefunge93() ?
+			return prog.IsBefunge93() ?
 				"Befunge-93" :
 				("Befunge-98" + (
 					(RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED &&

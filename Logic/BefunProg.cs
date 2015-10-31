@@ -130,7 +130,7 @@ namespace BefunExec.Logic
 					else if (Mode == MODE_MOVEANDRUN)
 					{
 						UndoLog.startCollecting();
-						Move();
+						Move(true);
 						UndoLog.endCollecting();
 						Mode = MODE_RUN;
 					}
@@ -156,7 +156,7 @@ namespace BefunExec.Logic
 
 					if (Mode == MODE_RUN && (!pausedCached || DoSingleStep))
 					{
-						Move();
+						Move(true);
 						Decay();
 						ConditionalBreak();
 						Debug();
@@ -169,12 +169,10 @@ namespace BefunExec.Logic
 						var skipcount = 0;
 						while (RunOptions.SKIP_NOP && Raster[PC.X, PC.Y] == ' ' && !Stringmode && (!pausedCached || DoSingleStep))
 						{
-							UndoLog.startCollecting();
-							Move();
+							Move(false);
 							Decay();
 							ConditionalBreak();
 							Debug();
-							UndoLog.endCollecting();
 
 							skipcount++;
 							if (skipcount > Width * 2)
@@ -436,7 +434,7 @@ namespace BefunExec.Logic
 						Out(((char)Pop()).ToString());
 						break;
 					case '#':
-						Move();
+						Move(true);
 						break;
 					case 'g':
 						tmp = Pop();
@@ -496,9 +494,9 @@ namespace BefunExec.Logic
 				UndoLog.collectGridChange(posX, posY, old);
 		}
 
-		private void Move()
+		private void Move(bool collect)
 		{
-			UndoLog.collectPCMove(PC.X, PC.Y);
+			if (collect) UndoLog.collectPCMove(PC.X, PC.Y);
 
 			int pcx = (PC.X + Delta.X + dimension.X) % dimension.X;
 			int pcy = (PC.Y + Delta.Y + dimension.Y) % dimension.Y;
