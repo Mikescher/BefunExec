@@ -70,7 +70,7 @@ namespace BefunExec.View.OpenGL
 			return new FontRasterSheet(LoadResourceIntoUID(b, TextureMinFilter.Nearest), 80, 2, b);
 		}
 
-		public Rect2d GetCharCoords(int c)
+		public Rect2d GetCharCoords(long c)
 		{
 			if (!(c >= 0 && 126 >= c))
 			{
@@ -83,7 +83,7 @@ namespace BefunExec.View.OpenGL
 			return GetCoordinates(c);
 		}
 
-		public Vec2i GetCharPos(int c)
+		public Vec2i GetCharPos(long c)
 		{
 			if (!(c >= 0 && 126 >= c))
 			{
@@ -98,7 +98,7 @@ namespace BefunExec.View.OpenGL
 
 		public void Render(Rect2d rect, double distance, long chr)
 		{
-			Rect2d coords = GetCharCoords((int)chr);
+			Rect2d coords = GetCharCoords(chr);
 
 			//##########
 			GL.Begin(BeginMode.Quads);
@@ -123,7 +123,7 @@ namespace BefunExec.View.OpenGL
 
 		public void RenderLQ(bool col, Rect2d rect, double distance, long chr)
 		{
-			Vec2i pos = GetCharPos((int)chr);
+			Vec2i pos = GetCharPos(chr);
 
 			//##########
 			//GL.Begin(BeginMode.Quads);

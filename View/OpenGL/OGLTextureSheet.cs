@@ -40,7 +40,7 @@ namespace BefunExec.View
 			return new OGLTextureSheet(id, width, height);
 		}
 
-		public Rect2d GetCoordinates(int x, int y)
+		public Rect2d GetCoordinates(long x, long y)
 		{
 			if (x >= width || y >= height || x < 0 || y < 0)
 			{
@@ -54,14 +54,14 @@ namespace BefunExec.View
 			return new Rect2d(p, texWidth, texHeight);
 		}
 
-		public Rect2d GetCoordinates(int pos)
+		public Rect2d GetCoordinates(long pos)
 		{
 			return GetCoordinates(pos % width, pos / width);
 		}
 
-		public Vec2i GetPosition(int pos)
+		public Vec2i GetPosition(long pos)
 		{
-			return new Vec2i(pos % width, pos / width);
+			return new Vec2i((int)(pos % width), (int)(pos / width));
 		}
 
 		public void bind()
