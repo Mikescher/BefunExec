@@ -70,7 +70,7 @@ namespace BefunExec
 			Console.WriteLine();
 
 			BefunProg bp = new BefunProg(BefunProg.GetProg(code));
-			new Thread(new ThreadStart(bp.run)).Start();
+			new Thread(new ThreadStart(bp.Run)).Start();
 
 			//MainView mv = new MainView(bp, code);
 			Application.Run(new MainForm(bp, code));

@@ -11,7 +11,7 @@ namespace BefunExec.Logic.Log
 
 		public override void Reverse(BefunProg prog)
 		{
-			prog.stringmode = !prog.stringmode;
+			prog.Stringmode = !prog.Stringmode;
 		}
 	}
 }

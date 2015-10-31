@@ -46,8 +46,8 @@ namespace BefunExec.View
 
 		private void run_Count()
 		{
-			prog.curr_sleeptime_freq = RunOptions.FREQUENCY_SLIDER[15]; // +INF
-			prog.paused = true;
+			prog.CurrSleeptimeFreq = RunOptions.FREQUENCY_SLIDER[15]; // +INF
+			prog.Paused = true;
 			Thread.Sleep(250);
 
 			AnimatedGifEncoder e = new AnimatedGifEncoder();
@@ -64,9 +64,9 @@ namespace BefunExec.View
 
 				e.AddFrame(bmp);
 
-				prog.doSingleStep = true;
+				prog.DoSingleStep = true;
 
-				while (prog.doSingleStep)
+				while (prog.DoSingleStep)
 				{
 					Thread.Sleep(0);
 				}
@@ -84,8 +84,8 @@ namespace BefunExec.View
 		{
 			Vec2i initial = new Vec2i(prog.PC);
 
-			prog.curr_sleeptime_freq = RunOptions.FREQUENCY_SLIDER[15]; // +INF
-			prog.paused = true;
+			prog.CurrSleeptimeFreq = RunOptions.FREQUENCY_SLIDER[15]; // +INF
+			prog.Paused = true;
 			Thread.Sleep(250);
 
 			AnimatedGifEncoder e = new AnimatedGifEncoder();
@@ -95,7 +95,7 @@ namespace BefunExec.View
 
 			int i = 0;
 			Bitmap bmp = null;
-			while (i == 0 || (prog.PC != initial && !prog.delta.isZero()))
+			while (i == 0 || (prog.PC != initial && !prog.Delta.isZero()))
 			{
 				Console.Out.WriteLine("Capture Frame " + i++);
 
@@ -103,9 +103,9 @@ namespace BefunExec.View
 
 				e.AddFrame(bmp);
 
-				prog.doSingleStep = true;
+				prog.DoSingleStep = true;
 
-				while (prog.doSingleStep)
+				while (prog.DoSingleStep)
 				{
 					Thread.Sleep(0);
 				}

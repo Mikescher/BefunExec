@@ -14,7 +14,7 @@ namespace BefunExec.Logic.Log
 
 		public override void Reverse(BefunProg prog)
 		{
-			prog.delta.Set(dx, dy);
+			prog.Delta.Set(dx, dy);
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace BefunExec.Logic.Log
 
 		public override void Reverse(BefunProg prog)
 		{
-			prog.push(stackval, false);
+			prog.Push(stackval, false);
 		}
 	}
 }

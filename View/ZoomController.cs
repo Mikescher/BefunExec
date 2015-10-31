@@ -101,15 +101,15 @@ namespace BefunExec.View
 
 				if (selection.Width == 1 && selection.Height == 1)
 				{
-					if (prog.breakpoints[selection.bl.X, selection.bl.Y])
+					if (prog.Breakpoints[selection.bl.X, selection.bl.Y])
 					{
-						prog.breakpoints[selection.bl.X, selection.bl.Y] = false;
-						prog.breakpointcount--;
+						prog.Breakpoints[selection.bl.X, selection.bl.Y] = false;
+						prog.Breakpointcount--;
 					}
 					else
 					{
-						prog.breakpoints[selection.bl.X, selection.bl.Y] = true;
-						prog.breakpointcount++;
+						prog.Breakpoints[selection.bl.X, selection.bl.Y] = true;
+						prog.Breakpointcount++;
 					}
 				}
 				else if (Math.Abs(selection.Width) > 0 && Math.Abs(selection.Height) > 0)

@@ -59,7 +59,7 @@ namespace BefunExec.View
 			showStackReversedToolStripMenuItem.Checked = RunOptions.SHOW_STACK_REVERSED;
 			enableUndoToolStripMenuItem.Checked = RunOptions.ENABLEUNDO;
 			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
-			prog.undoLog.enabled = RunOptions.ENABLEUNDO;
+			prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
 			setSpeed(RunOptions.RUN_FREQUENCY_IDX, true);
 
 			Application.Idle += Application_Idle;
@@ -71,7 +71,7 @@ namespace BefunExec.View
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			prog.running = false;
+			prog.Running = false;
 			Application.Exit();
 		}
 
@@ -191,7 +191,7 @@ namespace BefunExec.View
 			if (glProgramView.ContainsFocus)
 				kb.update();
 
-			bool isrun = (prog.mode == BefunProg.MODE_RUN);
+			bool isrun = (prog.Mode == BefunProg.MODE_RUN);
 
 			#region Keys
 
@@ -202,9 +202,9 @@ namespace BefunExec.View
 				glProgramView.zoom.Pop();
 			}
 
-			if (isrun && kb[Keys.Space] && prog.mode == BefunProg.MODE_RUN)
+			if (isrun && kb[Keys.Space] && prog.Mode == BefunProg.MODE_RUN)
 			{
-				prog.paused = !prog.paused;
+				prog.Paused = !prog.Paused;
 			}
 
 			if (kb[Keys.Back] && currInput.Length > 0)
@@ -212,20 +212,20 @@ namespace BefunExec.View
 
 			if (kb[Keys.Enter])
 			{
-				if (prog.mode == BefunProg.MODE_IN_INT && currInput.Length > 0 && currInput != "-")
+				if (prog.Mode == BefunProg.MODE_IN_INT && currInput.Length > 0 && currInput != "-")
 				{
 					prog.push(int.Parse(currInput));
 					currInput = "";
 					lastInput = null;
-					prog.mode = BefunProg.MODE_MOVEANDRUN;
+					prog.Mode = BefunProg.MODE_MOVEANDRUN;
 				}
 			}
 
 			if (isrun && kb[Keys.Right])
-				prog.doSingleStep = true;
+				prog.DoSingleStep = true;
 
 			if (isrun && kb[Keys.Left])
-				prog.doSingleUndo = true;
+				prog.DoSingleUndo = true;
 
 			if (isrun && kb[Keys.D1])
 				setSpeed(RunOptions.STANDARDFREQ_1, true);
@@ -299,15 +299,15 @@ namespace BefunExec.View
 
 			#region INPUT
 
-			if (prog.mode != BefunProg.MODE_RUN)
+			if (prog.Mode != BefunProg.MODE_RUN)
 			{
 				if (lastInput != null)
 				{
-					if (prog.mode == BefunProg.MODE_IN_INT && (char.IsDigit(lastInput.Value) || (currInput.Length == 0 && lastInput.Value == '-')))
+					if (prog.Mode == BefunProg.MODE_IN_INT && (char.IsDigit(lastInput.Value) || (currInput.Length == 0 && lastInput.Value == '-')))
 					{
 						currInput += lastInput;
 					}
-					if (prog.mode == BefunProg.MODE_IN_CHAR && currInput.Length == 0)
+					if (prog.Mode == BefunProg.MODE_IN_CHAR && currInput.Length == 0)
 					{
 						// WAIT
 					}
@@ -329,16 +329,16 @@ namespace BefunExec.View
 
 			#region OUTPUT
 
-			int progOHash = prog.simpleOutputHash;
+			int progOHash = prog.SimpleOutputHash;
 
 			if (progOHash != currOutputHash)
 			{
 				currOutputHash = progOHash;
 
 				String s;
-				lock (prog.output)
+				lock (prog.Output)
 				{
-					s = prog.output.ToString();
+					s = prog.Output.ToString();
 				}
 
 				edOutput.Text = s;
@@ -358,17 +358,17 @@ namespace BefunExec.View
 			{
 				for (int y = 0; y < prog.Height; y++)
 				{
-					prog.breakpoints[x, y] = false;
+					prog.Breakpoints[x, y] = false;
 				}
 			}
-			prog.breakpointcount = 0;
+			prog.Breakpointcount = 0;
 		}
 
 		private void reset()
 		{
-			prog.reset_freeze_request = true;
+			prog.ResetFreezeRequest = true;
 
-			while (!prog.reset_freeze_answer)
+			while (!prog.ResetFreezeAnswer)
 				Thread.Sleep(0);
 
 			prog.full_reset(init_code);
@@ -383,7 +383,7 @@ namespace BefunExec.View
 			Console.WriteLine();
 			Console.WriteLine();
 
-			prog.reset_freeze_request = false;
+			prog.ResetFreezeRequest = false;
 		}
 
 		private void reload() // Not sure if threadsafe :-/
@@ -406,21 +406,21 @@ namespace BefunExec.View
 
 					init_code = code;
 
-					prog.reset_freeze_request = true;
-					while (!prog.reset_freeze_answer)
+					prog.ResetFreezeRequest = true;
+					while (!prog.ResetFreezeAnswer)
 						Thread.Sleep(0);
-					prog.running = false;
+					prog.Running = false;
 					Thread.Sleep(250 + (int)prog.getActualSleepTime());
 
 					prog = new BefunProg(BefunProg.GetProg(init_code));
 
 					glProgramView.resetProg(prog, null);
-					prog.undoLog.enabled = RunOptions.ENABLEUNDO;
+					prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
 					glStackView.ReInit(prog);
 
 					glProgramView.initSyntaxHighlighting();
 
-					new Thread(new ThreadStart(prog.run)).Start();
+					new Thread(new ThreadStart(prog.Run)).Start();
 
 					glProgramView.loaded = true;
 				}
@@ -434,7 +434,7 @@ namespace BefunExec.View
 		private void setSpeed(int freqIdx, bool recheck)
 		{
 			RunOptions.RUN_FREQUENCY_IDX = freqIdx;
-			prog.curr_sleeptime_freq = RunOptions.FREQUENCY_SLIDER[freqIdx];
+			prog.CurrSleeptimeFreq = RunOptions.FREQUENCY_SLIDER[freqIdx];
 
 			if (recheck)
 				speedFreqBar.Value = freqIdx;
@@ -493,7 +493,7 @@ namespace BefunExec.View
 			if (inControl)
 			{
 				toolStripLabelPosition.Text = String.Format("Position: ({0:000}|{1:000})", posx, posy);
-				toolStripLabelValue.Text = String.Format("Value: {0:0000}", prog.raster[posx, posy]);
+				toolStripLabelValue.Text = String.Format("Value: {0:0000}", prog.Raster[posx, posy]);
 			}
 			else
 			{
@@ -554,7 +554,7 @@ namespace BefunExec.View
 					init_code = c;
 					RunOptions.FILEPATH = fd.FileName;
 
-					prog.running = false;
+					prog.Running = false;
 
 					var arrprog = BefunProg.GetProg(init_code);
 
@@ -566,10 +566,10 @@ namespace BefunExec.View
 					prog = new BefunProg(arrprog);
 
 					glProgramView.resetProg(prog, null);
-					prog.undoLog.enabled = RunOptions.ENABLEUNDO;
+					prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
 					glStackView.ReInit(prog);
 
-					new Thread(new ThreadStart(prog.run)).Start();
+					new Thread(new ThreadStart(prog.Run)).Start();
 					glProgramView.initSyntaxHighlighting();
 
 					this.Text = fd.FileName + " - " + Program.TITLE;
@@ -619,14 +619,14 @@ namespace BefunExec.View
 
 		private void runToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (prog.mode == BefunProg.MODE_RUN)
-				prog.paused = !prog.paused;
+			if (prog.Mode == BefunProg.MODE_RUN)
+				prog.Paused = !prog.Paused;
 		}
 
 		private void stepToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (prog.mode != BefunProg.MODE_RUN)
-				prog.doSingleStep = true;
+			if (prog.Mode != BefunProg.MODE_RUN)
+				prog.DoSingleStep = true;
 		}
 
 		private void skipNOPsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -680,9 +680,9 @@ namespace BefunExec.View
 		{
 			string s;
 
-			lock (prog.output)
+			lock (prog.Output)
 			{
-				s = prog.output.ToString();
+				s = prog.Output.ToString();
 			}
 
 			new TextDisplayForm("Output", s).ShowDialog();
@@ -696,7 +696,7 @@ namespace BefunExec.View
 			{
 				for (int x = 0; x < prog.Width; x++)
 				{
-					long chr = prog.raster[x, y];
+					long chr = prog.Raster[x, y];
 
 					if (chr < ' ' || chr > '~')
 						chr = ' ';
@@ -824,14 +824,14 @@ namespace BefunExec.View
 		{
 			RunOptions.ENABLEUNDO = enableUndoToolStripMenuItem.Checked;
 
-			prog.undoLog.enabled = RunOptions.ENABLEUNDO;
+			prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
 			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
 		}
 
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (prog.mode == BefunProg.MODE_RUN)
-				prog.doSingleUndo = true;
+			if (prog.Mode == BefunProg.MODE_RUN)
+				prog.DoSingleUndo = true;
 		}
 
 	}
