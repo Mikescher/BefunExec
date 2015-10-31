@@ -873,4 +873,3 @@ namespace BefunExec.View
 //TODO [Low Prio] einzelne Felder zu einem "Watch" Window hinzufügen um ihren Wert zu tracken
 //TODO Conditional Breakpoints
 //TODO Copy Executiontime | Steps | ...
-//TODO Show Avg Frequency (Steps / Exectime)

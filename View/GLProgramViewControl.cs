@@ -182,13 +182,14 @@ namespace BefunExec.View
             {
                 DebugFont.bind();
 
-                RenderFont(this.Height, new Vec2d(0f, 00f), String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.LogicTimer.Time), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 20f), String.Format("SPEED: {0}", getFreqFormatted(prog.Freq.Frequency)), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 40f), String.Format("STEPS: {0:n0} {1}", prog.StepCount, prog.Delta.isZero() ? "(stopped)" : ""), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 60f), String.Format("Time: {0:n0} ms", prog.GetExecutedTime()), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 80f), String.Format("UndoLog: {0}", prog.UndoLog.enabled ? prog.UndoLog.size.ToString() : "disabled"), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 100f), String.Format("Rendermode: [{0}] {1} (= {2:#,0} sprites)", quality, (new[] { "High Quality", "Low Quality", "Spritemap" })[quality], cellcount), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 120f), getCodeTypeString(), -1, DebugFont, true);
+                RenderFont(this.Height, new Vec2d(0f, 00f),  String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.LogicTimer.Time), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 20f),  String.Format("SPEED: {0}", getFreqFormatted(prog.Freq.Frequency)), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 40f),  String.Format("STEPS: {0:n0} {1} (Average: {2})", prog.StepCount, prog.Delta.isZero() ? "(stopped)" : "", getFreqFormatted(((double)prog.StepCount / (prog.GetExecutedTime() + 1))*1000)), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 60f),  String.Format("SPEED (avg): {0}", getFreqFormatted((double)prog.StepCount / (prog.GetExecutedTime() + 1))), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 80f),  String.Format("Time: {0:n0} ms", prog.GetExecutedTime()), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 100f), String.Format("UndoLog: {0}", prog.UndoLog.enabled ? prog.UndoLog.size.ToString() : "disabled"), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 120f), String.Format("Rendermode: [{0}] {1} (= {2:#,0} sprites)", quality, (new[] { "High Quality", "Low Quality", "Spritemap" })[quality], cellcount), -1, DebugFont, true);
+				RenderFont(this.Height, new Vec2d(0f, 140f), getCodeTypeString(), -1, DebugFont, true);
 			}
 
 			#endregion
