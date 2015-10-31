@@ -873,10 +873,12 @@ namespace BefunExec.View
 			return true;
 		}
 
-		public void resetProg(BefunProg p, BeGraph g)
+		public void resetProg(BefunProg p, BeGraph g, bool keepView = false)
 		{
 			this.ExtendedSHGraph = g;
 			this.prog = p;
+
+			if (! keepView)
 			this.zoom = new ZoomController(prog);
 		}
 	}

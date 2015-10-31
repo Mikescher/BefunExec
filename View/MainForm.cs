@@ -404,7 +404,9 @@ namespace BefunExec.View
 				{
 					glProgramView.loaded = false;
 
-					init_code = code;
+					var oldInitCode = BefunProg.GetProg(init_code);
+                    init_code = code;
+					var newInintCode = BefunProg.GetProg(init_code);
 
 					prog.ResetFreezeRequest = true;
 					while (!prog.ResetFreezeAnswer)
@@ -412,10 +414,37 @@ namespace BefunExec.View
 					prog.Running = false;
 					Thread.Sleep(250 + (int)prog.GetActualSleepTime());
 
-					prog = new BefunProg(BefunProg.GetProg(init_code));
+					var oldProg = prog;
 
-					glProgramView.resetProg(prog, null);
+                    prog = new BefunProg(newInintCode);
+
+					var keepView = oldProg.Width == prog.Width && oldProg.Height == prog.Height;
+
+					glProgramView.resetProg(prog, null, keepView);
 					prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
+
+					if (keepView)
+					{
+						for (int x = 0; x < prog.Width; x++)
+							for (int y = 0; y < prog.Height; y++)
+								if (oldInitCode[x, y] == newInintCode[x, y])
+									prog.Raster[x, y] = oldProg.Raster[x, y];
+
+						for (int x = 0; x < prog.Width; x++)
+							for (int y = 0; y < prog.Height; y++)
+								prog.Breakpoints[x, y] = oldProg.Breakpoints[x, y];
+
+						prog.PC = oldProg.PC;
+
+						foreach (var s in oldProg.Stack)
+							prog.Stack.Push(s);
+
+						prog.Stringmode = oldProg.Stringmode;
+						prog.Output.Append(oldProg.Output);
+						prog.SimpleOutputHash = oldProg.SimpleOutputHash;
+					}
+
+
 					glStackView.ReInit(prog);
 
 					glProgramView.initSyntaxHighlighting();
