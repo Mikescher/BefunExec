@@ -23,6 +23,13 @@ namespace BefunExec.View
 			zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
 		}
 
+		public ZoomController(BefunProg p, ZoomController copy)
+		{
+			this.prog = p;
+
+			zoom = new Stack<Rect2i>(copy.zoom.Reverse());
+		}
+
 		public void renderSelection(double offx, double offy, double w, double h)
 		{
 			if (selection != null)

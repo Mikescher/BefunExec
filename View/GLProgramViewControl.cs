@@ -880,8 +880,10 @@ namespace BefunExec.View
 			this.ExtendedSHGraph = g;
 			this.prog = p;
 
-			if (! keepView)
-			this.zoom = new ZoomController(prog);
+			if (keepView)
+				this.zoom = new ZoomController(prog, this.zoom);
+			else
+				this.zoom = new ZoomController(prog);
 		}
 
 		public string GetExecutionData()
