@@ -6,6 +6,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -31,6 +32,7 @@ namespace BefunExec.View
 		private FontRasterSheet bwfont;
 
 		private StringFontRasterSheet DebugFont;
+		private StringFontRasterSheet WatchFont;
 		private StringFontRasterSheet BoxFont;
 
 		public BeGraph ExtendedSHGraph = null;
@@ -54,8 +56,9 @@ namespace BefunExec.View
 			GL.Disable(EnableCap.CullFace);
 			GL.Disable(EnableCap.DepthTest);
             
-		    DebugFont = StringFontRasterSheet.create(Properties.Resources.font_bold, 16, Color.Black);
-			BoxFont = StringFontRasterSheet.create(Properties.Resources.font, 32, Color.Black);
+		    DebugFont = StringFontRasterSheet.Create(Properties.Resources.font_bold, 16, Color.Black);
+			WatchFont = StringFontRasterSheet.Create(Properties.Resources.font_vera, 18, Color.Black);
+			BoxFont = StringFontRasterSheet.Create(Properties.Resources.font, 32, Color.Black);
 
 			initSyntaxHighlighting();
 
@@ -174,6 +177,47 @@ namespace BefunExec.View
 
 				RenderFont(this.Height, new Vec2d(box, boy + 64), currInput, -1, BoxFont, true);
 			}
+
+			#endregion
+
+			#region Watch List
+
+			var wdata = prog.WatchedFields;
+			if (wdata.Any())
+			{
+				WatchFont.bind();
+
+				int ty = 0;
+				foreach (var watch in wdata)
+				{
+					var value = prog.Raster[watch.X, watch.Y];
+					var disp = "??";
+					switch (prog.WatchData[watch.X, watch.Y])
+					{
+
+						case 1:
+							disp = string.Format("{0}", value);
+							break;
+						case 2:
+							disp = string.Format("{0:00000000}", value);
+							break;
+						case 3:
+							disp = (value > '~' || value < ' ') ? "OOB" : ((char)value).ToString();
+							break;
+						case 4:
+							disp = value<0 ? value.ToString() : string.Format("0x{0:X}", value);
+							break;
+						case 5:
+							disp = value < 0 ? value.ToString() : string.Format("0x{0:X8}", value);
+							break;
+						case 6:
+							disp = value < 0 ? value.ToString() : string.Format("0b{0}", Convert.ToString(value, 2).PadLeft(24, '0'));
+							break;
+					}
+					RenderFontBottomUp(new Vec2d(10f, 10f + ty++ * 20f), string.Format("[{0:00}, {1:00}] := {2}", watch.X, watch.Y, disp), -0.9f, WatchFont, true);
+				}
+			}
+
 
 			#endregion
 
@@ -306,13 +350,19 @@ namespace BefunExec.View
 				{
 					double decay_perc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
-					if (!prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decay_perc >= 1)
+					if (prog.WatchData[x, y]==0 && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decay_perc >= 1)
 						continue;
 
 					bool docol = true;
 					if (prog.Breakpoints[x, y])
 					{
 						GL.Color3(0.0, 0.0, 1.0);
+
+						docol = false;
+					}
+					else if (prog.WatchData[x, y] > 0)
+					{
+						GL.Color3(1.0, 0.9, 0.5);
 
 						docol = false;
 					}
@@ -329,7 +379,7 @@ namespace BefunExec.View
 
 					font.RenderLQ(docol, new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
 
-					last = (decay_perc < 0.66 || prog.Breakpoints[x, y]) ? int.MinValue : prog.Raster[x, y];
+					last = (decay_perc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y]>0) ? int.MinValue : prog.Raster[x, y];
 				}
 			}
 
@@ -354,13 +404,19 @@ namespace BefunExec.View
 				{
 					double decay_perc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
-					if (!prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decay_perc >= 1)
+					if (prog.WatchData[x, y] == 0 && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decay_perc >= 1)
 						continue;
 
 					bool docol = true;
 					if (prog.Breakpoints[x, y])
 					{
 						GL.Color3(0.0, 0.0, 1.0);
+
+						docol = false;
+					}
+					else if (prog.WatchData[x, y] > 0)
+					{
+						GL.Color3(1.0, 0.9, 0.5);
 
 						docol = false;
 					}
@@ -405,7 +461,7 @@ namespace BefunExec.View
 
 					font.RenderLQ(docol, new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
 
-					last = (decay_perc < 0.66 || prog.Breakpoints[x, y]) ? int.MinValue : prog.Raster[x, y];
+					last = (decay_perc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y] > 0) ? int.MinValue : prog.Raster[x, y];
 				}
 			}
 
@@ -430,19 +486,39 @@ namespace BefunExec.View
 				{
 					double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
 					decay_perc = Math.Min(1, decay_perc);
+					decay_perc = Math.Max(0, decay_perc);
 					if (x == prog.PC.X && y == prog.PC.Y)
 						decay_perc = 1;
 
-					double r = prog.Breakpoints[x, y] ? decay_perc : 1;
-					double g = prog.Breakpoints[x, y] ? 0 : (1 - decay_perc);
-					double b = prog.Breakpoints[x, y] ? (1 - decay_perc) : (1 - decay_perc);
+					double r;
+					double g;
+					double b;
+
+					if (prog.Breakpoints[x, y])
+					{
+						r = decay_perc;
+						g = 0;
+						b = (1 - decay_perc);
+					}
+					else if (prog.WatchData[x, y] > 0)
+					{
+						r = 1;
+						g = (1 - decay_perc) * 0.9;
+						b = (1 - decay_perc) * 0.5;
+					}
+					else
+					{
+						r = 1;
+						g = 1 - decay_perc;
+						b = 1 - decay_perc;
+					}
 
 					if (p_r != r || p_g != g || p_b != b)
 						GL.Color3(p_r = r, p_g = g, p_b = b);
 
 					Rect2d renderRect = new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h);
 
-					if (prog.Breakpoints[x, y] || decay_perc > 0.25)
+					if (prog.WatchData[x, y] > 0 || prog.Breakpoints[x, y] || decay_perc > 0.25)
 					{
 						if (f_binded != 1)
 							bwfont.bind();
@@ -482,19 +558,39 @@ namespace BefunExec.View
 				{
 					double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
 					decay_perc = Math.Min(1, decay_perc);
+					decay_perc = Math.Max(0, decay_perc);
 					if (x == prog.PC.X && y == prog.PC.Y)
 						decay_perc = 1;
 
-					double r = prog.Breakpoints[x, y] ? decay_perc : 1;
-					double g = prog.Breakpoints[x, y] ? 0 : (1 - decay_perc);
-					double b = prog.Breakpoints[x, y] ? (1 - decay_perc) : (1 - decay_perc);
+					double r;
+					double g;
+					double b;
+
+					if (prog.Breakpoints[x, y])
+					{
+						r = decay_perc;
+						g = 0;
+						b = (1 - decay_perc);
+					}
+					else if (prog.WatchData[x, y] > 0)
+					{
+						r = 1;
+						g = (1 - decay_perc) * 0.9;
+						b = (1 - decay_perc) * 0.5;
+					}
+					else
+					{
+						r = 1;
+						g = 1 - decay_perc;
+						b = 1 - decay_perc;
+					}
 
 					if (p_r != r || p_g != g || p_b != b)
 						GL.Color3(p_r = r, p_g = g, p_b = b);
 
 					Rect2d renderRect = new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h);
 
-					if (prog.Breakpoints[x, y] || decay_perc > 0.25)
+					if (prog.WatchData[x, y] > 0 || prog.Breakpoints[x, y] || decay_perc > 0.25)
 					{
 						if (f_binded != 1)
 							bwfont.bind();

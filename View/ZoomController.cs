@@ -69,19 +69,25 @@ namespace BefunExec.View
 			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
 				return;
 
-			if (e.Button != MouseButtons.Left)
-				return;
-
-
-			if (selx != -1 && sely != -1)
+			if (e.Button == MouseButtons.Middle)
 			{
-				selectionStart = new Vec2i(selx, sely);
-
-				updateSelectionCalculation(selx, sely);
+				if (selx != -1 && sely != -1)
+				{
+					prog.WatchDataChanges.Enqueue(new Vec2i(selx, sely));
+				}
 			}
-			else
+			else if (e.Button == MouseButtons.Left)
 			{
-				selectionStart = null;
+				if (selx != -1 && sely != -1)
+				{
+					selectionStart = new Vec2i(selx, sely);
+
+					updateSelectionCalculation(selx, sely);
+				}
+				else
+				{
+					selectionStart = null;
+				}
 			}
 		}
 

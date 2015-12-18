@@ -82,6 +82,7 @@
 			this.showCompleteStackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showCompleteOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showCurrentStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copyExecutiondataToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.captureGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createHDScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -104,7 +105,8 @@
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabelSpeed = new System.Windows.Forms.ToolStripLabel();
 			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.copyExecutiondataToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelWatchedFields = new System.Windows.Forms.ToolStripLabel();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -609,6 +611,13 @@
 			this.showCurrentStateToolStripMenuItem.Text = "Show current State";
 			this.showCurrentStateToolStripMenuItem.Click += new System.EventHandler(this.showCurrentStateToolStripMenuItem_Click);
 			// 
+			// copyExecutiondataToClipboardToolStripMenuItem
+			// 
+			this.copyExecutiondataToClipboardToolStripMenuItem.Name = "copyExecutiondataToClipboardToolStripMenuItem";
+			this.copyExecutiondataToClipboardToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			this.copyExecutiondataToClipboardToolStripMenuItem.Text = "Copy Executiondata to clipboard";
+			this.copyExecutiondataToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyExecutiondataToClipboardToolStripMenuItem_Click);
+			// 
 			// toolsToolStripMenuItem
 			// 
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -666,6 +675,8 @@
             this.toolStripSeparator5,
             this.toolStripLabelBreakpoints,
             this.toolStripSeparator6,
+            this.toolStripLabelWatchedFields,
+            this.toolStripSeparator8,
             this.toolStripLabelSpeed});
 			this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -781,12 +792,16 @@
 			// 
 			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.menuStrip1);
 			// 
-			// copyExecutiondataToClipboardToolStripMenuItem
+			// toolStripSeparator8
 			// 
-			this.copyExecutiondataToClipboardToolStripMenuItem.Name = "copyExecutiondataToClipboardToolStripMenuItem";
-			this.copyExecutiondataToClipboardToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-			this.copyExecutiondataToClipboardToolStripMenuItem.Text = "Copy Executiondata to clipboard";
-			this.copyExecutiondataToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyExecutiondataToClipboardToolStripMenuItem_Click);
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(6, 23);
+			// 
+			// toolStripLabelWatchedFields
+			// 
+			this.toolStripLabelWatchedFields.Name = "toolStripLabelWatchedFields";
+			this.toolStripLabelWatchedFields.Size = new System.Drawing.Size(97, 15);
+			this.toolStripLabelWatchedFields.Text = "Watched Fields: f";
 			// 
 			// MainForm
 			// 
@@ -899,5 +914,7 @@
 		private System.Windows.Forms.ToolStripMenuItem enableUndoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyExecutiondataToClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelWatchedFields;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 	}
 }

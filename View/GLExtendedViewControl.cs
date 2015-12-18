@@ -13,7 +13,7 @@ namespace BefunExec.View
 
 		protected FrequencyCounter fps = new FrequencyCounter();
         
-        protected float RenderFont(int CompHeight, Vec2d pos, string text, int distance, StringFontRasterSheet fnt, bool backg)
+        protected float RenderFont(int CompHeight, Vec2d pos, string text, float distance, StringFontRasterSheet fnt, bool backg)
         {
             float h = fnt.Size;
 
@@ -47,9 +47,45 @@ namespace BefunExec.View
             GL.Color3(1.0, 1.0, 1.0);
 
             return h;
-        }
+		}
 
-        protected void renderPipeHorz(Rect2d renderRect, double insetX_l, double insetX_r, double height)
+		protected float RenderFontBottomUp(Vec2d pos, string text, float distance, StringFontRasterSheet fnt, bool backg)
+		{
+			float h = fnt.Size;
+
+			if (backg)
+			{
+				float w = fnt.MeasureWidth(text);
+				Rect2d rect = new Rect2d(pos.X, pos.Y, w, h);
+
+				GL.Disable(EnableCap.Texture2D);
+				GL.Begin(BeginMode.Quads);
+				GL.Translate(0, 0, -4);
+				GL.Color4(Color.FromArgb(245, 255, 225, 128));
+				GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
+				GL.Vertex3(rect.bl.X, rect.bl.Y, 0);
+				GL.Vertex3(rect.br.X, rect.br.Y, 0);
+				GL.Vertex3(rect.tr.X, rect.tr.Y, 0);
+				GL.Color3(1.0, 1.0, 1.0);
+				GL.Translate(0, 0, 4);
+				GL.End();
+				GL.Enable(EnableCap.Texture2D);
+			}
+
+			GL.PushMatrix();
+
+			GL.Translate(0, 0, distance);
+
+			fnt.Print(text, pos.X, pos.Y);
+
+			GL.PopMatrix();
+
+			GL.Color3(1.0, 1.0, 1.0);
+
+			return h;
+		}
+
+		protected void renderPipeHorz(Rect2d renderRect, double insetX_l, double insetX_r, double height)
 		{
 			GL.Disable(EnableCap.Texture2D);
 			GL.Begin(BeginMode.Quads);

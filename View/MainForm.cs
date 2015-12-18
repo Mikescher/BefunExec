@@ -20,7 +20,7 @@ namespace BefunExec.View
 
 		#region Fields
 
-		private bool loaded { get { return glStackView.loaded && glProgramView.loaded; } }
+		private bool loaded => glStackView.loaded && glProgramView.loaded;
 
 		private BefunProg prog;
 		private string init_code;
@@ -249,7 +249,10 @@ namespace BefunExec.View
 				reset();
 
 			if (isrun && kb[Keys.C])
-				resetBPs();
+			{
+				ResetBPs();
+				ResetWatched();
+			}
 
 			if (isrun && kb[Keys.PageUp])
 				incSpeed();
@@ -352,7 +355,7 @@ namespace BefunExec.View
 
 		#region Helper
 
-		private void resetBPs()
+		private void ResetBPs()
 		{
 			for (int x = 0; x < prog.Width; x++)
 			{
@@ -362,6 +365,20 @@ namespace BefunExec.View
 				}
 			}
 			prog.Breakpointcount = 0;
+		}
+
+		private void ResetWatched()
+		{
+			for (int x = 0; x < prog.Width; x++)
+			{
+				for (int y = 0; y < prog.Height; y++)
+				{
+					for (int i = 0; i < (7 - prog.WatchData[x, y]) % 7; i++)
+					{
+						prog.WatchDataChanges.Enqueue(new Vec2i(x, y));
+					}
+				}
+			}
 		}
 
 		private void reset()
@@ -432,7 +449,13 @@ namespace BefunExec.View
 
 						for (int x = 0; x < prog.Width; x++)
 							for (int y = 0; y < prog.Height; y++)
+							{
 								prog.Breakpoints[x, y] = oldProg.Breakpoints[x, y];
+								prog.WatchData[x, y] = oldProg.WatchData[x, y];
+							}
+						prog.Breakpointcount = oldProg.Breakpointcount;
+						prog.WatchedFieldsCount = oldProg.WatchedFieldsCount;
+						prog.WatchedFields = oldProg.WatchedFields;
 
 						prog.PC = oldProg.PC;
 
@@ -538,6 +561,7 @@ namespace BefunExec.View
 
 			toolStripLabelZoom.Text = String.Format("Zoom: x{0:0.##}", glProgramView.zoom.getZoomFactor());
 			toolStripLabelBreakpoints.Text = String.Format("Breakpoints: {0}", prog.GetBreakPointCount());
+			toolStripLabelWatchedFields.Text = String.Format("Watched Fields: {0}", prog.WatchedFieldsCount);
 			toolStripLabelSpeed.Text = String.Format("Speed level: {0:}", GLExtendedViewControl.getFreqFormatted(RunOptions.getRunFrequency()));
 		}
 
@@ -675,7 +699,8 @@ namespace BefunExec.View
 
 		private void removeAllBreakpointsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			resetBPs();
+			ResetBPs();
+			ResetWatched();
 		}
 
 		private void showCompleteStackToolStripMenuItem_Click(object sender, EventArgs e)
@@ -874,5 +899,4 @@ namespace BefunExec.View
 //TODO Edit Stack Dialog (?)
 //TODO Move PC (Change Direction) Dialog
 
-//TODO [Low Prio] einzelne Felder zu einem "Watch" Window hinzufügen um ihren Wert zu tracken
 //TODO Conditional Breakpoints

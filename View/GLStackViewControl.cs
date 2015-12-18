@@ -30,7 +30,7 @@ namespace BefunExec.View
 			GL.Disable(EnableCap.CullFace);
 			GL.Disable(EnableCap.DepthTest);
 
-		    StackFont = StringFontRasterSheet.create(Properties.Resources.font, 24, Color.White);
+		    StackFont = StringFontRasterSheet.Create(Properties.Resources.font, 24, Color.White);
 
 			loaded = true;
 		}

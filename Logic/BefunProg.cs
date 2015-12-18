@@ -4,6 +4,7 @@ using BefunExec.View.OpenGL.OGLMath;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -35,6 +36,11 @@ namespace BefunExec.Logic
 		public readonly bool[,] Breakpoints;
 		public int Breakpointcount = 0;
 
+		public ConcurrentQueue<Vec2i> WatchDataChanges = new ConcurrentQueue<Vec2i>();
+		public readonly byte[,] WatchData;
+		public ImmutableList<Vec2i> WatchedFields = ImmutableList<Vec2i>.Empty; 
+		public int WatchedFieldsCount = 0;
+
 		public ulong StepCount = 0; // MAX_ULONG = 18.446.744.073.709.551.615
 
 		private long startTime = -1;
@@ -54,7 +60,6 @@ namespace BefunExec.Logic
 
 		private Vec2i dimension;
 		
-
 		public ConcurrentQueue<char> InputCharacters = new ConcurrentQueue<char>();
 		public ConcurrentQueue<Tuple<long, long, long>> RasterChanges = new ConcurrentQueue<Tuple<long, long, long>>(); // <x, y, char>
 
@@ -81,6 +86,7 @@ namespace BefunExec.Logic
 			Raster = iras;
 			DecayRaster = new long[Width, Height];
 			Breakpoints = new bool[Width, Height];
+			WatchData = new byte[Width, Height];
 
 			for (int x = 0; x < Width; x++)
 				for (int y = 0; y < Height; y++)
@@ -114,6 +120,21 @@ namespace BefunExec.Logic
 				{
 					UndoLog.Reverse(this);
 					DoSingleUndo = false;
+				}
+
+				if (WatchDataChanges.Count > 0)
+				{
+					Vec2i wdc;
+					if (WatchDataChanges.TryDequeue(out wdc))
+					{
+						if (wdc.X >= 0 && wdc.X < Width && wdc.Y >= 0 && wdc.Y < Height)
+						{
+							byte newValue = (byte) ((WatchData[wdc.X, wdc.Y] + 1)%7);
+							WatchData[wdc.X, wdc.Y] = newValue;
+							if (newValue == 1) WatchedFields = WatchedFields.Add(new Vec2i(wdc));
+							if (newValue == 0) WatchedFields = WatchedFields.RemoveAll(p => p == wdc);
+						}
+					}
 				}
 
 				if ((pausedCached && !DoSingleStep) || Mode != MODE_RUN)

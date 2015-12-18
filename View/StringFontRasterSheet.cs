@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Resources;
-using System.Text;
-using BefunExec.Properties;
 using BefunExec.View.OpenGL;
 using BefunExec.View.OpenGL.OGLMath;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace BefunExec.View
@@ -15,24 +10,30 @@ namespace BefunExec.View
     public class StringFontRasterSheet : FontRasterSheet
     {
         public readonly int Size;
-        public float[] CharWidth;
-        public float[] CharStart;
+	    private float[] charWidth;
+	    private float[] charStart;
 
-        public readonly Color FontColor;
+	    private readonly Color fontColor;
 
-        protected StringFontRasterSheet(int id, int w, int h, Bitmap b, int size, Color color)
+	    private StringFontRasterSheet(int id, int w, int h, Bitmap b, int size, Color color, bool mono)
             : base(id, w, h, b)
         {
             Size = size;
-            FontColor = color;
+            fontColor = color;
 
             InitCharSizes(w, h, b);
+
+	        if (mono)
+	        {
+		        float mw = charWidth.Max();
+		        charWidth = Enumerable.Repeat(mw, charWidth.Length).ToArray();
+	        }
         }
 
         private void InitCharSizes(int w, int h, Bitmap b)
         {
-            CharWidth = new float[w*h];
-            CharStart = new float[w*h];
+            charWidth = new float[w*h];
+            charStart = new float[w*h];
             int rw = b.Width/w;
             int rh = b.Width/h;
             for (int i = 0; i < w*h; i++)
@@ -52,8 +53,8 @@ namespace BefunExec.View
 
                 if (start < 0 && end < 0)
                 {
-                    CharStart[i] = 0;
-                    CharWidth[i] = 1f/w;
+                    charStart[i] = 0;
+                    charWidth[i] = 1f/w;
 
                     continue;
                 }
@@ -64,22 +65,30 @@ namespace BefunExec.View
                 start = Math.Max(0, Math.Min(rw - 1, start));
                 end = Math.Max(0, Math.Min(rw - 1, end));
 
-                CharStart[i] = (start*1f/rw)/w;
-                CharWidth[i] = ((end - start)*1f/rw)/w;
+                charStart[i] = (start*1f/rw)/w;
+                charWidth[i] = ((end - start)*1f/rw)/w;
             }
-        }
+		}
 
-        public static StringFontRasterSheet create(Bitmap font, int size, Color color)
-        {
-            Bitmap b = new Bitmap(font);
-            b = b.Clone(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            
-            return new StringFontRasterSheet(LoadResourceIntoUID(b, TextureMinFilter.Linear), 16, 16, b, size, color);
-        }
+		public static StringFontRasterSheet Create(Bitmap font, int size, Color color)
+		{
+			Bitmap b = new Bitmap(font);
+			b = b.Clone(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-        public float MeasureWidth(string text)
+			return new StringFontRasterSheet(LoadResourceIntoUID(b, TextureMinFilter.Linear), 16, 16, b, size, color, false);
+		}
+
+		public static StringFontRasterSheet CreateMonoSpace(Bitmap font, int size, Color color)
+		{
+			Bitmap b = new Bitmap(font);
+			b = b.Clone(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			return new StringFontRasterSheet(LoadResourceIntoUID(b, TextureMinFilter.Linear), 16, 16, b, size, color, true);
+		}
+
+		public float MeasureWidth(string text)
         {
-            return text.ToCharArray().Select(c => CharWidth[c] * width * Size).Sum();
+            return text.ToCharArray().Select(c => charWidth[c] * width * Size).Sum();
         }
 
         public void Print(string text, double posX, double posY)
@@ -90,16 +99,16 @@ namespace BefunExec.View
             float px = (float)posX;
             float py = (float)posY;
 
-            GL.Color4(FontColor.R, FontColor.G, FontColor.B, FontColor.A);
+            GL.Color4(fontColor.R, fontColor.G, fontColor.B, fontColor.A);
 
             foreach (char chr in text)
             {
                 Rect2d coords = GetCoordinates(chr);
 
-                float cstart = (float)coords.bl.X + CharStart[chr];
-                float cend   = cstart + CharWidth[chr];
+                float cstart = (float)coords.bl.X + charStart[chr];
+                float cend   = cstart + charWidth[chr];
 
-                pw = CharWidth[chr] * width * Size;
+                pw = charWidth[chr] * width * Size;
 
                 //##########
                 GL.Begin(BeginMode.Quads);
