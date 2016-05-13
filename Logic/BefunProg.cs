@@ -39,7 +39,6 @@ namespace BefunExec.Logic
 		public ConcurrentQueue<Vec2i> WatchDataChanges = new ConcurrentQueue<Vec2i>();
 		public readonly byte[,] WatchData;
 		public ImmutableList<Vec2i> WatchedFields = ImmutableList<Vec2i>.Empty; 
-		public int WatchedFieldsCount = 0;
 
 		public ulong StepCount = 0; // MAX_ULONG = 18.446.744.073.709.551.615
 

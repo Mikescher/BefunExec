@@ -422,7 +422,7 @@ namespace BefunExec.View
 					glProgramView.loaded = false;
 
 					var oldInitCode = BefunProg.GetProg(init_code);
-                    init_code = code;
+					init_code = code;
 					var newInintCode = BefunProg.GetProg(init_code);
 
 					prog.ResetFreezeRequest = true;
@@ -433,7 +433,7 @@ namespace BefunExec.View
 
 					var oldProg = prog;
 
-                    prog = new BefunProg(newInintCode);
+					prog = new BefunProg(newInintCode);
 
 					var keepView = oldProg.Width == prog.Width && oldProg.Height == prog.Height;
 
@@ -454,7 +454,6 @@ namespace BefunExec.View
 								prog.WatchData[x, y] = oldProg.WatchData[x, y];
 							}
 						prog.Breakpointcount = oldProg.Breakpointcount;
-						prog.WatchedFieldsCount = oldProg.WatchedFieldsCount;
 						prog.WatchedFields = oldProg.WatchedFields;
 
 						prog.PC = oldProg.PC;
@@ -561,7 +560,7 @@ namespace BefunExec.View
 
 			toolStripLabelZoom.Text = String.Format("Zoom: x{0:0.##}", glProgramView.zoom.getZoomFactor());
 			toolStripLabelBreakpoints.Text = String.Format("Breakpoints: {0}", prog.GetBreakPointCount());
-			toolStripLabelWatchedFields.Text = String.Format("Watched Fields: {0}", prog.WatchedFieldsCount);
+			toolStripLabelWatchedFields.Text = String.Format("Watched Fields: {0}", prog.WatchedFields.Count);
 			toolStripLabelSpeed.Text = String.Format("Speed level: {0:}", GLExtendedViewControl.getFreqFormatted(RunOptions.getRunFrequency()));
 		}
 
