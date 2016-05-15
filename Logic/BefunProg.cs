@@ -4,7 +4,6 @@ using BefunExec.View.OpenGL.OGLMath;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -38,7 +37,7 @@ namespace BefunExec.Logic
 
 		public ConcurrentQueue<Vec2i> WatchDataChanges = new ConcurrentQueue<Vec2i>();
 		public readonly byte[,] WatchData;
-		public ImmutableList<Vec2i> WatchedFields = ImmutableList<Vec2i>.Empty; 
+		public List<Vec2i> WatchedFields = new List<Vec2i>(); 
 
 		public ulong StepCount = 0; // MAX_ULONG = 18.446.744.073.709.551.615
 
@@ -130,8 +129,16 @@ namespace BefunExec.Logic
 						{
 							byte newValue = (byte) ((WatchData[wdc.X, wdc.Y] + 1)%7);
 							WatchData[wdc.X, wdc.Y] = newValue;
-							if (newValue == 1) WatchedFields = WatchedFields.Add(new Vec2i(wdc));
-							if (newValue == 0) WatchedFields = WatchedFields.RemoveAll(p => p == wdc);
+							if (newValue == 1)
+							{
+								WatchedFields.Add(new Vec2i(wdc));
+								WatchedFields = new List<Vec2i>(WatchedFields);
+							}
+							if (newValue == 0)
+							{
+								WatchedFields.RemoveAll(p => p == wdc);
+								WatchedFields = new List<Vec2i>(WatchedFields);
+							}
 						}
 					}
 				}
@@ -195,17 +202,13 @@ namespace BefunExec.Logic
 							Debug();
 
 							skipcount++;
-							if (skipcount > Width * 2)
+							if (skipcount > Math.Max(Width, Height) * 2)
 							{
 								err = "Program entered infinite NOP-Loop";
 								Debug();
 								break; // Even when no debug - no infinite loop in this thread
 							}
 						}
-					}
-					else
-					{
-
 					}
 				}
 
