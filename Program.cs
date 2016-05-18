@@ -181,7 +181,7 @@ namespace BefunExec
 			//##############
 
 			if (cmda.IsUInt("speed"))
-				RunOptions.RUN_FREQUENCY_IDX = (int)(uint.Parse(cmda["speed"]) % 15);
+				RunOptions.RUN_FREQUENCY_IDX = (int)(uint.Parse(cmda["speed"]) % 16);
 
 			//##############
 
