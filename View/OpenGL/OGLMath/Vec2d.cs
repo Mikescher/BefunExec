@@ -3,26 +3,26 @@ using System;
 
 namespace BefunExec.View.OpenGL.OGLMath
 {
-	public class Vec2d
+	public class Vec2D
 	{
-		public static Vec2d Zero { get { return new Vec2d(); } private set { } }
+		public static Vec2D Zero { get { return new Vec2D(); } private set { } }
 
 		public double X;
 		public double Y;
 
-		public Vec2d()
+		public Vec2D()
 		{
 			X = 0;
 			Y = 0;
 		}
 
-		public Vec2d(double pX, double pY)
+		public Vec2D(double pX, double pY)
 		{
 			X = pX;
 			Y = pY;
 		}
 
-		public Vec2d(Vec2d v)
+		public Vec2D(Vec2D v)
 		{
 			X = v.X;
 			Y = v.Y;
@@ -30,62 +30,62 @@ namespace BefunExec.View.OpenGL.OGLMath
 
 		#region Operators
 
-		public static implicit operator Vector2d(Vec2d instance)
+		public static implicit operator Vector2d(Vec2D instance)
 		{
 			return new Vector2d(instance.X, instance.Y);
 		}
 
-		public static explicit operator Vec2i(Vec2d instance)
+		public static explicit operator Vec2I(Vec2D instance)
 		{
-			return new Vec2i((int)instance.X, (int)instance.Y);
+			return new Vec2I((int)instance.X, (int)instance.Y);
 		}
 
-		public static Vec2d operator +(Vec2d v1, Vec2d v2)
+		public static Vec2D operator +(Vec2D v1, Vec2D v2)
 		{
-			return new Vec2d(v1.X + v2.X, v1.Y + v2.Y);
+			return new Vec2D(v1.X + v2.X, v1.Y + v2.Y);
 		}
 
-		public static Vec2d operator +(Vec2d v1, double v2)
+		public static Vec2D operator +(Vec2D v1, double v2)
 		{
-			return new Vec2d(v1.X + v2, v1.Y + v2);
+			return new Vec2D(v1.X + v2, v1.Y + v2);
 		}
 
-		public static Vec2d operator -(Vec2d v1, Vec2d v2)
+		public static Vec2D operator -(Vec2D v1, Vec2D v2)
 		{
-			return new Vec2d(v1.X - v2.X, v1.Y - v2.Y);
+			return new Vec2D(v1.X - v2.X, v1.Y - v2.Y);
 		}
 
-		public static Vec2d operator -(Vec2d v1, double v2)
+		public static Vec2D operator -(Vec2D v1, double v2)
 		{
-			return new Vec2d(v1.X - v2, v1.Y - v2);
+			return new Vec2D(v1.X - v2, v1.Y - v2);
 		}
 
-		public static Vec2d operator *(Vec2d v1, Vec2d v2)
+		public static Vec2D operator *(Vec2D v1, Vec2D v2)
 		{
-			return new Vec2d(v1.X * v2.X, v1.Y * v2.Y);
+			return new Vec2D(v1.X * v2.X, v1.Y * v2.Y);
 		}
 
-		public static Vec2d operator *(Vec2d v1, double v2)
+		public static Vec2D operator *(Vec2D v1, double v2)
 		{
-			return new Vec2d(v1.X * v2, v1.Y * v2);
+			return new Vec2D(v1.X * v2, v1.Y * v2);
 		}
 
-		public static Vec2d operator /(Vec2d v1, Vec2d v2)
+		public static Vec2D operator /(Vec2D v1, Vec2D v2)
 		{
-			return new Vec2d(v1.X / v2.X, v1.Y / v2.Y);
+			return new Vec2D(v1.X / v2.X, v1.Y / v2.Y);
 		}
 
-		public static Vec2d operator /(Vec2d v1, double v2)
+		public static Vec2D operator /(Vec2D v1, double v2)
 		{
-			return new Vec2d(v1.X / v2, v1.Y / v2);
+			return new Vec2D(v1.X / v2, v1.Y / v2);
 		}
 
-		public static Vec2d operator -(Vec2d v)
+		public static Vec2D operator -(Vec2D v)
 		{
-			return new Vec2d(-v.X, -v.Y);
+			return new Vec2D(-v.X, -v.Y);
 		}
 
-		public static bool operator ==(Vec2d a, Vec2d b)
+		public static bool operator ==(Vec2D a, Vec2D b)
 		{
 			if ((object)a == null && (object)b == null)
 				return true;
@@ -96,15 +96,15 @@ namespace BefunExec.View.OpenGL.OGLMath
 			return (a.X == b.X && a.Y == b.Y);
 		}
 
-		public static bool operator !=(Vec2d a, Vec2d b)
+		public static bool operator !=(Vec2D a, Vec2D b)
 		{
 			return !(a == b);
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Vec2d)
-				return this == (Vec2d)obj;
+			if (obj is Vec2D)
+				return this == (Vec2D)obj;
 			return false;
 		}
 
@@ -159,7 +159,7 @@ namespace BefunExec.View.OpenGL.OGLMath
 			Y = py;
 		}
 
-		public void rotateAround(Vec2d centerPoint, double rads)
+		public void rotateAround(Vec2D centerPoint, double rads)
 		{
 			double cosTheta = Math.Cos(rads);
 			double sinTheta = Math.Sin(rads);

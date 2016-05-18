@@ -7,7 +7,7 @@ namespace BefunExec.Logic.Log
 
 		public BefunLogActionStackRemove(long val)
 		{
-			this.stackval = val;
+			stackval = val;
 		}
 
 		public override void Reverse(BefunProg prog)

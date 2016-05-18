@@ -1,5 +1,4 @@
-﻿
-namespace BefunExec.Logic.Log
+﻿namespace BefunExec.Logic.Log
 {
 	class BefunLogActionPCMove : BefunLogAction
 	{
@@ -8,8 +7,8 @@ namespace BefunExec.Logic.Log
 
 		public BefunLogActionPCMove(int oldx, int oldy)
 		{
-			this.px = oldx;
-			this.py = oldy;
+			px = oldx;
+			py = oldy;
 		}
 
 		public override void Reverse(BefunProg prog)

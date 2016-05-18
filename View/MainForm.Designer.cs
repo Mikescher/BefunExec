@@ -1,6 +1,6 @@
 ﻿namespace BefunExec.View
 {
-	partial class MainForm
+	sealed partial class MainForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -735,7 +735,7 @@
 			// 
 			this.toolStripLabelEffectiveSize.Name = "toolStripLabelEffectiveSize";
 			this.toolStripLabelEffectiveSize.Size = new System.Drawing.Size(105, 15);
-			this.toolStripLabelEffectiveSize.Text = "Effective size: WxH";
+			this.toolStripLabelEffectiveSize.Text = "Effective Size: WxH";
 			// 
 			// toolStripSeparator7
 			// 

@@ -1,9 +1,10 @@
 ﻿using BefunExec.Properties;
+using BefunExec.View.OpenGL;
 using BefunExec.View.OpenGL.OGLMath;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 
-namespace BefunExec.View.OpenGL
+namespace BefunExec.View
 {
 	public class FontRasterSheet : OGLTextureSheet
 	{
@@ -14,11 +15,11 @@ namespace BefunExec.View.OpenGL
 		{
 			lqTable = new Color[w, h];
 
-			for (int y = 0; y < height; y++)
+			for (int y = 0; y < Height; y++)
 			{
-				for (int x = 0; x < width; x++)
+				for (int x = 0; x < Width; x++)
 				{
-					Rect2i r = new Rect2i(b.Width / w * x, b.Height / h * y, b.Width / w, b.Height / h);
+					Rect2I r = new Rect2I(b.Width / w * x, b.Height / h * y, b.Width / w, b.Height / h);
 
 					for (int tx = r.bl.X; tx < r.tr.X; tx++)
 					{
@@ -43,7 +44,7 @@ namespace BefunExec.View.OpenGL
 
 		private void NOP() { }
 
-		public static FontRasterSheet create(bool color, Color repl, Color background)
+		public static FontRasterSheet Create(bool color, Color repl, Color background)
 		{
 			Bitmap b = new Bitmap(Resources.raster);
 			b = b.Clone(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -70,7 +71,7 @@ namespace BefunExec.View.OpenGL
 			return new FontRasterSheet(LoadResourceIntoUID(b, TextureMinFilter.Nearest), 80, 2, b);
 		}
 
-		public Rect2d GetCharCoords(long c)
+		public Rect2D GetCharCoords(long c)
 		{
 			if (!(c >= 0 && 126 >= c))
 			{
@@ -83,7 +84,7 @@ namespace BefunExec.View.OpenGL
 			return GetCoordinates(c);
 		}
 
-		public Vec2i GetCharPos(long c)
+		public Vec2I GetCharPos(long c)
 		{
 			if (!(c >= 0 && 126 >= c))
 			{
@@ -96,12 +97,12 @@ namespace BefunExec.View.OpenGL
 			return GetPosition(c);
 		}
 
-		public void Render(Rect2d rect, double distance, long chr)
+		public void Render(Rect2D rect, double distance, long chr)
 		{
-			Rect2d coords = GetCharCoords(chr);
+			Rect2D coords = GetCharCoords(chr);
 
 			//##########
-			GL.Begin(BeginMode.Quads);
+			GL.Begin(PrimitiveType.Quads);
 			//##########
 
 			GL.TexCoord2(coords.bl);
@@ -121,12 +122,12 @@ namespace BefunExec.View.OpenGL
 			//##########
 		}
 
-		public void RenderLQ(bool col, Rect2d rect, double distance, long chr)
+		public void RenderLQ(bool col, Rect2D rect, double distance, long chr)
 		{
-			Vec2i pos = GetCharPos(chr);
+			Vec2I pos = GetCharPos(chr);
 
 			//##########
-			//GL.Begin(BeginMode.Quads);
+			//GL.Begin(PrimitiveType.Quads);
 			//##########
 
 			if (col)

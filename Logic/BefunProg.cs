@@ -1,5 +1,5 @@
 ﻿using BefunExec.Logic.Log;
-using BefunExec.View;
+using BefunExec.View.OpenGL;
 using BefunExec.View.OpenGL.OGLMath;
 using System;
 using System.Collections.Concurrent;
@@ -30,14 +30,14 @@ namespace BefunExec.Logic
 		private readonly Random rnd = new Random();
 
 		public long[,] Raster;
-		private readonly Vec2i decayRasterLast = new Vec2i(-1, -1);
+		private readonly Vec2I decayRasterLast = new Vec2I(-1, -1);
 		public readonly long[,] DecayRaster;
 		public readonly bool[,] Breakpoints;
 		public int Breakpointcount = 0;
 
-		public ConcurrentQueue<Vec2i> WatchDataChanges = new ConcurrentQueue<Vec2i>();
+		public readonly ConcurrentQueue<Vec2I> WatchDataChanges = new ConcurrentQueue<Vec2I>();
 		public readonly byte[,] WatchData;
-		public List<Vec2i> WatchedFields = new List<Vec2i>(); 
+		public List<Vec2I> WatchedFields = new List<Vec2I>(); 
 
 		public ulong StepCount = 0; // MAX_ULONG = 18.446.744.073.709.551.615
 
@@ -49,14 +49,14 @@ namespace BefunExec.Logic
 
 		public long this[int x, int y] => Raster[x, y];
 
-		public Vec2i PC = new Vec2i(0, 0);
-		public Vec2i Delta = new Vec2i(1, 0);
+		public Vec2I PC = new Vec2I(0, 0);
+		public Vec2I Delta = new Vec2I(1, 0);
 		public bool Stringmode = false;
 
 		public readonly BefunLog UndoLog = new BefunLog();
 		public readonly Stack<long> Stack = new Stack<long>();
 
-		private Vec2i dimension;
+		private Vec2I dimension;
 		
 		public ConcurrentQueue<char> InputCharacters = new ConcurrentQueue<char>();
 		public ConcurrentQueue<Tuple<long, long, long>> RasterChanges = new ConcurrentQueue<Tuple<long, long, long>>(); // <x, y, char>
@@ -65,7 +65,7 @@ namespace BefunExec.Logic
 		public double CurrSleeptimeFreq
 		{
 			get { return _currSleeptimeFreq; }
-			set { _currSleeptimeFreq = value; actualCurrentSleepTime = (value == float.PositiveInfinity) ? (0.0) : (1000.0 / value); }
+			set { _currSleeptimeFreq = value; actualCurrentSleepTime = double.IsPositiveInfinity(value) ? (0.0) : (1000.0 / value); }
 		}
 
 		private double sleepTimeAccu = 0;
@@ -94,11 +94,11 @@ namespace BefunExec.Logic
 				}
 			Breakpointcount = 0;
 
-			dimension = new Vec2i(Width, Height);
+			dimension = new Vec2I(Width, Height);
 
 			Paused = RunOptions.INIT_PAUSED;
 
-			CurrSleeptimeFreq = RunOptions.getRunFrequency();
+			CurrSleeptimeFreq = RunOptions.GetRunFrequency();
 		}
 
 		public void Run()
@@ -112,7 +112,7 @@ namespace BefunExec.Logic
 
 				var pausedCached = Paused;
 
-				UndoLog.update();
+				UndoLog.Update();
 
 				if (Paused && DoSingleUndo && Mode == MODE_RUN)
 				{
@@ -122,7 +122,7 @@ namespace BefunExec.Logic
 
 				if (WatchDataChanges.Count > 0)
 				{
-					Vec2i wdc;
+					Vec2I wdc;
 					if (WatchDataChanges.TryDequeue(out wdc))
 					{
 						if (wdc.X >= 0 && wdc.X < Width && wdc.Y >= 0 && wdc.Y < Height)
@@ -131,13 +131,13 @@ namespace BefunExec.Logic
 							WatchData[wdc.X, wdc.Y] = newValue;
 							if (newValue == 1)
 							{
-								WatchedFields.Add(new Vec2i(wdc));
-								WatchedFields = new List<Vec2i>(WatchedFields);
+								WatchedFields.Add(new Vec2I(wdc));
+								WatchedFields = new List<Vec2I>(WatchedFields);
 							}
 							if (newValue == 0)
 							{
 								WatchedFields.RemoveAll(p => p == wdc);
-								WatchedFields = new List<Vec2i>(WatchedFields);
+								WatchedFields = new List<Vec2I>(WatchedFields);
 							}
 						}
 					}
@@ -156,9 +156,9 @@ namespace BefunExec.Logic
 					}
 					else if (Mode == MODE_MOVEANDRUN)
 					{
-						UndoLog.startCollecting();
+						UndoLog.StartCollecting();
 						Move(true);
-						UndoLog.endCollecting();
+						UndoLog.EndCollecting();
 						Mode = MODE_RUN;
 					}
 					else
@@ -177,7 +177,7 @@ namespace BefunExec.Logic
 					if (startTime < 0)
 						startTime = Environment.TickCount;
 
-					UndoLog.startCollecting();
+					UndoLog.StartCollecting();
 					Calc();
 					Debug();
 
@@ -189,7 +189,7 @@ namespace BefunExec.Logic
 						Debug();
 					}
 
-					UndoLog.endCollecting();
+					UndoLog.EndCollecting();
 
 					if (Mode == MODE_RUN && (!pausedCached || DoSingleStep))
 					{
@@ -224,7 +224,7 @@ namespace BefunExec.Logic
 
 		private void Sleep()
 		{
-			if (actualCurrentSleepTime != 0)
+			if (actualCurrentSleepTime > 0)
 			{
 				sleepTimeAccu += actualCurrentSleepTime;
 
@@ -275,7 +275,7 @@ namespace BefunExec.Logic
 				else
 				{
 					if (log)
-						UndoLog.collectStackRemove(Stack.Peek());
+						UndoLog.CollectStackRemove(Stack.Peek());
 					return Stack.Pop();
 				}
 			}
@@ -308,7 +308,7 @@ namespace BefunExec.Logic
 				else
 				{
 					if (log)
-						UndoLog.collectStackRemove(Stack.Peek());
+						UndoLog.CollectStackRemove(Stack.Peek());
 					return (Stack.Pop() != 0);
 				}
 			}
@@ -324,7 +324,7 @@ namespace BefunExec.Logic
 			}
 
 			if (log)
-				UndoLog.collectStackAdd();
+				UndoLog.CollectStackAdd();
 		}
 
 		private void Out(string c)
@@ -347,7 +347,7 @@ namespace BefunExec.Logic
 			}
 
 			if (log)
-				UndoLog.collectStackAdd();
+				UndoLog.CollectStackAdd();
 		}
 
 		public long GetExecutedTime()
@@ -436,7 +436,7 @@ namespace BefunExec.Logic
 						break;
 					case '"':
 						Stringmode = !Stringmode;
-						UndoLog.collectChangeStringmode();
+						UndoLog.CollectChangeStringmode();
 						break;
 					case ':':
 						Push(Peek());
@@ -502,7 +502,7 @@ namespace BefunExec.Logic
 
 		private void ChangeDelta(int dx, int dy)
 		{
-			UndoLog.collectDeltaChange(Delta.X, Delta.Y);
+			UndoLog.CollectDeltaChange(Delta.X, Delta.Y);
 
 			Delta.Set(dx, dy);
 		}
@@ -514,12 +514,12 @@ namespace BefunExec.Logic
 			RasterChanges.Enqueue(Tuple.Create(posX, posY, v));
 
 			if (log)
-				UndoLog.collectGridChange(posX, posY, old);
+				UndoLog.CollectGridChange(posX, posY, old);
 		}
 
 		private void Move(bool collect)
 		{
-			if (collect) UndoLog.collectPCMove(PC.X, PC.Y);
+			if (collect) UndoLog.CollectPCMove(PC.X, PC.Y);
 
 			int pcx = (PC.X + Delta.X + dimension.X) % dimension.X;
 			int pcy = (PC.Y + Delta.Y + dimension.Y) % dimension.Y;
@@ -558,7 +558,7 @@ namespace BefunExec.Logic
 		public void full_reset(string code)
 		{
 			Raster = GetProg(code);
-			PC = new Vec2i(0, 0);
+			PC = new Vec2I(0, 0);
 			Paused = true;
 			DoSingleStep = false;
 
@@ -568,13 +568,13 @@ namespace BefunExec.Logic
 					DecayRaster[x, y] = 0;
 				}
 
-			UndoLog.reset();
+			UndoLog.Reset();
 			Stack.Clear();
 			Stringmode = false;
-			Delta = new Vec2i(1, 0);
+			Delta = new Vec2I(1, 0);
 			Mode = MODE_RUN;
 			Running = true;
-			dimension = new Vec2i(Width, Height);
+			dimension = new Vec2I(Width, Height);
 			StepCount = 0;
 			startTime = -1;
 			endTime = -1;

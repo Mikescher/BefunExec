@@ -82,7 +82,7 @@ namespace BefunExec.View
 
 		private void run_Auto()
 		{
-			Vec2i initial = new Vec2i(prog.PC);
+			Vec2I initial = new Vec2I(prog.PC);
 
 			prog.CurrSleeptimeFreq = RunOptions.FREQUENCY_SLIDER[15]; // +INF
 			prog.Paused = true;

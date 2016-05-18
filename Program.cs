@@ -23,7 +23,7 @@ namespace BefunExec
 
 			string code;
 
-			parseParams(args, out code);
+			ParseParams(args, out code);
 
 			Console.WriteLine();
 			Console.WriteLine();
@@ -78,7 +78,7 @@ namespace BefunExec
 			Application.Run(new MainForm(bp, code));
 		}
 
-		private static CommandLineArguments parseParams(string[] args, out string code)
+		private static CommandLineArguments ParseParams(string[] args, out string code)
 		{
 			if (args.Length > 0 && File.Exists(args[0]))
 			{
@@ -196,7 +196,7 @@ namespace BefunExec
 				string[] zooms = cmda["zoom"].Split(','); // zoom=X1,Y1,X2,Y2
 				if (zooms.Length == 4 && zooms.All(p => int.TryParse(p, out tmp)))
 				{
-					RunOptions.INIT_ZOOM = new Rect2i(
+					RunOptions.INIT_ZOOM = new Rect2I(
 						int.Parse(zooms[0]),
 						int.Parse(zooms[1]),
 						int.Parse(zooms[2]) - int.Parse(zooms[0]),

@@ -17,7 +17,7 @@ namespace BefunExec.Logic
 					if (code.Length >= 3 && code[0].StartsWith("CodePiece") && code[1].StartsWith("{") && code.Any(p => p.Trim() == "}"))
 					{
 						int start = 2;
-						int end = code.Select((p, i) => new { Item = p, Index = i }).Where(p => p.Item.Trim() == "}").Last().Index;
+						int end = code.Select((p, i) => new { Item = p, Index = i }).Last(p => p.Item.Trim() == "}").Index;
 
 						code = code.Skip(start).Take(end - start).ToArray();
 					}

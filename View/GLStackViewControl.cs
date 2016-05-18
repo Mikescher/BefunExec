@@ -6,23 +6,23 @@ using System.Drawing;
 
 namespace BefunExec.View
 {
-    public class GLStackViewControl : GLExtendedViewControl
+	public class GLStackViewControl : GLExtendedViewControl
 	{
-		private StringFontRasterSheet StackFont;
+		private StringFontRasterSheet stackFont;
 
-		public List<long> currStack = new List<long>();
+		public readonly List<long> CurrStack = new List<long>();
 		private BefunProg prog;
 
 		public GLStackViewControl()
 		{
-			loaded = false;
+			Loaded = false;
 		}
 
 		public void DoInit(BefunProg p)
 		{
-			this.prog = p;
+			prog = p;
 
-			this.MakeCurrent();
+			MakeCurrent();
 
 			GL.Enable(EnableCap.Texture2D);
 			GL.Enable(EnableCap.Blend);
@@ -30,18 +30,18 @@ namespace BefunExec.View
 			GL.Disable(EnableCap.CullFace);
 			GL.Disable(EnableCap.DepthTest);
 
-		    StackFont = StringFontRasterSheet.Create(Properties.Resources.font, 24, Color.White);
+			stackFont = StringFontRasterSheet.Create(Properties.Resources.font, 24, Color.White);
 
-			loaded = true;
+			Loaded = true;
 		}
 
 		public void ReInit(BefunProg p)
 		{
-			loaded = false;
+			Loaded = false;
 
-			this.prog = p;
+			prog = p;
 
-			loaded = true;
+			Loaded = true;
 		}
 
 		public void DoRender()
@@ -53,7 +53,7 @@ namespace BefunExec.View
 
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
-			GL.Ortho(0.0, this.Width, 0.0, this.Height, 0.0, 4.0);
+			GL.Ortho(0.0, Width, 0.0, Height, 0.0, 4.0);
 
 			GL.Color3(1.0, 1.0, 1.0);
 
@@ -61,54 +61,52 @@ namespace BefunExec.View
 
 			#region STACK
 
-			currStack.Clear();
+			CurrStack.Clear();
 
 			lock (prog.Stack)
 			{
-				currStack.AddRange(prog.Stack);
+				CurrStack.AddRange(prog.Stack);
 			}
 
-            StackFont.bind();
+			stackFont.bind();
 
 			if (RunOptions.SHOW_STACK_REVERSED)
-				renderStackFromTail();
+				RenderStackFromTail();
 			else
-				renderStackFromHead();
+				RenderStackFromHead();
 
 			#endregion
 
 			#region FINISH
 
-			this.SwapBuffers();
+			SwapBuffers();
 
 			#endregion
 		}
 
-		private void renderStackFromHead()
+		private void RenderStackFromHead()
 		{
-			float fh = 15 + RenderFont(this.Height, new Vec2d(10f, 15f), "Stack<" + currStack.Count + ">", -1, StackFont, false) * 1.15f;
-			for (int i = 0; i < currStack.Count; i++)
+			float fh = 15 + RenderFont(Height, new Vec2D(10f, 15f), "Stack<" + CurrStack.Count + ">", -1, stackFont, false) * 1.15f;
+			foreach (long val in CurrStack)
 			{
-				long val = currStack[i];
-
 				string sval;
 				if (RunOptions.ASCII_STACK && val >= 32 && val <= 126)
 					sval = string.Format("{0} <{1}>", val, (char)val);
 				else
 					sval = "" + val;
 
-				fh += RenderFont(this.Height, new Vec2d(10f, fh), sval, -1, StackFont, false) * 1.15f;
-				if (fh > 2 * this.Height)
+				fh += RenderFont(Height, new Vec2D(10f, fh), sval, -1, stackFont, false) * 1.15f;
+				if (fh > 2 * Height)
 					break;
 			}
 		}
 
-		private void renderStackFromTail()
+		private void RenderStackFromTail()
 		{
-			float fh = 15 + RenderFont(this.Height, new Vec2d(10f, 15f), "Stack<" + currStack.Count + ">", -1, StackFont, false) * 1.15f;
-			for (int i = 0; i < currStack.Count; i++)
+			float fh = 15 + RenderFont(Height, new Vec2D(10f, 15f), "Stack<" + CurrStack.Count + ">", -1, stackFont, false) * 1.15f;
+			for (int i = 0; i < CurrStack.Count; i++)
 			{
-				long val = currStack[currStack.Count - i - 1];
+				long val = CurrStack[CurrStack.Count - i - 1];
 
 				string sval;
 				if (RunOptions.ASCII_STACK && val >= 32 && val <= 126)
@@ -116,8 +114,8 @@ namespace BefunExec.View
 				else
 					sval = "" + val;
 
-				fh += RenderFont(this.Height, new Vec2d(10f, fh), sval, -1, StackFont, false) * 1.15f;
-				if (fh > 2 * this.Height)
+				fh += RenderFont(Height, new Vec2D(10f, fh), sval, -1, stackFont, false) * 1.15f;
+				if (fh > 2 * Height)
 					break;
 			}
 		}

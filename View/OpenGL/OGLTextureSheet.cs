@@ -4,19 +4,19 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace BefunExec.View
+namespace BefunExec.View.OpenGL
 {
 	public class OGLTextureSheet
 	{
-		private int texID;
+		private readonly int texID;
 
-		protected int width; // texturecount X-Axis
-		protected int height; // texturecount Y-Axis
+		protected readonly int Width; // texturecount X-Axis
+		protected readonly int Height; // texturecount Y-Axis
 
 		protected OGLTextureSheet(int id, int w, int h)
 		{
-			this.width = w;
-			this.height = h;
+			this.Width = w;
+			this.Height = h;
 			this.texID = id;
 		}
 
@@ -40,28 +40,28 @@ namespace BefunExec.View
 			return new OGLTextureSheet(id, width, height);
 		}
 
-		public Rect2d GetCoordinates(long x, long y)
+		public Rect2D GetCoordinates(long x, long y)
 		{
-			if (x >= width || y >= height || x < 0 || y < 0)
+			if (x >= Width || y >= Height || x < 0 || y < 0)
 			{
-				throw new ArgumentException(String.Format("X:{0}, Y:{1}, W:{2}, H:{3}", x, y, width, height));
+				throw new ArgumentException(String.Format("X:{0}, Y:{1}, W:{2}, H:{3}", x, y, Width, Height));
 			}
-			double texWidth = 1.0 / width;
-			double texHeight = 1.0 / height;
+			double texWidth = 1.0 / Width;
+			double texHeight = 1.0 / Height;
 
-			Vec2d p = new Vec2d(texWidth * x, texHeight * y);
+			Vec2D p = new Vec2D(texWidth * x, texHeight * y);
 
-			return new Rect2d(p, texWidth, texHeight);
+			return new Rect2D(p, texWidth, texHeight);
 		}
 
-		public Rect2d GetCoordinates(long pos)
+		public Rect2D GetCoordinates(long pos)
 		{
-			return GetCoordinates(pos % width, pos / width);
+			return GetCoordinates(pos % Width, pos / Width);
 		}
 
-		public Vec2i GetPosition(long pos)
+		public Vec2I GetPosition(long pos)
 		{
-			return new Vec2i((int)(pos % width), (int)(pos / width));
+			return new Vec2I((int)(pos % Width), (int)(pos / Width));
 		}
 
 		public void bind()
@@ -71,18 +71,18 @@ namespace BefunExec.View
 
 		public static int LoadResourceIntoUID(string filename)
 		{
-			if (String.IsNullOrEmpty(filename))
+			if (string.IsNullOrEmpty(filename))
 				throw new ArgumentException(filename);
 
 			int id = GL.GenTexture();
 			GL.BindTexture(TextureTarget.Texture2D, id);
 
 			Bitmap bmp = new Bitmap(filename);
-			BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp_data.Width, bmp_data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0);
+			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmpData.Width, bmpData.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
 
-			bmp.UnlockBits(bmp_data);
+			bmp.UnlockBits(bmpData);
 
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
@@ -98,11 +98,11 @@ namespace BefunExec.View
 			int id = GL.GenTexture();
 			GL.BindTexture(TextureTarget.Texture2D, id);
 
-			BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp_data.Width, bmp_data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0);
+			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmpData.Width, bmpData.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
 
-			bmp.UnlockBits(bmp_data);
+			bmp.UnlockBits(bmpData);
 
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)filter);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)filter);

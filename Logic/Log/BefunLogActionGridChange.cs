@@ -1,5 +1,4 @@
-﻿
-namespace BefunExec.Logic.Log
+﻿namespace BefunExec.Logic.Log
 {
 	public class BefunLogActionGridChange : BefunLogAction
 	{
@@ -9,9 +8,9 @@ namespace BefunExec.Logic.Log
 
 		public BefunLogActionGridChange(long x, long y, long oldvalue)
 		{
-			this.px = x;
-			this.py = y;
-			this.vold = oldvalue;
+			px = x;
+			py = y;
+			vold = oldvalue;
 		}
 
 		public override void Reverse(BefunProg prog)

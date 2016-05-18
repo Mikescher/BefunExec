@@ -9,7 +9,7 @@ namespace BefunExec.Logic
 		public const int SH_EXTENDED = 2;
 
 		public static bool INIT_PAUSED = true;
-		public static Rect2i INIT_ZOOM = null;
+		public static Rect2I INIT_ZOOM = null;
 
 		public static readonly double[] FREQUENCY_SLIDER = 
 		{
@@ -55,7 +55,7 @@ namespace BefunExec.Logic
 		public static bool ENABLEUNDO = false;
 		public static bool DEBUGRUN = false;
 
-		public static double getRunFrequency()
+		public static double GetRunFrequency()
 		{
 			return FREQUENCY_SLIDER[RUN_FREQUENCY_IDX];
 		}

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BefunExec.View
+namespace BefunExec.View.OpenGL
 {
 	public class DebugTimer
 	{

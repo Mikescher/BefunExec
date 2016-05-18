@@ -11,34 +11,34 @@ namespace BefunExec.View
 {
 	public class ZoomController
 	{
-		private Vec2i selectionStart = null;
-		private Rect2i selection = null;
-		public Stack<Rect2i> zoom = new Stack<Rect2i>();
+		private Vec2I selectionStart = null;
+		private Rect2I selection = null;
+		private readonly Stack<Rect2I> zoom = new Stack<Rect2I>();
 
 		private readonly BefunProg prog;
 
 		public ZoomController(BefunProg p)
 		{
-			this.prog = p;
-			zoom.Push(new Rect2i(0, 0, prog.Width, prog.Height));
+			prog = p;
+			zoom.Push(new Rect2I(0, 0, prog.Width, prog.Height));
 		}
 
 		public ZoomController(BefunProg p, ZoomController copy)
 		{
-			this.prog = p;
+			prog = p;
 
-			zoom = new Stack<Rect2i>(copy.zoom.Reverse());
+			zoom = new Stack<Rect2I>(copy.zoom.Reverse());
 		}
 
-		public void renderSelection(double offx, double offy, double w, double h)
+		public void RenderSelection(double offx, double offy, double w, double h)
 		{
 			if (selection != null)
 			{
-				Rect2d rect = new Rect2d(offx + ((selection.tl.X) - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - ((selection.tl.Y - 1) - zoom.Peek().bl.Y)) * h, selection.Width * w, selection.Height * h);
+				Rect2D rect = new Rect2D(offx + ((selection.tl.X) - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - ((selection.tl.Y - 1) - zoom.Peek().bl.Y)) * h, selection.Width * w, selection.Height * h);
 
 				GL.Disable(EnableCap.Texture2D);
 
-				GL.Begin(BeginMode.LineLoop);
+				GL.Begin(PrimitiveType.LineLoop);
 				GL.Translate(0, 0, -3);
 				GL.Color4(Color.Black);
 				GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
@@ -49,7 +49,7 @@ namespace BefunExec.View
 				GL.Translate(0, 0, 3);
 				GL.End();
 
-				GL.Begin(BeginMode.Quads);
+				GL.Begin(PrimitiveType.Quads);
 				GL.Translate(0, 0, -4);
 				GL.Color4(0.0, 0.0, 0.0, 0.5);
 				GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
@@ -73,16 +73,16 @@ namespace BefunExec.View
 			{
 				if (selx != -1 && sely != -1)
 				{
-					prog.WatchDataChanges.Enqueue(new Vec2i(selx, sely));
+					prog.WatchDataChanges.Enqueue(new Vec2I(selx, sely));
 				}
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
 				if (selx != -1 && sely != -1)
 				{
-					selectionStart = new Vec2i(selx, sely);
+					selectionStart = new Vec2I(selx, sely);
 
-					updateSelectionCalculation(selx, sely);
+					UpdateSelectionCalculation(selx, sely);
 				}
 				else
 				{
@@ -99,7 +99,7 @@ namespace BefunExec.View
 
 			if (selectionStart != null)
 			{
-				updateSelectionCalculation(selx, sely);
+				UpdateSelectionCalculation(selx, sely);
 			}
 		}
 
@@ -110,7 +110,9 @@ namespace BefunExec.View
 
 			if (selectionStart != null)
 			{
-				updateSelectionCalculation(selx, sely);
+				UpdateSelectionCalculation(selx, sely);
+
+				if (selection == null) return;
 
 				if (selection.Width == 1 && selection.Height == 1)
 				{
@@ -144,18 +146,18 @@ namespace BefunExec.View
 			for (int i = 0; i < Math.Abs(e.Delta); i += 120)
 			{
 				if (e.Delta > 0)
-					zoomIn();
+					ZoomIn();
 				else if (e.Delta < 0)
-					zoomOut();
+					ZoomOut();
 			}
 		}
 
-		private void zoomIn()
+		private void ZoomIn()
 		{
 			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
 				return;
 
-			Rect2i z = new Rect2i(zoom.Peek());
+			Rect2I z = new Rect2I(zoom.Peek());
 
 			int dx = z.Width / 10;
 			int dy = z.Height / 10;
@@ -197,12 +199,12 @@ namespace BefunExec.View
 			zoom.Push(z);
 		}
 
-		private void zoomOut()
+		private void ZoomOut()
 		{
 			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
 				return;
 
-			Rect2i z = new Rect2i(zoom.Peek());
+			Rect2I z = new Rect2I(zoom.Peek());
 
 			int dx = z.Width / 10;
 			int dy = z.Height / 10;
@@ -216,7 +218,7 @@ namespace BefunExec.View
 			z.TrimHorizontal(-dx);
 			z.TrimVertical(-dy);
 
-			z.ForceInside(new Rect2i(0, 0, prog.Width, prog.Height));
+			z.ForceInside(new Rect2I(0, 0, prog.Width, prog.Height));
 
 
 			if (zoom.Count > 1)
@@ -224,12 +226,12 @@ namespace BefunExec.View
 			zoom.Push(z);
 		}
 
-		public double getZoomFactor()
+		public double GetZoomFactor()
 		{
-			return Math.Min(prog.Width * 1.0 / this.zoom.Peek().Width, prog.Height * 1.0 / this.zoom.Peek().Height);
+			return Math.Min(prog.Width * 1.0 / zoom.Peek().Width, prog.Height * 1.0 / zoom.Peek().Height);
 		}
 
-		private void updateSelectionCalculation(int mouseX, int mouseY)
+		private void UpdateSelectionCalculation(int mouseX, int mouseY)
 		{
 			if (mouseX != -1 && mouseY != -1)
 			{
@@ -238,16 +240,16 @@ namespace BefunExec.View
 				int b = Math.Min(mouseY, selectionStart.Y);
 				int t = Math.Max(mouseY, selectionStart.Y);
 
-				selection = new Rect2i(new Vec2i(l, b), new Vec2i(r + 1, t + 1));
+				selection = new Rect2I(new Vec2I(l, b), new Vec2I(r + 1, t + 1));
 			}
 		}
 
-		public Rect2i Peek()
+		public Rect2I Peek()
 		{
 			return zoom.Peek();
 		}
 
-		public Rect2i Pop()
+		public Rect2I Pop()
 		{
 			if (Count() > 1)
 				return zoom.Pop();
@@ -272,7 +274,7 @@ namespace BefunExec.View
 			zoom.Clear();
 		}
 
-		public void Push(Rect2i rect)
+		public void Push(Rect2I rect)
 		{
 			if (rect == null || rect.bl.X < 0 || rect.bl.Y < 0 || rect.tr.X > prog.Width || rect.tr.Y > prog.Height)
 				return;

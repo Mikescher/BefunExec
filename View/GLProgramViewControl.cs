@@ -14,75 +14,75 @@ namespace BefunExec.View
 {
 	public class GLProgramViewControl : GLExtendedViewControl
 	{
-		public const int MAX_HQ_CELLCOUNT = 16 * 1000;
-		public const int MAX_MQ_CELLCOUNT = 400 * 1000;
+		private const int MAX_HQ_CELLCOUNT = 16 * 1000;
+		private const int MAX_MQ_CELLCOUNT = 400 * 1000;
 
-		public const int LQ_CELLCOUNT = 50 * 1000;
+		private const int LQ_CELLCOUNT = 50 * 1000;
 
 		public const int MAX_EXTENDEDSH_SIZE = 3 * 1000 * 1000;
 
-		public DebugTimer updateTimer = new DebugTimer();
-		public DebugTimer renderTimer = new DebugTimer();
+		public readonly DebugTimer UpdateTimer = new DebugTimer();
+		public readonly DebugTimer RenderTimer = new DebugTimer();
 
-		public ZoomController zoom;
+		public ZoomController Zoom;
 
 		private FontRasterSheet font;
-		private FontRasterSheet nop_font;
+		private FontRasterSheet nopFont;
 		private FontRasterSheet stringfont;
 		private FontRasterSheet bwfont;
 
-		private StringFontRasterSheet DebugFont;
-		private StringFontRasterSheet WatchFont;
-		private StringFontRasterSheet BoxFont;
+		private StringFontRasterSheet debugFont;
+		private StringFontRasterSheet watchFont;
+		private StringFontRasterSheet boxFont;
 
 		public BeGraph ExtendedSHGraph = null;
 		private BefunProg prog;
 
 		public GLProgramViewControl()
 		{
-			loaded = false;
+			Loaded = false;
 		}
 
 		public void DoInit(BefunProg p)
 		{
-			this.prog = p;
-			this.zoom = new ZoomController(prog);
+			prog = p;
+			Zoom = new ZoomController(prog);
 
-			this.MakeCurrent();
+			MakeCurrent();
 
 			GL.Enable(EnableCap.Texture2D);
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 			GL.Disable(EnableCap.CullFace);
 			GL.Disable(EnableCap.DepthTest);
-            
-		    DebugFont = StringFontRasterSheet.Create(Properties.Resources.font_bold, 16, Color.Black);
-			WatchFont = StringFontRasterSheet.Create(Properties.Resources.font_vera, 18, Color.Black);
-			BoxFont = StringFontRasterSheet.Create(Properties.Resources.font, 32, Color.Black);
+			
+			debugFont = StringFontRasterSheet.Create(Properties.Resources.font_bold, 16, Color.Black);
+			watchFont = StringFontRasterSheet.Create(Properties.Resources.font_vera, 18, Color.Black);
+			boxFont = StringFontRasterSheet.Create(Properties.Resources.font, 32, Color.Black);
 
-			initSyntaxHighlighting();
+			InitSyntaxHighlighting();
 
-			stringfont = FontRasterSheet.create(false, Color.DarkGreen, Color.FromArgb(212, 255, 212));
-			nop_font = FontRasterSheet.create(false, Color.Black, Color.FromArgb(244, 244, 244)); //TODO CHR(0) stay gray
-			bwfont = FontRasterSheet.create(false, Color.Black, Color.White);
+			stringfont = FontRasterSheet.Create(false, Color.DarkGreen, Color.FromArgb(212, 255, 212));
+			nopFont = FontRasterSheet.Create(false, Color.Black, Color.FromArgb(244, 244, 244)); //TODO CHR(0) stay gray
+			bwfont = FontRasterSheet.Create(false, Color.Black, Color.White);
 
-			zoom.Push(RunOptions.INIT_ZOOM);
+			Zoom.Push(RunOptions.INIT_ZOOM);
 
-			loaded = true;
+			Loaded = true;
 		}
 
-		public void DoRender(bool do_swap /* = true */, bool renderDebug, string currInput)
+		public void DoRender(bool doSwap /* = true */, bool renderDebug, string currInput)
 		{
 			#region INIT
 
-			fps.Inc();
+			FPS.Inc();
 
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 			GL.ClearColor(Color.FromArgb(244, 244, 244));
 
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
-			GL.Ortho(0.0, this.Width, 0.0, this.Height, 0.0, 4.0);
+			GL.Ortho(0.0, Width, 0.0, Height, 0.0, 4.0);
 
 			GL.Color3(1.0, 1.0, 1.0);
 
@@ -92,17 +92,17 @@ namespace BefunExec.View
 
 			double offx;
 			double offy;
-			double w; // width & height of an single cell
+			double w; // Width & Height of an single cell
 			double h;
-			calcProgPos(out offx, out offy, out w, out h);
+			CalcProgPos(out offx, out offy, out w, out h);
 
-			int cellcount = zoom.Peek().Width * zoom.Peek().Height;
+			int cellcount = Zoom.Peek().Width * Zoom.Peek().Height;
 
 			#endregion
 
 			#region RENDER
 
-			int quality = -1;
+			int quality;
 
 			if (cellcount < MAX_HQ_CELLCOUNT)
 			{
@@ -141,7 +141,7 @@ namespace BefunExec.View
 
 			#region SELECTION
 
-			zoom.renderSelection(offx, offy, w, h);
+			Zoom.RenderSelection(offx, offy, w, h);
 
 			#endregion
 
@@ -152,13 +152,13 @@ namespace BefunExec.View
 				int bw = 512;
 				int bh = 128;
 
-				int box = (this.Width - bw) / 2;
-				int boy = (this.Height - bh) / 2;
+				int box = (Width - bw) / 2;
+				int boy = (Height - bh) / 2;
 
-				Rect2d rect = new Rect2d(box, boy, bw, bh);
+				Rect2D rect = new Rect2D(box, boy, bw, bh);
 
 				GL.Disable(EnableCap.Texture2D);
-				GL.Begin(BeginMode.Quads);
+				GL.Begin(PrimitiveType.Quads);
 				GL.Translate(0, 0, -3);
 				GL.Color4(Color.FromArgb(255, 128, 128, 128));
 				GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
@@ -171,11 +171,11 @@ namespace BefunExec.View
 				GL.Enable(EnableCap.Texture2D);
 
 
-                BoxFont.bind();
+				boxFont.bind();
 
-				RenderFont(this.Height, new Vec2d(box, boy), "Please enter a " + ((prog.Mode == BefunProg.MODE_IN_INT) ? "number" : "character"), -1, BoxFont, true);
+				RenderFont(Height, new Vec2D(box, boy), "Please enter a " + ((prog.Mode == BefunProg.MODE_IN_INT) ? "number" : "character"), -1, boxFont, true);
 
-				RenderFont(this.Height, new Vec2d(box, boy + 64), currInput, -1, BoxFont, true);
+				RenderFont(Height, new Vec2D(box, boy + 64), currInput, -1, boxFont, true);
 			}
 
 			#endregion
@@ -185,7 +185,7 @@ namespace BefunExec.View
 			var wdata = prog.WatchedFields;
 			if (wdata.Any())
 			{
-				WatchFont.bind();
+				watchFont.bind();
 
 				int ty = 0;
 				foreach (var watch in wdata)
@@ -214,7 +214,7 @@ namespace BefunExec.View
 							disp = value < 0 ? value.ToString() : string.Format("0b{0}", Convert.ToString(value, 2).PadLeft(24, '0'));
 							break;
 					}
-					RenderFontBottomUp(new Vec2d(10f, 10f + ty++ * 20f), string.Format("[{0:00}, {1:00}] := {2}", watch.X, watch.Y, disp), -0.9f, WatchFont, true);
+					RenderFontBottomUp(new Vec2D(10f, 10f + ty++ * 20f), string.Format("[{0:00}, {1:00}] := {2}", watch.X, watch.Y, disp), -0.9f, watchFont, true);
 				}
 			}
 
@@ -224,25 +224,24 @@ namespace BefunExec.View
 			#region DEBUG
 
 			if (renderDebug)
-            {
-                DebugFont.bind();
+			{
+				debugFont.bind();
 
-                RenderFont(this.Height, new Vec2d(0f, 00f),  String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.LogicTimer.Time), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 20f),  String.Format("SPEED: {0}", getFreqFormatted(prog.Freq.Frequency)), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 40f),  String.Format("STEPS: {0:n0} {1} (Average: {2})", prog.StepCount, prog.Delta.isZero() ? "(stopped)" : "", getFreqFormatted(((double)prog.StepCount / (prog.GetExecutedTime() + 1))*1000)), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 60f),  String.Format("SPEED (avg): {0}", getFreqFormatted((double)prog.StepCount / (prog.GetExecutedTime() + 1))), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 80f),  String.Format("Time: {0:n0} ms", prog.GetExecutedTime()), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 100f), String.Format("UndoLog: {0}", prog.UndoLog.enabled ? prog.UndoLog.size.ToString() : "disabled"), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 120f), String.Format("Rendermode: [{0}] {1} (= {2:#,0} sprites)", quality, (new[] { "High Quality", "Low Quality", "Spritemap" })[quality], cellcount), -1, DebugFont, true);
-				RenderFont(this.Height, new Vec2d(0f, 140f), getCodeTypeString(), -1, DebugFont, true);
+				RenderFont(Height, new Vec2D(0f, 00f),  string.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)FPS.Frequency, (int)UpdateTimer.Time, (int)RenderTimer.Time, (int)prog.LogicTimer.Time), -1, debugFont, true);
+				RenderFont(Height, new Vec2D(0f, 20f),  string.Format("SPEED: {0}", GetFreqFormatted(prog.Freq.Frequency)), -1, debugFont, true);
+				RenderFont(Height, new Vec2D(0f, 40f),  string.Format("STEPS: {0:n0} {1} (Average: {2})", prog.StepCount, prog.Delta.isZero() ? "(stopped)" : "", GetFreqFormatted(((double)prog.StepCount / (prog.GetExecutedTime() + 1))*1000)), -1, debugFont, true);
+				RenderFont(Height, new Vec2D(0f, 60f),  string.Format("SPEED (avg): {0}", GetFreqFormatted((double)prog.StepCount / (prog.GetExecutedTime() + 1))), -1, debugFont, true);
+				RenderFont(Height, new Vec2D(0f, 80f),  string.Format("Time: {0:n0} ms", prog.GetExecutedTime()), -1, debugFont, true);
+				RenderFont(Height, new Vec2D(0f, 100f), string.Format("UndoLog: {0}", prog.UndoLog.Enabled ? prog.UndoLog.Size.ToString() : "disabled"), -1, debugFont, true);
+				RenderFont(Height, new Vec2D(0f, 120f), string.Format("Rendermode: [{0}] {1} (= {2:#,0} sprites)", quality, (new[] { "High Quality", "Low Quality", "Spritemap" })[quality], cellcount), -1, debugFont, true);
+				RenderFont(Height, new Vec2D(0f, 140f), GetCodeTypeString(), -1, debugFont, true);
 			}
 
 			#endregion
 
 			#region FINISH
 
-			if (do_swap)
-				this.SwapBuffers();
+			if (doSwap) SwapBuffers();
 
 			#endregion
 		}
@@ -250,57 +249,55 @@ namespace BefunExec.View
 		public void DoMouseDown(MouseEventArgs e)
 		{
 			int selx, sely;
-			getPointInProgram(e.X, e.Y, out selx, out sely);
+			GetPointInProgram(e.X, e.Y, out selx, out sely);
 
-			zoom.DoMouseDown(e, selx, sely);
+			Zoom.DoMouseDown(e, selx, sely);
 		}
 
 		public void DoMouseMove(MouseEventArgs e)
 		{
 			int selx, sely;
-			getPointInProgram(e.X, e.Y, out selx, out sely);
+			GetPointInProgram(e.X, e.Y, out selx, out sely);
 
-			zoom.DoMouseMove(e, selx, sely);
+			Zoom.DoMouseMove(e, selx, sely);
 		}
 
 		public void DoMouseUp(MouseEventArgs e)
 		{
 			int selx, sely;
-			getPointInProgram(e.X, e.Y, out selx, out sely);
+			GetPointInProgram(e.X, e.Y, out selx, out sely);
 
-			zoom.DoMouseUp(e, selx, sely);
+			Zoom.DoMouseUp(e, selx, sely);
 		}
 
 		public void DoMouseWheel(MouseEventArgs e)
 		{
-			zoom.DoMouseWheel(e);
+			Zoom.DoMouseWheel(e);
 		}
 
 		private void Render_LQ(double offx, double offy, double w, double h)
 		{
-			long now = Environment.TickCount;
-
 			double oldW = w;
 			double oldH = h;
 
-			double targetW = zoom.Peek().Width * w;
-			double targetH = zoom.Peek().Height * h;
+			double targetW = Zoom.Peek().Width * w;
+			double targetH = Zoom.Peek().Height * h;
 
-			double ratio = (zoom.Peek().Width * 1.0) / zoom.Peek().Height;
+			double ratio = (Zoom.Peek().Width * 1.0) / Zoom.Peek().Height;
 			double frenderH = Math.Sqrt(LQ_CELLCOUNT / ratio);
 			double frenderW = LQ_CELLCOUNT / frenderH;
 
 			int renderW = (int)Math.Ceiling(frenderW);
 			int renderH = (int)Math.Ceiling(frenderH);
 
-			int ox = zoom.Peek().bl.X;
-			int oy = zoom.Peek().bl.Y;
+			int ox = Zoom.Peek().bl.X;
+			int oy = Zoom.Peek().bl.Y;
 
 			renderW = Math.Min(prog.Width, ox + renderW) - ox;
 			renderH = Math.Min(prog.Height, oy + renderH) - oy;
 
-			renderW = Math.Min(zoom.Peek().Width, renderW);
-			renderH = Math.Min(zoom.Peek().Height, renderH);
+			renderW = Math.Min(Zoom.Peek().Width, renderW);
+			renderH = Math.Min(Zoom.Peek().Height, renderH);
 
 			w = targetW / renderW;
 			h = targetH / renderH;
@@ -310,7 +307,7 @@ namespace BefunExec.View
 
 			GL.Disable(EnableCap.Texture2D);
 
-			GL.Begin(BeginMode.Quads);
+			GL.Begin(PrimitiveType.Quads);
 
 			long last = 0;
 
@@ -323,7 +320,7 @@ namespace BefunExec.View
 
 					bool docol = last != prog.Raster[x, y];
 
-					font.RenderLQ(docol, new Rect2d(offx + sx * w, offy - sy * h + targetH - oldH, w, h), -4, prog[x, y]);
+					font.RenderLQ(docol, new Rect2D(offx + sx * w, offy - sy * h + targetH - oldH, w, h), -4, prog[x, y]);
 
 					last = prog.Raster[x, y];
 				}
@@ -340,17 +337,17 @@ namespace BefunExec.View
 
 			GL.Disable(EnableCap.Texture2D);
 
-			GL.Begin(BeginMode.Quads);
+			GL.Begin(PrimitiveType.Quads);
 
 			long last = 0;
 
-			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+			for (int x = Zoom.Peek().bl.X; x < Zoom.Peek().tr.X; x++)
 			{
-				for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
+				for (int y = Zoom.Peek().bl.Y; y < Zoom.Peek().tr.Y; y++)
 				{
-					double decay_perc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
+					double decayPerc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
-					if (prog.WatchData[x, y]==0 && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decay_perc >= 1)
+					if (prog.WatchData[x, y]==0 && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
 						continue;
 
 					bool docol = true;
@@ -366,7 +363,7 @@ namespace BefunExec.View
 
 						docol = false;
 					}
-					else if (decay_perc < 0.66)
+					else if (decayPerc < 0.66)
 					{
 						GL.Color3(1.0, 0.0, 0.0);
 
@@ -377,9 +374,9 @@ namespace BefunExec.View
 						docol = false;
 					}
 
-					font.RenderLQ(docol, new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+					font.RenderLQ(docol, new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
 
-					last = (decay_perc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y]>0) ? int.MinValue : prog.Raster[x, y];
+					last = (decayPerc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y]>0) ? int.MinValue : prog.Raster[x, y];
 				}
 			}
 
@@ -394,17 +391,17 @@ namespace BefunExec.View
 
 			GL.Disable(EnableCap.Texture2D);
 
-			GL.Begin(BeginMode.Quads);
+			GL.Begin(PrimitiveType.Quads);
 
 			long last = 0;
 
-			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+			for (int x = Zoom.Peek().bl.X; x < Zoom.Peek().tr.X; x++)
 			{
-				for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
+				for (int y = Zoom.Peek().bl.Y; y < Zoom.Peek().tr.Y; y++)
 				{
-					double decay_perc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
+					double decayPerc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
-					if (prog.WatchData[x, y] == 0 && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decay_perc >= 1)
+					if (prog.WatchData[x, y] == 0 && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
 						continue;
 
 					bool docol = true;
@@ -420,7 +417,7 @@ namespace BefunExec.View
 
 						docol = false;
 					}
-					else if (decay_perc < 0.66)
+					else if (decayPerc < 0.66)
 					{
 						GL.Color3(1.0, 0.0, 0.0);
 
@@ -459,9 +456,9 @@ namespace BefunExec.View
 						}
 					}
 
-					font.RenderLQ(docol, new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+					font.RenderLQ(docol, new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
 
-					last = (decay_perc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y] > 0) ? int.MinValue : prog.Raster[x, y];
+					last = (decayPerc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y] > 0) ? int.MinValue : prog.Raster[x, y];
 				}
 			}
 
@@ -474,21 +471,21 @@ namespace BefunExec.View
 		{
 			long now = Environment.TickCount;
 
-			int f_binded = -1;
+			int fontBinded = -1;
 
-			double p_r = -1;
-			double p_g = -1;
-			double p_b = -1;
+			double prevR = -1;
+			double prevG = -1;
+			double prevB = -1;
 
-			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+			for (int x = Zoom.Peek().bl.X; x < Zoom.Peek().tr.X; x++)
 			{
-				for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
+				for (int y = Zoom.Peek().bl.Y; y < Zoom.Peek().tr.Y; y++)
 				{
-					double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
-					decay_perc = Math.Min(1, decay_perc);
-					decay_perc = Math.Max(0, decay_perc);
+					double decayPerc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
+					decayPerc = Math.Min(1, decayPerc);
+					decayPerc = Math.Max(0, decayPerc);
 					if (x == prog.PC.X && y == prog.PC.Y)
-						decay_perc = 1;
+						decayPerc = 1;
 
 					double r;
 					double g;
@@ -496,41 +493,43 @@ namespace BefunExec.View
 
 					if (prog.Breakpoints[x, y])
 					{
-						r = decay_perc;
+						r = decayPerc;
 						g = 0;
-						b = (1 - decay_perc);
+						b = (1 - decayPerc);
 					}
 					else if (prog.WatchData[x, y] > 0)
 					{
 						r = 1;
-						g = (1 - decay_perc) * 0.9;
-						b = (1 - decay_perc) * 0.5;
+						g = (1 - decayPerc) * 0.9;
+						b = (1 - decayPerc) * 0.5;
 					}
 					else
 					{
 						r = 1;
-						g = 1 - decay_perc;
-						b = 1 - decay_perc;
+						g = 1 - decayPerc;
+						b = 1 - decayPerc;
 					}
+					
+					// ReSharper disable CompareOfFloatsByEqualityOperator
+					if (prevR != r || prevG != g || prevB != b)
+						GL.Color3(prevR = r, prevG = g, prevB = b);
+					// ReSharper restore CompareOfFloatsByEqualityOperator
 
-					if (p_r != r || p_g != g || p_b != b)
-						GL.Color3(p_r = r, p_g = g, p_b = b);
+					Rect2D renderRect = new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h);
 
-					Rect2d renderRect = new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h);
-
-					if (prog.WatchData[x, y] > 0 || prog.Breakpoints[x, y] || decay_perc > 0.25)
+					if (prog.WatchData[x, y] > 0 || prog.Breakpoints[x, y] || decayPerc > 0.25)
 					{
-						if (f_binded != 1)
+						if (fontBinded != 1)
 							bwfont.bind();
 						bwfont.Render(renderRect, -4, prog[x, y]);
-						f_binded = 1;
+						fontBinded = 1;
 					}
 					else
 					{
-						if (f_binded != 2)
+						if (fontBinded != 2)
 							font.bind();
 						font.Render(renderRect, -4, prog[x, y]);
-						f_binded = 2;
+						fontBinded = 2;
 					}
 				}
 			}
@@ -540,27 +539,27 @@ namespace BefunExec.View
 		{
 			if (ExtendedSHGraph == null)
 			{
-				initSyntaxHighlighting(); // re-init
+				InitSyntaxHighlighting(); // re-init
 				return;
 			}
 
 			long now = Environment.TickCount;
 
-			int f_binded = -1;
+			int fontBinded = -1;
 
-			double p_r = -1;
-			double p_g = -1;
-			double p_b = -1;
+			double prevR = -1;
+			double prevG = -1;
+			double prevB = -1;
 
-			for (int x = zoom.Peek().bl.X; x < zoom.Peek().tr.X; x++)
+			for (int x = Zoom.Peek().bl.X; x < Zoom.Peek().tr.X; x++)
 			{
-				for (int y = zoom.Peek().bl.Y; y < zoom.Peek().tr.Y; y++)
+				for (int y = Zoom.Peek().bl.Y; y < Zoom.Peek().tr.Y; y++)
 				{
-					double decay_perc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
-					decay_perc = Math.Min(1, decay_perc);
-					decay_perc = Math.Max(0, decay_perc);
+					double decayPerc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
+					decayPerc = Math.Min(1, decayPerc);
+					decayPerc = Math.Max(0, decayPerc);
 					if (x == prog.PC.X && y == prog.PC.Y)
-						decay_perc = 1;
+						decayPerc = 1;
 
 					double r;
 					double g;
@@ -568,34 +567,36 @@ namespace BefunExec.View
 
 					if (prog.Breakpoints[x, y])
 					{
-						r = decay_perc;
+						r = decayPerc;
 						g = 0;
-						b = (1 - decay_perc);
+						b = (1 - decayPerc);
 					}
 					else if (prog.WatchData[x, y] > 0)
 					{
 						r = 1;
-						g = (1 - decay_perc) * 0.9;
-						b = (1 - decay_perc) * 0.5;
+						g = (1 - decayPerc) * 0.9;
+						b = (1 - decayPerc) * 0.5;
 					}
 					else
 					{
 						r = 1;
-						g = 1 - decay_perc;
-						b = 1 - decay_perc;
+						g = 1 - decayPerc;
+						b = 1 - decayPerc;
 					}
 
-					if (p_r != r || p_g != g || p_b != b)
-						GL.Color3(p_r = r, p_g = g, p_b = b);
+					// ReSharper disable CompareOfFloatsByEqualityOperator
+					if (prevR != r || prevG != g || prevB != b)
+						GL.Color3(prevR = r, prevG = g, prevB = b);
+					// ReSharper restore CompareOfFloatsByEqualityOperator
 
-					Rect2d renderRect = new Rect2d(offx + (x - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - (y - zoom.Peek().bl.Y)) * h, w, h);
+					Rect2D renderRect = new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h);
 
-					if (prog.WatchData[x, y] > 0 || prog.Breakpoints[x, y] || decay_perc > 0.25)
+					if (prog.WatchData[x, y] > 0 || prog.Breakpoints[x, y] || decayPerc > 0.25)
 					{
-						if (f_binded != 1)
+						if (fontBinded != 1)
 							bwfont.bind();
 						bwfont.Render(renderRect, -4, prog[x, y]);
-						f_binded = 1;
+						fontBinded = 1;
 					}
 					else
 					{
@@ -611,74 +612,71 @@ namespace BefunExec.View
 
 						if (type == HighlightType.NOP)
 						{
-							if (f_binded != 4)
-								nop_font.bind();
-							nop_font.Render(renderRect, -4, prog[x, y]);
-							f_binded = 4;
+							if (fontBinded != 4)
+								nopFont.bind();
+							nopFont.Render(renderRect, -4, prog[x, y]);
+							fontBinded = 4;
 						}
 						else if (type == HighlightType.Command || type == HighlightType.String_and_Command)
 						{
-							if (f_binded != 2)
+							if (fontBinded != 2)
 								font.bind();
 							font.Render(renderRect, -4, prog[x, y]);
-							f_binded = 2;
+							fontBinded = 2;
 						}
 						else if (type == HighlightType.String)
 						{
-							if (f_binded != 3)
+							if (fontBinded != 3)
 								stringfont.bind();
 							stringfont.Render(renderRect, -4, prog[x, y]);
-							f_binded = 3;
+							fontBinded = 3;
 						}
 
 					}
 
 					if (renderDebug)
-						renderBeGraphDebug(w, h, x, y, renderRect);
+						RenderBeGraphDebug(w, h, x, y, renderRect);
 
 				}
 			}
 		}
 
-		private void calcProgPos(out double offx, out double offy, out double w, out double h)
+		private void CalcProgPos(out double offx, out double offy, out double w, out double h)
 		{
-			int th = zoom.Peek().Height - 1;
-
-			offx = 0;
-			offy = 0;
-
-			w = ((this.Width) * 1.0) / zoom.Peek().Width;
-			h = (this.Height * 1.0) / zoom.Peek().Height;
+			w = (Width  * 1.0) / Zoom.Peek().Width;
+			h = (Height * 1.0) / Zoom.Peek().Height;
 
 			if ((w / h) < (8.0 / 12.0))
 			{
-				offy = h * zoom.Peek().Height;
+				offy = h * Zoom.Peek().Height;
 				h = (12.0 * w) / (8.0);
-				offy -= h * zoom.Peek().Height;
+				offy -= h * Zoom.Peek().Height;
 				offy /= 2;
 				offx = 0;
 			}
 			else if ((w / h) > (8.0 / 12.0))
 			{
-				offx = w * zoom.Peek().Width;
+				offx = w * Zoom.Peek().Width;
 				w = (8.0 * h) / (12.0);
-				offx -= w * zoom.Peek().Width;
+				offx -= w * Zoom.Peek().Width;
 				offx /= 2;
+				offy = 0;
 			}
 			else
 			{
 				offx = 0;
+				offy = 0;
 			}
 		}
 
-		private void renderBeGraphDebug(double w, double h, int x, int y, Rect2d renderRect)
+		private void RenderBeGraphDebug(double w, double h, int x, int y, Rect2D renderRect)
 		{
-			HighlightField sh_field;
+			HighlightField shField;
 
 			try
 			{
-				sh_field = ExtendedSHGraph.fields[x, y];
-				if (sh_field == null)
+				shField = ExtendedSHGraph.fields[x, y];
+				if (shField == null)
 					return;
 			}
 			catch (Exception)
@@ -686,117 +684,117 @@ namespace BefunExec.View
 				return; // safety quit
 			}
 
-			if (sh_field.incoming_information && !sh_field.outgoing_information)
+			if (shField.incoming_information && !shField.outgoing_information)
 			{
-				if (sh_field.incoming_information_left)
-					renderPipeHorz(renderRect, 0, w / 2, w / 3);
-				if (sh_field.incoming_information_right)
-					renderPipeHorz(renderRect, w / 2, 0, w / 3);
-				if (sh_field.incoming_information_top)
-					renderPipeVert(renderRect, 0, h / 2, w / 3);
-				if (sh_field.incoming_information_bottom)
-					renderPipeVert(renderRect, h / 2, 0, w / 3);
+				if (shField.incoming_information_left)
+					RenderPipeHorz(renderRect, 0, w / 2, w / 3);
+				if (shField.incoming_information_right)
+					RenderPipeHorz(renderRect, w / 2, 0, w / 3);
+				if (shField.incoming_information_top)
+					RenderPipeVert(renderRect, 0, h / 2, w / 3);
+				if (shField.incoming_information_bottom)
+					RenderPipeVert(renderRect, h / 2, 0, w / 3);
 
-				renderInsetEllipse(renderRect, w / 9, w / 9, true);
+				RenderInsetEllipse(renderRect, w / 9, w / 9, true);
 			}
 			else
 			{
-				bool vert = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_bottom
-					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_bottom
-					|| sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_top
-					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_top;
+				bool vert = shField.information[(int)BeGraphDirection.TopBottom].outgoing_direction_bottom
+					|| shField.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_bottom
+					|| shField.information[(int)BeGraphDirection.BottomTop].outgoing_direction_top
+					|| shField.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_top;
 
-				bool horz = sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_right
-					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_right
-					|| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_left
-					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_left;
+				bool horz = shField.information[(int)BeGraphDirection.LeftRight].outgoing_direction_right
+					|| shField.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_right
+					|| shField.information[(int)BeGraphDirection.RightLeft].outgoing_direction_left
+					|| shField.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_left;
 
-				bool curve_tl = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_left
-					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_left
-					|| sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_top
-					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_top;
+				bool curveTL = shField.information[(int)BeGraphDirection.TopBottom].outgoing_direction_left
+					|| shField.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_left
+					|| shField.information[(int)BeGraphDirection.LeftRight].outgoing_direction_top
+					|| shField.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_top;
 
-				bool curve_tr = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_right
-					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_right
-					|| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_top
-					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_top;
+				bool curveTR = shField.information[(int)BeGraphDirection.TopBottom].outgoing_direction_right
+					|| shField.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_right
+					|| shField.information[(int)BeGraphDirection.RightLeft].outgoing_direction_top
+					|| shField.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_top;
 
-				bool curve_br = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_right
-					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_right
-					|| sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_bottom
-					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_bottom;
+				bool curveBR = shField.information[(int)BeGraphDirection.BottomTop].outgoing_direction_right
+					|| shField.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_right
+					|| shField.information[(int)BeGraphDirection.RightLeft].outgoing_direction_bottom
+					|| shField.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_bottom;
 
-				bool curve_bl = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_left
-					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_left
-					|| sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_bottom
-					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_bottom;
+				bool curveBL = shField.information[(int)BeGraphDirection.BottomTop].outgoing_direction_left
+					|| shField.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_left
+					|| shField.information[(int)BeGraphDirection.LeftRight].outgoing_direction_bottom
+					|| shField.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_bottom;
 
-				bool left = sh_field.information[(int)BeGraphDirection.LeftRight].outgoing_direction_left
-					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_left;
+				bool left = shField.information[(int)BeGraphDirection.LeftRight].outgoing_direction_left
+					|| shField.information[(int)BeGraphDirection.LeftRight_sm].outgoing_direction_left;
 
-				bool right = sh_field.information[(int)BeGraphDirection.RightLeft].outgoing_direction_right
-					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_right;
+				bool right = shField.information[(int)BeGraphDirection.RightLeft].outgoing_direction_right
+					|| shField.information[(int)BeGraphDirection.RightLeft_sm].outgoing_direction_right;
 
-				bool top = sh_field.information[(int)BeGraphDirection.TopBottom].outgoing_direction_top
-					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_top;
+				bool top = shField.information[(int)BeGraphDirection.TopBottom].outgoing_direction_top
+					|| shField.information[(int)BeGraphDirection.TopBottom_sm].outgoing_direction_top;
 
-				bool bottom = sh_field.information[(int)BeGraphDirection.BottomTop].outgoing_direction_bottom
-					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_bottom;
+				bool bottom = shField.information[(int)BeGraphDirection.BottomTop].outgoing_direction_bottom
+					|| shField.information[(int)BeGraphDirection.BottomTop_sm].outgoing_direction_bottom;
 
-				bool jump_horz = sh_field.information[(int)BeGraphDirection.LeftRight].hl_jumpover
-					|| sh_field.information[(int)BeGraphDirection.LeftRight_sm].hl_jumpover
-					|| sh_field.information[(int)BeGraphDirection.RightLeft].hl_jumpover
-					|| sh_field.information[(int)BeGraphDirection.RightLeft_sm].hl_jumpover;
+				bool jumpHorz = shField.information[(int)BeGraphDirection.LeftRight].hl_jumpover
+					|| shField.information[(int)BeGraphDirection.LeftRight_sm].hl_jumpover
+					|| shField.information[(int)BeGraphDirection.RightLeft].hl_jumpover
+					|| shField.information[(int)BeGraphDirection.RightLeft_sm].hl_jumpover;
 
-				bool jump_vert = sh_field.information[(int)BeGraphDirection.TopBottom].hl_jumpover
-					|| sh_field.information[(int)BeGraphDirection.TopBottom_sm].hl_jumpover
-					|| sh_field.information[(int)BeGraphDirection.BottomTop].hl_jumpover
-					|| sh_field.information[(int)BeGraphDirection.BottomTop_sm].hl_jumpover;
+				bool jumpVert = shField.information[(int)BeGraphDirection.TopBottom].hl_jumpover
+					|| shField.information[(int)BeGraphDirection.TopBottom_sm].hl_jumpover
+					|| shField.information[(int)BeGraphDirection.BottomTop].hl_jumpover
+					|| shField.information[(int)BeGraphDirection.BottomTop_sm].hl_jumpover;
 
 				if (horz)
-					renderPipeHorz(renderRect, 0, 0, w / 3);
+					RenderPipeHorz(renderRect, 0, 0, w / 3);
 				if (vert)
-					renderPipeVert(renderRect, 0, 0, w / 3);
+					RenderPipeVert(renderRect, 0, 0, w / 3);
 
-				if (curve_bl)
-					renderCurve(renderRect.bl, w / 2, h / 2, w / 3, 0, 4, 16);
+				if (curveBL)
+					RenderCurve(renderRect.bl, w / 2, h / 2, w / 3, 0, 4, 16);
 
-				if (curve_tl)
-					renderCurve(renderRect.tl, w / 2, h / 2, w / 3, 4, 8, 16);
+				if (curveTL)
+					RenderCurve(renderRect.tl, w / 2, h / 2, w / 3, 4, 8, 16);
 
-				if (curve_tr)
-					renderCurve(renderRect.tr, w / 2, h / 2, w / 3, 8, 12, 16);
+				if (curveTR)
+					RenderCurve(renderRect.tr, w / 2, h / 2, w / 3, 8, 12, 16);
 
-				if (curve_br)
-					renderCurve(renderRect.br, w / 2, h / 2, w / 3, 12, 16, 16);
+				if (curveBR)
+					RenderCurve(renderRect.br, w / 2, h / 2, w / 3, 12, 16, 16);
 
 				if (left)
-					renderPipeHorz(renderRect, 0, w / 2, w / 3);
+					RenderPipeHorz(renderRect, 0, w / 2, w / 3);
 				if (right)
-					renderPipeHorz(renderRect, w / 2, 0, w / 3);
+					RenderPipeHorz(renderRect, w / 2, 0, w / 3);
 				if (top)
-					renderPipeVert(renderRect, 0, h / 2, w / 3);
+					RenderPipeVert(renderRect, 0, h / 2, w / 3);
 				if (bottom)
-					renderPipeVert(renderRect, h / 2, 0, w / 3);
+					RenderPipeVert(renderRect, h / 2, 0, w / 3);
 
-				if (jump_horz)
-					renderPipeDottedHorz(renderRect, w / 3, w / 8);
-				if (jump_vert)
-					renderPipeDottedVert(renderRect, w / 8, w / 3);
+				if (jumpHorz)
+					RenderPipeDottedHorz(renderRect, w / 3, w / 8);
+				if (jumpVert)
+					RenderPipeDottedVert(renderRect, w / 8, w / 3);
 
 			}
 		}
 
-		public void getPointInProgram(int px, int py, out int selx, out int sely)
+		public void GetPointInProgram(int px, int py, out int selx, out int sely)
 		{
 			double offx;
 			double offy;
 			double w;
 			double h;
-			calcProgPos(out offx, out offy, out w, out h);
+			CalcProgPos(out offx, out offy, out w, out h);
 
-			int iselx = (int)((px - offx + zoom.Peek().bl.X * w) / w);
-			int isely = (int)((py - offy + zoom.Peek().bl.Y * h) / h);
+			int iselx = (int)((px - offx + Zoom.Peek().bl.X * w) / w);
+			int isely = (int)((py - offy + Zoom.Peek().bl.Y * h) / h);
 
 			if (iselx >= 0 && isely >= 0 && iselx < prog.Width && isely < prog.Height)
 			{
@@ -810,9 +808,9 @@ namespace BefunExec.View
 			}
 		}
 
-		public void initSyntaxHighlighting()
+		public void InitSyntaxHighlighting()
 		{
-			font = FontRasterSheet.create(RunOptions.SYNTAX_HIGHLIGHTING != RunOptions.SH_NONE, Color.Black, Color.White);
+			font = FontRasterSheet.Create(RunOptions.SYNTAX_HIGHLIGHTING != RunOptions.SH_NONE, Color.Black, Color.White);
 
 			ExtendedSHGraph = null;
 			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
@@ -831,7 +829,7 @@ namespace BefunExec.View
 			}
 		}
 
-		public string getCodeTypeString()
+		private string GetCodeTypeString()
 		{
 			return prog.IsBefunge93() ?
 				"Befunge-93" :
@@ -847,18 +845,18 @@ namespace BefunExec.View
 
 		public Bitmap GrabCurrentResScreenshot()
 		{
-			double r_offx;
-			double r_offy;
-			double r_w;
-			double r_h;
-			calcProgPos(out r_offx, out r_offy, out r_w, out r_h);
-			r_w *= prog.Width;
-			r_h *= prog.Height;
+			double rOffX;
+			double rOffY;
+			double rWidth;
+			double rHeight;
+			CalcProgPos(out rOffX, out rOffY, out rWidth, out rHeight);
+			rWidth *= prog.Width;
+			rHeight *= prog.Height;
 
-			int w = this.Width;
-			int h = this.Height;
+			int w = Width;
+			int h = Height;
 
-			this.MakeCurrent();
+			MakeCurrent();
 
 			DoRender(false, false, "");
 
@@ -867,37 +865,37 @@ namespace BefunExec.View
 
 			Bitmap bmp = new Bitmap(w, h);
 			System.Drawing.Imaging.BitmapData data = bmp.LockBits(new Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-			GL.ReadPixels(0, 0, w, h, OpenTK.Graphics.OpenGL.PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
+			GL.ReadPixels(0, 0, w, h, PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
 			bmp.UnlockBits(data);
 
 			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-			return bmp.Clone(new Rectangle((int)r_offx, (int)r_offy, (int)r_w, (int)r_h), bmp.PixelFormat);
+			return bmp.Clone(new Rectangle((int)rOffX, (int)rOffY, (int)rWidth, (int)rHeight), bmp.PixelFormat);
 		}
 
 		public Bitmap GrabFullResScreenshot()
 		{
-			int pixel_w = 8 * prog.Width;
-			int pixel_h = 12 * prog.Height;
+			int pixelW = 8 * prog.Width;
+			int pixelH = 12 * prog.Height;
 
-			double r_offx;
-			double r_offy;
-			double r_w;
-			double r_h;
-			calcProgPos(out r_offx, out r_offy, out r_w, out r_h);
+			double rOffX;
+			double rOffY;
+			double rWidth;
+			double rHeight;
+			CalcProgPos(out rOffX, out rOffY, out rWidth, out rHeight);
 
-			int w = pixel_w;
-			int h = pixel_h;
+			int w = pixelW;
+			int h = pixelH;
 
-			r_offx = 0;
-			r_offy = 0;
+			rOffX = 0;
+			rOffY = 0;
 
-			r_w = 8;
-			r_h = 12;
+			rWidth = 8;
+			rHeight = 12;
 
-			GL.Viewport(0, 0, pixel_w, pixel_h);
+			GL.Viewport(0, 0, pixelW, pixelH);
 
-			this.MakeCurrent();
+			MakeCurrent();
 
 			//##################################################
 			GL.Clear(ClearBufferMask.ColorBufferBit);
@@ -905,14 +903,14 @@ namespace BefunExec.View
 
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
-			GL.Ortho(0.0, pixel_w, 0.0, pixel_h, 0.0, 4.0);
+			GL.Ortho(0.0, pixelW, 0.0, pixelH, 0.0, 4.0);
 
 			GL.Color3(1.0, 1.0, 1.0);
 
 			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
-				Render_HQ_sh(r_offx, r_offy, r_w, r_h, false);
+				Render_HQ_sh(rOffX, rOffY, rWidth, rHeight, false);
 			else
-				Render_HQ(r_offx, r_offy, r_w, r_h);
+				Render_HQ(rOffX, rOffY, rWidth, rHeight);
 			//##################################################
 
 			if (GraphicsContext.CurrentContext == null)
@@ -920,40 +918,40 @@ namespace BefunExec.View
 
 			Bitmap bmp = new Bitmap(w, h);
 			System.Drawing.Imaging.BitmapData data = bmp.LockBits(new Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-			GL.ReadPixels(0, 0, w, h, OpenTK.Graphics.OpenGL.PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
+			GL.ReadPixels(0, 0, w, h, PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
 			bmp.UnlockBits(data);
 
 			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-			GL.Viewport(0, 0, this.Width, this.Height);
+			GL.Viewport(0, 0, Width, Height);
 
 			return bmp;
 		}
 
 		public bool ProcessProgramChanges()
 		{
-			Tuple<long, long, long> sh_change; // <x, y, char>
+			Tuple<long, long, long> shChange; // <x, y, char>
 
-			if (prog.RasterChanges.TryDequeue(out sh_change))
+			if (prog.RasterChanges.TryDequeue(out shChange))
 			{
 				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				{
-					if (sh_change.Item1 == -1 && sh_change.Item2 == -1 && sh_change.Item3 == -1)
+					if (shChange.Item1 == -1 && shChange.Item2 == -1 && shChange.Item3 == -1)
 						ExtendedSHGraph.Calculate(BeGraphHelper.parse(prog.Raster)); // recalc
 					else
-						ExtendedSHGraph.Update(sh_change.Item1, sh_change.Item2, BeGraphCommand.getCommand(sh_change.Item3), prog.PC.X, prog.PC.Y, prog.Delta.X, prog.Delta.Y);
+						ExtendedSHGraph.Update(shChange.Item1, shChange.Item2, BeGraphCommand.getCommand(shChange.Item3), prog.PC.X, prog.PC.Y, prog.Delta.X, prog.Delta.Y);
 
 					if (prog.RasterChanges.Count > 4)
 					{
-						while (prog.RasterChanges.TryDequeue(out sh_change))
+						while (prog.RasterChanges.TryDequeue(out shChange))
 						{
-							if (sh_change.Item1 == -1 && sh_change.Item2 == -1 && sh_change.Item3 == -1)
+							if (shChange.Item1 == -1 && shChange.Item2 == -1 && shChange.Item3 == -1)
 								ExtendedSHGraph.Calculate(BeGraphHelper.parse(prog.Raster)); // recalc
 							else
 							{
-								bool upd_result = ExtendedSHGraph.Update(sh_change.Item1, sh_change.Item2, BeGraphCommand.getCommand(sh_change.Item3), prog.PC.X, prog.PC.Y, prog.Delta.X, prog.Delta.Y);
+								bool updateResult = ExtendedSHGraph.Update(shChange.Item1, shChange.Item2, BeGraphCommand.getCommand(shChange.Item3), prog.PC.X, prog.PC.Y, prog.Delta.X, prog.Delta.Y);
 
-								if (upd_result)
+								if (updateResult)
 								{
 									return false;
 								}
@@ -963,36 +961,35 @@ namespace BefunExec.View
 				}
 				else
 				{
-					while (prog.RasterChanges.TryDequeue(out sh_change))
-						;
+					while (prog.RasterChanges.TryDequeue(out shChange)) { /**/ }
 				}
 			}
 
 			return true;
 		}
 
-		public void resetProg(BefunProg p, BeGraph g, bool keepView = false)
+		public void ResetProg(BefunProg p, BeGraph g, bool keepView = false)
 		{
-			this.ExtendedSHGraph = g;
-			this.prog = p;
+			ExtendedSHGraph = g;
+			prog = p;
 
 			if (keepView)
-				this.zoom = new ZoomController(prog, this.zoom);
+				Zoom = new ZoomController(prog, Zoom);
 			else
-				this.zoom = new ZoomController(prog);
+				Zoom = new ZoomController(prog);
 		}
 
 		public string GetExecutionData()
 		{
 			StringBuilder buildr = new StringBuilder();
 
-			buildr.AppendLine(String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)fps.Frequency, (int)updateTimer.Time, (int)renderTimer.Time, (int)prog.LogicTimer.Time));
-			buildr.AppendLine(String.Format("SPEED: {0}", getFreqFormatted(prog.Freq.Frequency)));
-			buildr.AppendLine(String.Format("STEPS: {0:n0} {1} (Average: {2})", prog.StepCount, prog.Delta.isZero() ? "(stopped)" : "", getFreqFormatted(((double)prog.StepCount / (prog.GetExecutedTime() + 1)) * 1000)));
-			buildr.AppendLine(String.Format("SPEED (avg): {0}", getFreqFormatted((double)prog.StepCount / (prog.GetExecutedTime() + 1))));
+			buildr.AppendLine(String.Format("FPS: {0} (U := {1}ms | R := {2}ms | L := {3}ms)", (int)FPS.Frequency, (int)UpdateTimer.Time, (int)RenderTimer.Time, (int)prog.LogicTimer.Time));
+			buildr.AppendLine(String.Format("SPEED: {0}", GetFreqFormatted(prog.Freq.Frequency)));
+			buildr.AppendLine(String.Format("STEPS: {0:n0} {1} (Average: {2})", prog.StepCount, prog.Delta.isZero() ? "(stopped)" : "", GetFreqFormatted(((double)prog.StepCount / (prog.GetExecutedTime() + 1)) * 1000)));
+			buildr.AppendLine(String.Format("SPEED (avg): {0}", GetFreqFormatted((double)prog.StepCount / (prog.GetExecutedTime() + 1))));
 			buildr.AppendLine(String.Format("Time: {0:n0} ms", prog.GetExecutedTime()));
-			buildr.AppendLine(String.Format("UndoLog: {0}", prog.UndoLog.enabled ? prog.UndoLog.size.ToString() : "disabled"));
-			buildr.AppendLine(getCodeTypeString());
+			buildr.AppendLine(String.Format("UndoLog: {0}", prog.UndoLog.Enabled ? prog.UndoLog.Size.ToString() : "disabled"));
+			buildr.AppendLine(GetCodeTypeString());
 
 			return buildr.ToString();
 		}

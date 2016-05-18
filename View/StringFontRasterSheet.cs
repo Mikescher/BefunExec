@@ -1,13 +1,13 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
-using BefunExec.View.OpenGL;
+﻿using BefunExec.View.OpenGL;
 using BefunExec.View.OpenGL.OGLMath;
 using OpenTK.Graphics.OpenGL;
+using System;
+using System.Drawing;
+using System.Linq;
 
 namespace BefunExec.View
 {
-    public class StringFontRasterSheet : FontRasterSheet
+	public class StringFontRasterSheet : FontRasterSheet
     {
         public readonly int Size;
 	    private float[] charWidth;
@@ -88,7 +88,7 @@ namespace BefunExec.View
 
 		public float MeasureWidth(string text)
         {
-            return text.ToCharArray().Select(c => charWidth[c] * width * Size).Sum();
+            return text.ToCharArray().Select(c => charWidth[c] * Width * Size).Sum();
         }
 
         public void Print(string text, double posX, double posY)
@@ -103,15 +103,15 @@ namespace BefunExec.View
 
             foreach (char chr in text)
             {
-                Rect2d coords = GetCoordinates(chr);
+                Rect2D coords = GetCoordinates(chr);
 
                 float cstart = (float)coords.bl.X + charStart[chr];
                 float cend   = cstart + charWidth[chr];
 
-                pw = charWidth[chr] * width * Size;
+                pw = charWidth[chr] * Width * Size;
 
                 //##########
-                GL.Begin(BeginMode.Quads);
+                GL.Begin(PrimitiveType.Quads);
                 //##########
 
                 GL.TexCoord2(cstart, coords.bl.Y);

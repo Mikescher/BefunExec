@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BefunGen.MathExtensions
+﻿namespace BefunExec.MathExtensions
 {
-	public class MathExt
+	public static class MathExt
 	{
 		public static void Swap<T>(ref T lhs, ref T rhs)
 		{
-			T temp;
-			temp = lhs;
+			var temp = lhs;
 			lhs = rhs;
 			rhs = temp;
 		}

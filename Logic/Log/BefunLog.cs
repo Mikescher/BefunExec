@@ -4,27 +4,27 @@ namespace BefunExec.Logic.Log
 {
 	public class BefunLog
 	{
-		public const int HISTORY_SIZE = 256;
+		private const int HISTORY_SIZE = 256;
 
-		private BefunLogAction[,] history = new BefunLogAction[6, HISTORY_SIZE];
+		private readonly BefunLogAction[,] history = new BefunLogAction[6, HISTORY_SIZE];
 		private int hposition = 0;
 
 		private bool collecting = false;
 
-		public bool enabled = false;
+		public bool Enabled = false;
 
-		private bool internal_enabled = false;
+		private bool internalEnabled = false;
 
-		public int size { get; private set; }
+		public int Size { get; private set; }
 
 		public BefunLog()
 		{
-			reset();
+			Reset();
 		}
 
-		public void reset()
+		public void Reset()
 		{
-			size = 0;
+			Size = 0;
 			hposition = 0;
 			for (int i = 0; i < HISTORY_SIZE; i++)
 			{
@@ -35,13 +35,13 @@ namespace BefunExec.Logic.Log
 			}
 		}
 
-		public void startCollecting()
+		public void StartCollecting()
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
 			if (collecting)
-				endCollecting();
+				EndCollecting();
 
 			history[0, hposition] = null;
 			history[1, hposition] = null;
@@ -53,9 +53,9 @@ namespace BefunExec.Logic.Log
 			collecting = true;
 		}
 
-		private void collect(BefunLogAction a)
+		private void Collect(BefunLogAction a)
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
 			if (!collecting)
@@ -71,35 +71,35 @@ namespace BefunExec.Logic.Log
 			}
 		}
 
-		public void endCollecting()
+		public void EndCollecting()
 		{
-			update();
+			Update();
 
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
 			hposition = (hposition + 1) % HISTORY_SIZE;
-			size = Math.Min(size + 1, HISTORY_SIZE);
+			Size = Math.Min(Size + 1, HISTORY_SIZE);
 
 			collecting = false;
 		}
 
-		public void update()
+		public void Update()
 		{
-			if (internal_enabled != enabled)
+			if (internalEnabled != Enabled)
 			{
-				reset();
-				internal_enabled = enabled;
+				Reset();
+				internalEnabled = Enabled;
 			}
 		}
 
 		public bool Reverse(BefunProg prog)
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return false;
 
 			hposition = ((hposition - 1) + HISTORY_SIZE) % HISTORY_SIZE;
-			size = Math.Max(size - 1, 0);
+			Size = Math.Max(Size - 1, 0);
 
 			if (history[5, hposition] != null)
 			{
@@ -155,52 +155,52 @@ namespace BefunExec.Logic.Log
 			return true;
 		}
 
-		public void collectChangeStringmode()
+		public void CollectChangeStringmode()
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
-			collect(new BefunLogActionChangeStringmode());
+			Collect(new BefunLogActionChangeStringmode());
 		}
 
-		public void collectDeltaChange(int dx, int dy)
+		public void CollectDeltaChange(int dx, int dy)
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
-			collect(new BefunLogActionDeltaChange(dx, dy));
+			Collect(new BefunLogActionDeltaChange(dx, dy));
 		}
 
-		public void collectGridChange(long x, long y, long v)
+		public void CollectGridChange(long x, long y, long v)
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
-			collect(new BefunLogActionGridChange(x, y, v));
+			Collect(new BefunLogActionGridChange(x, y, v));
 		}
 
-		public void collectPCMove(int x, int y)
+		public void CollectPCMove(int x, int y)
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
-			collect(new BefunLogActionPCMove(x, y));
+			Collect(new BefunLogActionPCMove(x, y));
 		}
 
-		public void collectStackAdd()
+		public void CollectStackAdd()
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
-			collect(new BefunLogActionStackAdd());
+			Collect(new BefunLogActionStackAdd());
 		}
 
-		public void collectStackRemove(long v)
+		public void CollectStackRemove(long v)
 		{
-			if (!internal_enabled)
+			if (!internalEnabled)
 				return;
 
-			collect(new BefunLogActionStackRemove(v));
+			Collect(new BefunLogActionStackRemove(v));
 		}
 	}
 }

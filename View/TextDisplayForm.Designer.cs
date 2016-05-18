@@ -1,6 +1,6 @@
 ﻿namespace BefunExec.View
 {
-	partial class TextDisplayForm
+	sealed partial class TextDisplayForm
 	{
 		/// <summary>
 		/// Required designer variable.

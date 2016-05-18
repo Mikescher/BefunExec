@@ -128,10 +128,10 @@
     </Compile>
     <Compile Include="View\OpenGL\DebugTimer.cs" />
     <Compile Include="View\OpenGL\FrequencyCounter.cs" />
-    <Compile Include="View\OpenGL\OGLMath\Rect2d.cs" />
-    <Compile Include="View\OpenGL\OGLMath\Rect2i.cs" />
-    <Compile Include="View\OpenGL\OGLMath\Vec2d.cs" />
-    <Compile Include="View\OpenGL\OGLMath\Vec2i.cs" />
+    <Compile Include="View\OpenGL\OGLMath\Rect2D.cs" />
+    <Compile Include="View\OpenGL\OGLMath\Rect2I.cs" />
+    <Compile Include="View\OpenGL\OGLMath\Vec2D.cs" />
+    <Compile Include="View\OpenGL\OGLMath\Vec2I.cs" />
     <Compile Include="View\OpenGL\OGLTextureSheet.cs" />
     <Compile Include="View\StringFontRasterSheet.cs" />
     <Compile Include="View\TextDisplayForm.cs">

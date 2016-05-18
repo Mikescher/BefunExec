@@ -2,105 +2,105 @@
 
 namespace BefunExec.View.OpenGL.OGLMath
 {
-	public class Rect2i
+	public class Rect2I
 	{
-		private Vec2i position; // bottomLeft
+		private Vec2I position; // bottomLeft
 		public int Width { get; set; }
 		public int Height { get; set; }
 
 		public int Area { get { return Width * Height; } }
 
-		public Vec2i tl { get { return new Vec2i(position.X, position.Y + Height); } }
+		public Vec2I tl { get { return new Vec2I(position.X, position.Y + Height); } }
 
-		public Vec2i bl { get { return new Vec2i(position.X, position.Y); } }
+		public Vec2I bl { get { return new Vec2I(position.X, position.Y); } }
 
-		public Vec2i br { get { return new Vec2i(position.X + Width, position.Y); } }
+		public Vec2I br { get { return new Vec2I(position.X + Width, position.Y); } }
 
-		public Vec2i tr { get { return new Vec2i(position.X + Width, position.Y + Height); } }
+		public Vec2I tr { get { return new Vec2I(position.X + Width, position.Y + Height); } }
 
-		public Rect2i(int bl_x, int bl_y, int pwidth, int pheight)
+		public Rect2I(int bl_x, int bl_y, int pwidth, int pheight)
 		{
-			position = new Vec2i(bl_x, bl_y);
+			position = new Vec2I(bl_x, bl_y);
 			Width = pwidth;
 			Height = pheight;
 		}
 
-		public Rect2i(Vec2i bottomleft, int pwidth, int pheight)
+		public Rect2I(Vec2I bottomleft, int pwidth, int pheight)
 		{
-			position = new Vec2i(bottomleft);
+			position = new Vec2I(bottomleft);
 			Width = pwidth;
 			Height = pheight;
 		}
 
-		public Rect2i(Vec2i bottomleft, int psize)
+		public Rect2I(Vec2I bottomleft, int psize)
 		{
-			position = new Vec2i(bottomleft);
+			position = new Vec2I(bottomleft);
 			Width = psize;
 			Height = psize;
 		}
 
-		public Rect2i(Vec2i bottomleft, Vec2i topRight)
+		public Rect2I(Vec2I bottomleft, Vec2I topRight)
 		{
-			position = new Vec2i(bottomleft);
+			position = new Vec2I(bottomleft);
 			Width = topRight.X - bottomleft.X;
 			Height = topRight.Y - bottomleft.Y;
 		}
 
-		public Rect2i(Rect2i r)
+		public Rect2I(Rect2I r)
 		{
-			position = new Vec2i(r.position);
+			position = new Vec2I(r.position);
 			Width = r.Width;
 			Height = r.Height;
 		}
 
 		#region Operators
 
-		public static implicit operator Rect2d(Rect2i instance)
+		public static implicit operator Rect2D(Rect2I instance)
 		{
-			return new Rect2d(instance.position, instance.Width, instance.Height);
+			return new Rect2D(instance.position, instance.Width, instance.Height);
 		}
 
-		public static Rect2i operator +(Rect2i v1, Vec2i v2)
+		public static Rect2I operator +(Rect2I v1, Vec2I v2)
 		{
-			return new Rect2i(v1.position + v2, v1.Width, v1.Height);
+			return new Rect2I(v1.position + v2, v1.Width, v1.Height);
 		}
 
-		public static Rect2i operator +(Rect2i v1, int v2)
+		public static Rect2I operator +(Rect2I v1, int v2)
 		{
-			return new Rect2i(v1.position + v2, v1.Width, v1.Height);
+			return new Rect2I(v1.position + v2, v1.Width, v1.Height);
 		}
 
-		public static Rect2i operator -(Rect2i v1, Vec2i v2)
+		public static Rect2I operator -(Rect2I v1, Vec2I v2)
 		{
-			return new Rect2i(v1.position - v2, v1.Width, v1.Height);
+			return new Rect2I(v1.position - v2, v1.Width, v1.Height);
 		}
 
-		public static Rect2i operator -(Rect2i v1, int v2)
+		public static Rect2I operator -(Rect2I v1, int v2)
 		{
-			return new Rect2i(v1.position - v2, v1.Width, v1.Height);
+			return new Rect2I(v1.position - v2, v1.Width, v1.Height);
 		}
 
-		public static Rect2i operator *(Rect2i v1, Vec2i v2)
+		public static Rect2I operator *(Rect2I v1, Vec2I v2)
 		{
-			return new Rect2i(v1.position * v2, v1.Width * v2.X, v1.Height * v2.Y);
+			return new Rect2I(v1.position * v2, v1.Width * v2.X, v1.Height * v2.Y);
 		}
 
-		public static Rect2i operator *(Rect2i v1, int v2)
+		public static Rect2I operator *(Rect2I v1, int v2)
 		{
-			return new Rect2i(v1.position * v2, v1.Width * v2, v1.Height * v2);
+			return new Rect2I(v1.position * v2, v1.Width * v2, v1.Height * v2);
 		}
 
-		public static Rect2i operator /(Rect2i v1, Vec2i v2)
+		public static Rect2I operator /(Rect2I v1, Vec2I v2)
 		{
-			return new Rect2i(v1.position / v2, v1.Width / v2.X, v1.Height / v2.Y);
+			return new Rect2I(v1.position / v2, v1.Width / v2.X, v1.Height / v2.Y);
 		}
 
-		public static Rect2i operator /(Rect2i v1, int v2)
+		public static Rect2I operator /(Rect2I v1, int v2)
 		{
-			return new Rect2i(v1.position / v2, v1.Width / v2, v1.Height / v2);
+			return new Rect2I(v1.position / v2, v1.Width / v2, v1.Height / v2);
 		}
 
-		public static bool operator ==(Rect2i a, Rect2i b)
+		public static bool operator ==(Rect2I a, Rect2I b)
 		{
 			if ((object)a == null && (object)b == null)
 				return true;
@@ -111,15 +111,15 @@ namespace BefunExec.View.OpenGL.OGLMath
 			return (a.position == b.position && a.Width == b.Width && a.Height == b.Height);
 		}
 
-		public static bool operator !=(Rect2i a, Rect2i b)
+		public static bool operator !=(Rect2I a, Rect2I b)
 		{
 			return !(a == b);
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Rect2i)
-				return this == (Rect2i)obj;
+			if (obj is Rect2I)
+				return this == (Rect2I)obj;
 			return false;
 		}
 
@@ -130,17 +130,17 @@ namespace BefunExec.View.OpenGL.OGLMath
 
 		#endregion Operators
 
-		public Vec2d GetMiddle()
+		public Vec2D GetMiddle()
 		{
-			return new Vec2d(position.X + Width / 2.0, position.Y + Height / 2.0);
+			return new Vec2D(position.X + Width / 2.0, position.Y + Height / 2.0);
 		}
 
-		public bool IsColldingWith(Rect2i rect)
+		public bool IsColldingWith(Rect2I rect)
 		{
 			return !(this.tl.X >= rect.br.X || this.br.X <= rect.tl.X || this.tl.Y <= rect.br.Y || this.br.Y >= rect.tl.Y);
 		}
 
-		public bool IsTouching(Rect2i rect)
+		public bool IsTouching(Rect2I rect)
 		{
 			return (this.tl.X == rect.br.X && this.tl.X > rect.tl.X) ||
 				   (this.br.X == rect.tl.X && this.br.X < rect.br.X) ||
@@ -148,7 +148,7 @@ namespace BefunExec.View.OpenGL.OGLMath
 				   (this.br.Y == rect.tl.Y && this.br.Y > rect.br.Y);
 		}
 
-		public Vec2i GetDistanceTo(Rect2i rect)
+		public Vec2I GetDistanceTo(Rect2I rect)
 		{
 			int vecX;
 			int vecY;
@@ -167,7 +167,7 @@ namespace BefunExec.View.OpenGL.OGLMath
 			else
 				vecY = 0;
 
-			return new Vec2i(vecX, vecY);
+			return new Vec2I(vecX, vecY);
 		}
 
 		public void TrimNorth(int len)
@@ -210,14 +210,14 @@ namespace BefunExec.View.OpenGL.OGLMath
 			TrimVertical(len);
 		}
 
-		public bool Includes(Vec2i vec)
+		public bool Includes(Vec2I vec)
 		{
 			return (vec.X > position.X && vec.Y > position.Y && vec.X < tl.X && vec.Y < tl.Y);
 		}
 
-		public Vec2i GetDistanceTo(Vec2i vec)
+		public Vec2I GetDistanceTo(Vec2I vec)
 		{
-			Vec2i result = Vec2i.Zero;
+			Vec2I result = Vec2I.Zero;
 
 			if (vec.X < position.X)
 			{
@@ -258,7 +258,7 @@ namespace BefunExec.View.OpenGL.OGLMath
 		/// <summary>
 		/// Trims the rect in a way that its fully contained in the other rect
 		/// </summary>
-		public void ForceInside(Rect2i other)
+		public void ForceInside(Rect2I other)
 		{
 			if (this.bl.X < other.bl.X)
 				this.TrimWest(other.bl.X - this.bl.X);
@@ -302,7 +302,7 @@ namespace BefunExec.View.OpenGL.OGLMath
 			}
 		}
 
-		public void setInsideRatio_Expanding(double ratio, Rect2i other)
+		public void setInsideRatio_Expanding(double ratio, Rect2I other)
 		{
 			double real_r = GetRatio();
 

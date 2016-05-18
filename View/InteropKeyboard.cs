@@ -1,4 +1,4 @@
-﻿using BefunGen.MathExtensions;
+﻿using BefunExec.MathExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace BefunExec.View
 			}
 		}
 
-		public bool isDown(Keys k)
+		public bool IsDown(Keys k)
 		{
 			if (now.ContainsKey(k))
 			{
@@ -53,7 +53,7 @@ namespace BefunExec.View
 			}
 		}
 
-		public void update()
+		public void Update()
 		{
 			MathExt.Swap(ref last, ref now);
 			now.Clear();

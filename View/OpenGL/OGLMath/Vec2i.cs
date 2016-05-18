@@ -3,26 +3,26 @@ using System;
 
 namespace BefunExec.View.OpenGL.OGLMath
 {
-	public class Vec2i
+	public class Vec2I
 	{
-		public static Vec2i Zero { get { return new Vec2i(); } private set { } }
+		public static Vec2I Zero { get { return new Vec2I(); } private set { } }
 
 		public int X;
 		public int Y;
 
-		public Vec2i()
+		public Vec2I()
 		{
 			X = 0;
 			Y = 0;
 		}
 
-		public Vec2i(int pX, int pY)
+		public Vec2I(int pX, int pY)
 		{
 			X = pX;
 			Y = pY;
 		}
 
-		public Vec2i(Vec2i v)
+		public Vec2I(Vec2I v)
 		{
 			X = v.X;
 			Y = v.Y;
@@ -30,72 +30,72 @@ namespace BefunExec.View.OpenGL.OGLMath
 
 		#region Operators
 
-		public static implicit operator Vector2d(Vec2i instance)
+		public static implicit operator Vector2d(Vec2I instance)
 		{
 			return new Vector2d(instance.X, instance.Y);
 		}
 
-		public static implicit operator Vec2d(Vec2i instance)
+		public static implicit operator Vec2D(Vec2I instance)
 		{
-			return new Vec2d(instance.X, instance.Y);
+			return new Vec2D(instance.X, instance.Y);
 		}
 
-		public static Vec2i operator +(Vec2i v1, Vec2i v2)
+		public static Vec2I operator +(Vec2I v1, Vec2I v2)
 		{
-			return new Vec2i(v1.X + v2.X, v1.Y + v2.Y);
+			return new Vec2I(v1.X + v2.X, v1.Y + v2.Y);
 		}
 
-		public static Vec2i operator +(Vec2i v1, int v2)
+		public static Vec2I operator +(Vec2I v1, int v2)
 		{
-			return new Vec2i(v1.X + v2, v1.Y + v2);
+			return new Vec2I(v1.X + v2, v1.Y + v2);
 		}
 
-		public static Vec2i operator -(Vec2i v1, Vec2i v2)
+		public static Vec2I operator -(Vec2I v1, Vec2I v2)
 		{
-			return new Vec2i(v1.X - v2.X, v1.Y - v2.Y);
+			return new Vec2I(v1.X - v2.X, v1.Y - v2.Y);
 		}
 
-		public static Vec2i operator -(Vec2i v1, int v2)
+		public static Vec2I operator -(Vec2I v1, int v2)
 		{
-			return new Vec2i(v1.X - v2, v1.Y - v2);
+			return new Vec2I(v1.X - v2, v1.Y - v2);
 		}
 
-		public static Vec2i operator *(Vec2i v1, Vec2i v2)
+		public static Vec2I operator *(Vec2I v1, Vec2I v2)
 		{
-			return new Vec2i(v1.X * v2.X, v1.Y * v2.Y);
+			return new Vec2I(v1.X * v2.X, v1.Y * v2.Y);
 		}
 
-		public static Vec2i operator *(Vec2i v1, int v2)
+		public static Vec2I operator *(Vec2I v1, int v2)
 		{
-			return new Vec2i(v1.X * v2, v1.Y * v2);
+			return new Vec2I(v1.X * v2, v1.Y * v2);
 		}
 
-		public static Vec2i operator /(Vec2i v1, Vec2i v2)
+		public static Vec2I operator /(Vec2I v1, Vec2I v2)
 		{
-			return new Vec2i(v1.X / v2.X, v1.Y / v2.Y);
+			return new Vec2I(v1.X / v2.X, v1.Y / v2.Y);
 		}
 
-		public static Vec2i operator /(Vec2i v1, int v2)
+		public static Vec2I operator /(Vec2I v1, int v2)
 		{
-			return new Vec2i(v1.X / v2, v1.Y / v2);
+			return new Vec2I(v1.X / v2, v1.Y / v2);
 		}
 
-		public static Vec2i operator -(Vec2i v)
+		public static Vec2I operator -(Vec2I v)
 		{
-			return new Vec2i(-v.X, -v.Y);
+			return new Vec2I(-v.X, -v.Y);
 		}
 
-		public static Vec2i operator %(Vec2i v1, Vec2i v2)
+		public static Vec2I operator %(Vec2I v1, Vec2I v2)
 		{
-			return new Vec2i(v1.X % v2.X, v1.Y % v2.Y);
+			return new Vec2I(v1.X % v2.X, v1.Y % v2.Y);
 		}
 
-		public static Vec2i operator %(Vec2i v1, int v2)
+		public static Vec2I operator %(Vec2I v1, int v2)
 		{
-			return new Vec2i(v1.X % v2, v1.Y % v2);
+			return new Vec2I(v1.X % v2, v1.Y % v2);
 		}
 
-		public static bool operator ==(Vec2i a, Vec2i b)
+		public static bool operator ==(Vec2I a, Vec2I b)
 		{
 			if ((object)a == null && (object)b == null)
 				return true;
@@ -106,15 +106,15 @@ namespace BefunExec.View.OpenGL.OGLMath
 			return (a.X == b.X && a.Y == b.Y);
 		}
 
-		public static bool operator !=(Vec2i a, Vec2i b)
+		public static bool operator !=(Vec2I a, Vec2I b)
 		{
 			return !(a == b);
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Vec2d)
-				return this == (Vec2d)obj;
+			if (obj is Vec2D)
+				return this == (Vec2D)obj;
 			return false;
 		}
 
@@ -171,7 +171,7 @@ namespace BefunExec.View.OpenGL.OGLMath
 			Y = py;
 		}
 
-		public void rotateAround(Vec2i centerPoint, double rads)
+		public void rotateAround(Vec2I centerPoint, double rads)
 		{
 			double cosTheta = Math.Cos(rads);
 			double sinTheta = Math.Sin(rads);

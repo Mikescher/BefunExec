@@ -1,5 +1,4 @@
-﻿
-namespace BefunExec.Logic.Log
+﻿namespace BefunExec.Logic.Log
 {
 	public class BefunLogActionDeltaChange : BefunLogAction
 	{
@@ -8,8 +7,8 @@ namespace BefunExec.Logic.Log
 
 		public BefunLogActionDeltaChange(int olddeltaX, int olddeltaY)
 		{
-			this.dx = olddeltaX;
-			this.dy = olddeltaY;
+			dx = olddeltaX;
+			dy = olddeltaY;
 		}
 
 		public override void Reverse(BefunProg prog)

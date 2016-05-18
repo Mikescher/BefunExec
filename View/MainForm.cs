@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace BefunExec.View
 {
-	public partial class MainForm : Form
+	public sealed partial class MainForm : Form
 	{
 		#region Constants
 
@@ -20,12 +20,12 @@ namespace BefunExec.View
 
 		#region Fields
 
-		private bool loaded => glStackView.loaded && glProgramView.loaded;
+		private bool Loaded => glStackView.Loaded && glProgramView.Loaded;
 
 		private BefunProg prog;
-		private string init_code;
+		private string initCode;
 
-		private InteropKeyboard kb = new InteropKeyboard();
+		private readonly InteropKeyboard keyboard = new InteropKeyboard();
 
 		private char? lastInput = null;
 
@@ -41,12 +41,12 @@ namespace BefunExec.View
 		{
 			InitializeComponent();
 			if (RunOptions.FILEPATH != null)
-				this.Text = RunOptions.FILEPATH + " - " + Program.TITLE;
+				Text = RunOptions.FILEPATH + " - " + Program.TITLE;
 			else
-				this.Text = Program.TITLE;
+				Text = Program.TITLE;
 
 			prog = bp;
-			init_code = code;
+			initCode = code;
 
 			syntaxHighlighting_noneToolStripMenuItem.Checked = (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_NONE);
 			syntaxHighlighting_simpleToolStripMenuItem.Checked = (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_SIMPLE);
@@ -59,8 +59,8 @@ namespace BefunExec.View
 			showStackReversedToolStripMenuItem.Checked = RunOptions.SHOW_STACK_REVERSED;
 			enableUndoToolStripMenuItem.Checked = RunOptions.ENABLEUNDO;
 			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
-			prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
-			setSpeed(RunOptions.RUN_FREQUENCY_IDX, true);
+			prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
+			SetSpeed(RunOptions.RUN_FREQUENCY_IDX, true);
 
 			Application.Idle += Application_Idle;
 		}
@@ -77,29 +77,29 @@ namespace BefunExec.View
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			this.ActiveControl = glProgramView;
+			ActiveControl = glProgramView;
 		}
 
 		void Application_Idle(object sender, EventArgs e)
 		{
-			if (!loaded) // Play nice
+			if (!Loaded) // Play nice
 				return;
 
 			if (glProgramView.IsIdle)
 			{
 				glProgramView.MakeCurrent();
 
-				glProgramView.updateTimer.Start();
+				glProgramView.UpdateTimer.Start();
 				{
-					updateProgramView();
+					UpdateProgramView();
 				}
-				glProgramView.updateTimer.Stop();
+				glProgramView.UpdateTimer.Stop();
 
-				glProgramView.renderTimer.Start();
+				glProgramView.RenderTimer.Start();
 				{
-					glProgramView.DoRender(true, kb.isDown(Keys.Tab), currInput);
+					glProgramView.DoRender(true, keyboard.IsDown(Keys.Tab), currInput);
 				}
-				glProgramView.renderTimer.Stop();
+				glProgramView.RenderTimer.Stop();
 
 			}
 
@@ -124,11 +124,11 @@ namespace BefunExec.View
 			glStackView.DoInit(prog);
 		}
 
-		private void glProgramView_Load(object sender, System.EventArgs e)
+		private void glProgramView_Load(object sender, EventArgs e)
 		{
 			glProgramView.DoInit(prog);
 
-			updateStatusbar();
+			UpdateStatusbar();
 		}
 
 		private void glProgramView_Resize(object sender, EventArgs e)
@@ -149,68 +149,68 @@ namespace BefunExec.View
 			glStackView.Invalidate();
 		}
 
-		private void glProgramView_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void glProgramView_MouseDown(object sender, MouseEventArgs e)
 		{
 			glProgramView.DoMouseDown(e);
 
-			updateStatusbar();
+			UpdateStatusbar();
 		}
 
-		private void glProgramView_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void glProgramView_MouseMove(object sender, MouseEventArgs e)
 		{
 			glProgramView.DoMouseMove(e);
 
-			updateStatusbar();
+			UpdateStatusbar();
 		}
 
-		private void glProgramView_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void glProgramView_MouseUp(object sender, MouseEventArgs e)
 		{
 			glProgramView.DoMouseUp(e);
 
-			updateStatusbar();
+			UpdateStatusbar();
 		}
 
-		private void glProgramView_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+		private void glProgramView_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			lastInput = e.KeyChar;
 		}
 
-		private void glProgramView_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void glProgramView_MouseWheel(object sender, MouseEventArgs e)
 		{
 			glProgramView.DoMouseWheel(e);
 
-			updateStatusbar();
+			UpdateStatusbar();
 		}
 
 		#endregion
 
 		#region Update
 
-		private void updateProgramView()
+		private void UpdateProgramView()
 		{
 			if (glProgramView.ContainsFocus)
-				kb.update();
+				keyboard.Update();
 
 			bool isrun = (prog.Mode == BefunProg.MODE_RUN);
 
 			#region Keys
 
-			if (isrun && kb[Keys.Escape])
+			if (isrun && keyboard[Keys.Escape])
 			{
-				setFollowMode(false);
+				SetFollowMode(false);
 
-				glProgramView.zoom.Pop();
+				glProgramView.Zoom.Pop();
 			}
 
-			if (isrun && kb[Keys.Space] && prog.Mode == BefunProg.MODE_RUN)
+			if (isrun && keyboard[Keys.Space] && prog.Mode == BefunProg.MODE_RUN)
 			{
 				prog.Paused = !prog.Paused;
 			}
 
-			if (kb[Keys.Back] && currInput.Length > 0)
+			if (keyboard[Keys.Back] && currInput.Length > 0)
 				currInput = currInput.Substring(0, currInput.Length - 1);
 
-			if (kb[Keys.Enter])
+			if (keyboard[Keys.Enter])
 			{
 				if (prog.Mode == BefunProg.MODE_IN_INT && currInput.Length > 0 && currInput != "-")
 				{
@@ -221,53 +221,53 @@ namespace BefunExec.View
 				}
 			}
 
-			if (isrun && kb[Keys.Right])
+			if (isrun && keyboard[Keys.Right])
 				prog.DoSingleStep = true;
 
-			if (isrun && kb[Keys.Left])
+			if (isrun && keyboard[Keys.Left])
 				prog.DoSingleUndo = true;
 
-			if (isrun && kb[Keys.D1])
-				setSpeed(RunOptions.STANDARDFREQ_1, true);
+			if (isrun && keyboard[Keys.D1])
+				SetSpeed(RunOptions.STANDARDFREQ_1, true);
 
-			if (isrun && kb[Keys.D2])
-				setSpeed(RunOptions.STANDARDFREQ_2, true);
+			if (isrun && keyboard[Keys.D2])
+				SetSpeed(RunOptions.STANDARDFREQ_2, true);
 
-			if (isrun && kb[Keys.D3])
-				setSpeed(RunOptions.STANDARDFREQ_3, true);
+			if (isrun && keyboard[Keys.D3])
+				SetSpeed(RunOptions.STANDARDFREQ_3, true);
 
-			if (isrun && kb[Keys.D4])
-				setSpeed(RunOptions.STANDARDFREQ_4, true);
+			if (isrun && keyboard[Keys.D4])
+				SetSpeed(RunOptions.STANDARDFREQ_4, true);
 
-			if (isrun && kb[Keys.D5])
-				setSpeed(RunOptions.STANDARDFREQ_5, true);
+			if (isrun && keyboard[Keys.D5])
+				SetSpeed(RunOptions.STANDARDFREQ_5, true);
 
-			if (isrun && kb[Keys.R] & kb.isDown(Keys.ControlKey)) // no shortcut eval on purpose
-				reload();
+			if (isrun && keyboard[Keys.R] & keyboard.IsDown(Keys.ControlKey)) // no shortcut eval on purpose
+				Reload();
 
-			if (isrun && kb[Keys.R] & !kb.isDown(Keys.ControlKey)) // no shortcut eval on purpose
-				reset();
+			if (isrun && keyboard[Keys.R] & !keyboard.IsDown(Keys.ControlKey)) // no shortcut eval on purpose
+				Reset();
 
-			if (isrun && kb[Keys.C])
+			if (isrun && keyboard[Keys.C])
 			{
 				ResetBPs();
 				ResetWatched();
 			}
 
-			if (isrun && kb[Keys.PageUp])
-				incSpeed();
+			if (isrun && keyboard[Keys.PageUp])
+				IncSpeed();
 
-			if (isrun && kb[Keys.PageDown])
-				decSpeed();
+			if (isrun && keyboard[Keys.PageDown])
+				DecSpeed();
 
-			if (isrun && kb[Keys.F])
-				setFollowMode(!RunOptions.FOLLOW_MODE);
+			if (isrun && keyboard[Keys.F])
+				SetFollowMode(!RunOptions.FOLLOW_MODE);
 
-			if (isrun && kb[Keys.P] && RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED && glProgramView.ExtendedSHGraph.isEffectiveSizeCalculated())
-				glProgramView.zoom.Push(new Rect2i(0, 0, glProgramView.ExtendedSHGraph.EffectiveWidth, glProgramView.ExtendedSHGraph.EffectiveHeight));
+			if (isrun && keyboard[Keys.P] && RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED && glProgramView.ExtendedSHGraph.isEffectiveSizeCalculated())
+				glProgramView.Zoom.Push(new Rect2I(0, 0, glProgramView.ExtendedSHGraph.EffectiveWidth, glProgramView.ExtendedSHGraph.EffectiveHeight));
 
-			if (kb.AnyKey())
-				updateStatusbar();
+			if (keyboard.AnyKey())
+				UpdateStatusbar();
 
 			#endregion
 
@@ -275,15 +275,15 @@ namespace BefunExec.View
 
 			if (isrun && RunOptions.FOLLOW_MODE)
 			{
-				Rect2i prog_rect = new Rect2i(0, 0, prog.Width, prog.Height);
-				Vec2i p = new Vec2i(prog.PC);
-				Rect2i z = new Rect2i(p.X - FOLLOW_MODE_RADIUS, p.Y - FOLLOW_MODE_RADIUS, FOLLOW_MODE_RADIUS * 2, FOLLOW_MODE_RADIUS * 2);
+				Rect2I progRect = new Rect2I(0, 0, prog.Width, prog.Height);
+				Vec2I p = new Vec2I(prog.PC);
+				Rect2I z = new Rect2I(p.X - FOLLOW_MODE_RADIUS, p.Y - FOLLOW_MODE_RADIUS, FOLLOW_MODE_RADIUS * 2, FOLLOW_MODE_RADIUS * 2);
 
-				z.ForceInside(prog_rect);
-				z.setInsideRatio_Expanding((12.0 * glProgramView.Width) / (8.0 * glProgramView.Height), prog_rect);
+				z.ForceInside(progRect);
+				z.setInsideRatio_Expanding((12.0 * glProgramView.Width) / (8.0 * glProgramView.Height), progRect);
 
-				glProgramView.zoom.Pop();
-				glProgramView.zoom.Push(z);
+				glProgramView.Zoom.Pop();
+				glProgramView.Zoom.Push(z);
 			}
 
 			#endregion
@@ -324,9 +324,9 @@ namespace BefunExec.View
 
 			// SHOW QUEQUE
 
-			char[] chr_queque = prog.InputCharacters.ToArray();
+			char[] chrQueque = prog.InputCharacters.ToArray();
 
-			edInputQueque.Text = string.Join("", chr_queque);
+			edInputQueque.Text = string.Join("", chrQueque);
 
 			#endregion
 
@@ -375,22 +375,22 @@ namespace BefunExec.View
 				{
 					for (int i = 0; i < (7 - prog.WatchData[x, y]) % 7; i++)
 					{
-						prog.WatchDataChanges.Enqueue(new Vec2i(x, y));
+						prog.WatchDataChanges.Enqueue(new Vec2I(x, y));
 					}
 				}
 			}
 		}
 
-		private void reset()
+		private void Reset()
 		{
 			prog.ResetFreezeRequest = true;
 
 			while (!prog.ResetFreezeAnswer)
 				Thread.Sleep(0);
 
-			prog.full_reset(init_code);
+			prog.full_reset(initCode);
 
-			setFollowMode(false);
+			SetFollowMode(false);
 
 			Console.WriteLine();
 			Console.WriteLine();
@@ -403,7 +403,7 @@ namespace BefunExec.View
 			prog.ResetFreezeRequest = false;
 		}
 
-		private void reload() // Not sure if threadsafe :-/
+		private void Reload() // Not sure if threadsafe :-/
 		{
 			if (RunOptions.FILEPATH != null)
 			{
@@ -415,15 +415,15 @@ namespace BefunExec.View
 					Console.WriteLine("Could not load program from Filepath: ");
 					Console.WriteLine(RunOptions.FILEPATH);
 
-					reset();
+					Reset();
 				}
 				else
 				{
-					glProgramView.loaded = false;
+					glProgramView.Loaded = false;
 
-					var oldInitCode = BefunProg.GetProg(init_code);
-					init_code = code;
-					var newInintCode = BefunProg.GetProg(init_code);
+					var oldInitCode = BefunProg.GetProg(initCode);
+					initCode = code;
+					var newInintCode = BefunProg.GetProg(initCode);
 
 					prog.ResetFreezeRequest = true;
 					while (!prog.ResetFreezeAnswer)
@@ -437,8 +437,8 @@ namespace BefunExec.View
 
 					var keepView = oldProg.Width == prog.Width && oldProg.Height == prog.Height;
 
-					glProgramView.resetProg(prog, null, keepView);
-					prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
+					glProgramView.ResetProg(prog, null, keepView);
+					prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
 
 					if (keepView)
 					{
@@ -469,20 +469,20 @@ namespace BefunExec.View
 
 					glStackView.ReInit(prog);
 
-					glProgramView.initSyntaxHighlighting();
+					glProgramView.InitSyntaxHighlighting();
 
-					new Thread(new ThreadStart(prog.Run)).Start();
+					new Thread(prog.Run).Start();
 
-					glProgramView.loaded = true;
+					glProgramView.Loaded = true;
 				}
 			}
 			else
 			{
-				reset();
+				Reset();
 			}
 		}
 
-		private void setSpeed(int freqIdx, bool recheck)
+		private void SetSpeed(int freqIdx, bool recheck)
 		{
 			RunOptions.RUN_FREQUENCY_IDX = freqIdx;
 			prog.CurrSleeptimeFreq = RunOptions.FREQUENCY_SLIDER[freqIdx];
@@ -490,10 +490,10 @@ namespace BefunExec.View
 			if (recheck)
 				speedFreqBar.Value = freqIdx;
 
-			updateStatusbar();
+			UpdateStatusbar();
 		}
 
-		private void setSyntaxHighlighting(int sh, bool recheck)
+		private void SetSyntaxHighlighting(int sh, bool recheck)
 		{
 			if (sh == RunOptions.SH_NONE)
 				syntaxHighlighting_noneToolStripMenuItem.Checked = true;
@@ -503,17 +503,17 @@ namespace BefunExec.View
 				syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Checked = true;
 		}
 
-		private void incSpeed()
+		private void IncSpeed()
 		{
-			setSpeed(Math.Min(RunOptions.RUN_FREQUENCY_IDX + 1, 15), true);
+			SetSpeed(Math.Min(RunOptions.RUN_FREQUENCY_IDX + 1, 15), true);
 		}
 
-		private void decSpeed()
+		private void DecSpeed()
 		{
-			setSpeed(Math.Max(RunOptions.RUN_FREQUENCY_IDX - 1, 0), true);
+			SetSpeed(Math.Max(RunOptions.RUN_FREQUENCY_IDX - 1, 0), true);
 		}
 
-		private void setFollowMode(bool v)
+		private void SetFollowMode(bool v)
 		{
 			if (!(v ^ RunOptions.FOLLOW_MODE)) // v == FOLLOW_MODE
 				return;
@@ -523,45 +523,45 @@ namespace BefunExec.View
 
 			if (RunOptions.FOLLOW_MODE)
 			{
-				glProgramView.zoom.Push(glProgramView.zoom.Peek());
+				glProgramView.Zoom.Push(glProgramView.Zoom.Peek());
 			}
 			else
 			{
-				glProgramView.zoom.Pop();
+				glProgramView.Zoom.Pop();
 			}
 		}
 
-		private void updateStatusbar()
+		private void UpdateStatusbar()
 		{
-			if (!loaded)
+			if (!Loaded)
 				return;
 
 			int posx, posy;
 			Point mp = glProgramView.PointToClient(Cursor.Position);
-			glProgramView.getPointInProgram(mp.X, mp.Y, out posx, out posy);
+			glProgramView.GetPointInProgram(mp.X, mp.Y, out posx, out posy);
 			bool inControl = posx >= 0 && posy >= 0;
 
 			if (inControl)
 			{
-				toolStripLabelPosition.Text = String.Format("Position: ({0:000}|{1:000})", posx, posy);
-				toolStripLabelValue.Text = String.Format("Value: {0:0000}", prog.Raster[posx, posy]);
+				toolStripLabelPosition.Text = string.Format("Position: ({0:000}|{1:000})", posx, posy);
+				toolStripLabelValue.Text = string.Format("Value: {0:0000}", prog.Raster[posx, posy]);
 			}
 			else
 			{
-				toolStripLabelPosition.Text = String.Format("Position: ({0}|{1})", "???", "???");
-				toolStripLabelValue.Text = String.Format("Value: {0}", "????");
+				toolStripLabelPosition.Text = string.Format("Position: ({0}|{1})", "???", "???");
+				toolStripLabelValue.Text = string.Format("Value: {0}", "????");
 			}
-			toolStripLabelSize.Text = String.Format("Size: {0}x{1}", prog.Width, prog.Height);
+			toolStripLabelSize.Text = string.Format("Size: {0}x{1}", prog.Width, prog.Height);
 
 			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED && glProgramView.ExtendedSHGraph.isEffectiveSizeCalculated())
-				toolStripLabelEffectiveSize.Text = String.Format("Effective size: {0}x{1}", glProgramView.ExtendedSHGraph.EffectiveWidth, glProgramView.ExtendedSHGraph.EffectiveHeight);
+				toolStripLabelEffectiveSize.Text = string.Format("Effective Size: {0}x{1}", glProgramView.ExtendedSHGraph.EffectiveWidth, glProgramView.ExtendedSHGraph.EffectiveHeight);
 			else
-				toolStripLabelEffectiveSize.Text = String.Format("Effective size: {0}x{1}", '?', '?');
+				toolStripLabelEffectiveSize.Text = string.Format("Effective Size: {0}x{1}", '?', '?');
 
-			toolStripLabelZoom.Text = String.Format("Zoom: x{0:0.##}", glProgramView.zoom.getZoomFactor());
-			toolStripLabelBreakpoints.Text = String.Format("Breakpoints: {0}", prog.GetBreakPointCount());
-			toolStripLabelWatchedFields.Text = String.Format("Watched Fields: {0}", prog.WatchedFields.Count);
-			toolStripLabelSpeed.Text = String.Format("Speed level: {0:}", GLExtendedViewControl.getFreqFormatted(RunOptions.getRunFrequency()));
+			toolStripLabelZoom.Text = string.Format("Zoom: x{0:0.##}", glProgramView.Zoom.GetZoomFactor());
+			toolStripLabelBreakpoints.Text = string.Format("Breakpoints: {0}", prog.GetBreakPointCount());
+			toolStripLabelWatchedFields.Text = string.Format("Watched Fields: {0}", prog.WatchedFields.Count);
+			toolStripLabelSpeed.Text = string.Format("Speed level: {0}", GLExtendedViewControl.GetFreqFormatted(RunOptions.GetRunFrequency()));
 		}
 
 		public Bitmap GrabScreenshot()
@@ -580,54 +580,55 @@ namespace BefunExec.View
 
 		private void resetToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			reset();
+			Reset();
 		}
 
 		private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			reload();
+			Reload();
 		}
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog fd = new OpenFileDialog();
-
-			fd.Filter = "Befunge-Program|*.b93;*.b98;*.tfd|Befunge-93|*.b93|Befunge-98|*.b98|TextFunge-Debug-File|*.tfd|All Files|*";
-			fd.FilterIndex = 1;
-
+			OpenFileDialog fd = new OpenFileDialog
+			{
+				Filter = "Befunge-Program|*.b93;*.b98;*.tfd|Befunge-93|*.b93|Befunge-98|*.b98|TextFunge-Debug-File|*.tfd|All Files|*",
+				FilterIndex = 1
+			};
+			
 			if (fd.ShowDialog() == DialogResult.OK)
 			{
 				string c = BefungeFileHelper.LoadTextFile(fd.FileName);
 				if (c != null)
 				{
-					glProgramView.loaded = false;
-					glStackView.loaded = false;
+					glProgramView.Loaded = false;
+					glStackView.Loaded = false;
 
-					init_code = c;
+					initCode = c;
 					RunOptions.FILEPATH = fd.FileName;
 
 					prog.Running = false;
 
-					var arrprog = BefunProg.GetProg(init_code);
+					var arrprog = BefunProg.GetProg(initCode);
 
 					if (arrprog.GetLength(0) * arrprog.GetLength(1) > GLProgramViewControl.MAX_EXTENDEDSH_SIZE)
 					{
-						setSyntaxHighlighting(RunOptions.SH_SIMPLE, true);
+						SetSyntaxHighlighting(RunOptions.SH_SIMPLE, true);
 					}
 
 					prog = new BefunProg(arrprog);
 
-					glProgramView.resetProg(prog, null);
-					prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
+					glProgramView.ResetProg(prog, null);
+					prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
 					glStackView.ReInit(prog);
 
-					new Thread(new ThreadStart(prog.Run)).Start();
-					glProgramView.initSyntaxHighlighting();
+					new Thread(prog.Run).Start();
+					glProgramView.InitSyntaxHighlighting();
 
-					this.Text = fd.FileName + " - " + Program.TITLE;
+					Text = fd.FileName + " - " + Program.TITLE;
 
-					glProgramView.loaded = true;
-					glStackView.loaded = true;
+					glProgramView.Loaded = true;
+					glStackView.Loaded = true;
 				}
 			}
 		}
@@ -639,7 +640,7 @@ namespace BefunExec.View
 
 		private void followCursorToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
-			setFollowMode(followCursorToolStripMenuItem.Checked);
+			SetFollowMode(followCursorToolStripMenuItem.Checked);
 		}
 
 		private void zoomToInitialToolStripMenuItem_Click(object sender, EventArgs e)
@@ -647,9 +648,9 @@ namespace BefunExec.View
 			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
 				return;
 
-			glProgramView.zoom.PopToBase();
+			glProgramView.Zoom.PopToBase();
 
-			glProgramView.zoom.Push(RunOptions.INIT_ZOOM);
+			glProgramView.Zoom.Push(RunOptions.INIT_ZOOM);
 		}
 
 		private void zoomOutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -658,7 +659,7 @@ namespace BefunExec.View
 				return;
 
 
-			glProgramView.zoom.Pop();
+			glProgramView.Zoom.Pop();
 		}
 
 		private void zoomCompleteOutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -666,7 +667,7 @@ namespace BefunExec.View
 			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
 				return;
 
-			glProgramView.zoom.PopToBase();
+			glProgramView.Zoom.PopToBase();
 		}
 
 		private void runToolStripMenuItem_Click(object sender, EventArgs e)
@@ -708,18 +709,16 @@ namespace BefunExec.View
 
 			lock (prog.Stack)
 			{
-				glStackView.currStack.AddRange(prog.Stack);
+				glStackView.CurrStack.AddRange(prog.Stack);
 			}
 
-			s.AppendLine("Stack<" + glStackView.currStack.Count + ">");
+			s.AppendLine("Stack<" + glStackView.CurrStack.Count + ">");
 
 			s.AppendLine();
 			s.AppendLine();
 
-			for (int i = 0; i < glStackView.currStack.Count; i++)
+			foreach (long val in glStackView.CurrStack)
 			{
-				long val = glStackView.currStack[i];
-
 				if (RunOptions.ASCII_STACK && val >= 32 && val <= 126)
 					s.AppendLine(string.Format("{0:0000} <{1}>", val, (char)val));
 				else
@@ -774,7 +773,7 @@ namespace BefunExec.View
 
 		private void syntaxhighlightingToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!loaded)
+			if (!Loaded)
 				return;
 
 			if (syntaxHighlighting_noneToolStripMenuItem.Checked)
@@ -790,13 +789,12 @@ namespace BefunExec.View
 				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_EXTENDED;
 			}
 
-			glProgramView.initSyntaxHighlighting();
+			glProgramView.InitSyntaxHighlighting();
 		}
 
 		private void createHDScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.Filter = "PNG-Image|*.png";
+			SaveFileDialog sfd = new SaveFileDialog {Filter = "PNG-Image|*.png"};
 
 			if (sfd.ShowDialog() == DialogResult.OK)
 			{
@@ -813,32 +811,32 @@ namespace BefunExec.View
 
 		private void lowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			setSpeed(RunOptions.STANDARDFREQ_1, true);
+			SetSpeed(RunOptions.STANDARDFREQ_1, true);
 		}
 
 		private void middleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			setSpeed(RunOptions.STANDARDFREQ_2, true);
+			SetSpeed(RunOptions.STANDARDFREQ_2, true);
 		}
 
 		private void fastToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			setSpeed(RunOptions.STANDARDFREQ_3, true);
+			SetSpeed(RunOptions.STANDARDFREQ_3, true);
 		}
 
 		private void veryFastToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			setSpeed(RunOptions.STANDARDFREQ_4, true);
+			SetSpeed(RunOptions.STANDARDFREQ_4, true);
 		}
 
 		private void fullToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			setSpeed(RunOptions.STANDARDFREQ_5, true);
+			SetSpeed(RunOptions.STANDARDFREQ_5, true);
 		}
 
 		private void speedFreqBar_ValueChanged(object sender, EventArgs e)
 		{
-			setSpeed(speedFreqBar.Value, false);
+			SetSpeed(speedFreqBar.Value, false);
 		}
 
 		#endregion
@@ -847,15 +845,15 @@ namespace BefunExec.View
 
 		private void btnAddInput_Click(object sender, EventArgs e)
 		{
-			performBufferedInput();
+			PerformBufferedInput();
 		}
 
 		private void edInput_KeyUp(object sender, KeyEventArgs e)
 		{
-			performBufferedInput();
+			PerformBufferedInput();
 		}
 
-		private void performBufferedInput()
+		private void PerformBufferedInput()
 		{
 			string s = edInput.Text;
 			edInput.Text = "";
@@ -877,7 +875,7 @@ namespace BefunExec.View
 		{
 			RunOptions.ENABLEUNDO = enableUndoToolStripMenuItem.Checked;
 
-			prog.UndoLog.enabled = RunOptions.ENABLEUNDO;
+			prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
 			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
 		}
 
