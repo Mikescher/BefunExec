@@ -4,7 +4,6 @@ using BefunExec.View.OpenGL.OGLMath;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -79,20 +78,14 @@ namespace BefunExec.Logic
 		public readonly StringBuilder Output = new StringBuilder();
 		public int SimpleOutputHash = 0;
 
-		public BefunProg(long[,] iras)
+		public BefunProg(FileInformation pfi)
 		{
-			Raster = iras;
+			Raster = pfi.GetRaster();
 			DecayRaster = new long[Width, Height];
 			Breakpoints = new bool[Width, Height];
 			WatchData = new byte[Width, Height];
 
-			for (int x = 0; x < Width; x++)
-				for (int y = 0; y < Height; y++)
-				{
-					DecayRaster[x, y] = 0;
-					Breakpoints[x, y] = false;
-				}
-			Breakpointcount = 0;
+			pfi.ApplyMetadata(this, true);
 
 			dimension = new Vec2I(Width, Height);
 
@@ -555,9 +548,9 @@ namespace BefunExec.Logic
 			}
 		}
 
-		public void full_reset(string code)
+		public void full_reset(FileInformation code)
 		{
-			Raster = GetProg(code);
+			Raster = code.GetRaster();
 			PC = new Vec2I(0, 0);
 			Paused = true;
 			DoSingleStep = false;
@@ -585,35 +578,6 @@ namespace BefunExec.Logic
 
 			Output.Clear();
 			SimpleOutputHash++;
-		}
-
-		public static int GetProgWidth(string pg)
-		{
-			return pg.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None).Max(s => s.Length);
-		}
-
-		public static int GetProgHeight(string pg)
-		{
-			return pg.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None).Length;
-		}
-
-		public static long[,] GetProg(string pg)
-		{
-			int w, h;
-
-			long[,] prog = new long[w = GetProgWidth(pg), h = GetProgHeight(pg)];
-
-			string[] split = pg.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-
-			for (int y = 0; y < h; y++)
-			{
-				for (int x = 0; x < w; x++)
-				{
-					prog[x, y] = (x < split[y].Length) ? split[y][x] : ' ';
-				}
-			}
-
-			return prog;
 		}
 
 		public bool IsBefunge93()

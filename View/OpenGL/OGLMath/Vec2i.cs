@@ -113,8 +113,8 @@ namespace BefunExec.View.OpenGL.OGLMath
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Vec2D)
-				return this == (Vec2D)obj;
+			if (obj is Vec2I)
+				return this == (Vec2I)obj;
 			return false;
 		}
 

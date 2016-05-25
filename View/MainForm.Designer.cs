@@ -103,10 +103,11 @@
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabelBreakpoints = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabelWatchedFields = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabelSpeed = new System.Windows.Forms.ToolStripLabel();
 			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripLabelWatchedFields = new System.Windows.Forms.ToolStripLabel();
+			this.enableInputPreprocessorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -465,34 +466,34 @@
 			// runToolStripMenuItem
 			// 
 			this.runToolStripMenuItem.Name = "runToolStripMenuItem";
-			this.runToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.runToolStripMenuItem.Text = "Run/Pause";
 			this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
 			// 
 			// stepToolStripMenuItem
 			// 
 			this.stepToolStripMenuItem.Name = "stepToolStripMenuItem";
-			this.stepToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.stepToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.stepToolStripMenuItem.Text = "Step";
 			this.stepToolStripMenuItem.Click += new System.EventHandler(this.stepToolStripMenuItem_Click);
 			// 
 			// undoToolStripMenuItem
 			// 
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.undoToolStripMenuItem.Text = "Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(138, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// skipNOPsToolStripMenuItem
 			// 
 			this.skipNOPsToolStripMenuItem.CheckOnClick = true;
 			this.skipNOPsToolStripMenuItem.Name = "skipNOPsToolStripMenuItem";
-			this.skipNOPsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.skipNOPsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.skipNOPsToolStripMenuItem.Text = "Skip NOP\'s";
 			this.skipNOPsToolStripMenuItem.Click += new System.EventHandler(this.skipNOPsToolStripMenuItem_Click);
 			// 
@@ -500,14 +501,14 @@
 			// 
 			this.enableUndoToolStripMenuItem.CheckOnClick = true;
 			this.enableUndoToolStripMenuItem.Name = "enableUndoToolStripMenuItem";
-			this.enableUndoToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.enableUndoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.enableUndoToolStripMenuItem.Text = "Enable Undo";
 			this.enableUndoToolStripMenuItem.Click += new System.EventHandler(this.enableUndoToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem5
 			// 
 			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-			this.toolStripMenuItem5.Size = new System.Drawing.Size(138, 6);
+			this.toolStripMenuItem5.Size = new System.Drawing.Size(149, 6);
 			// 
 			// speedToolStripMenuItem
 			// 
@@ -518,7 +519,7 @@
             this.veryFastToolStripMenuItem,
             this.fullToolStripMenuItem});
 			this.speedToolStripMenuItem.Name = "speedToolStripMenuItem";
-			this.speedToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.speedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.speedToolStripMenuItem.Text = "Speed";
 			// 
 			// lowToolStripMenuItem
@@ -565,7 +566,8 @@
             this.showCompleteStackToolStripMenuItem,
             this.showCompleteOutputToolStripMenuItem,
             this.showCurrentStateToolStripMenuItem,
-            this.copyExecutiondataToClipboardToolStripMenuItem});
+            this.copyExecutiondataToClipboardToolStripMenuItem,
+            this.enableInputPreprocessorToolStripMenuItem});
 			this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
 			this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
 			this.debugToolStripMenuItem.Text = "Debug";
@@ -734,7 +736,7 @@
 			// toolStripLabelEffectiveSize
 			// 
 			this.toolStripLabelEffectiveSize.Name = "toolStripLabelEffectiveSize";
-			this.toolStripLabelEffectiveSize.Size = new System.Drawing.Size(105, 15);
+			this.toolStripLabelEffectiveSize.Size = new System.Drawing.Size(106, 15);
 			this.toolStripLabelEffectiveSize.Text = "Effective Size: WxH";
 			// 
 			// toolStripSeparator7
@@ -764,6 +766,17 @@
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
 			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 23);
 			// 
+			// toolStripLabelWatchedFields
+			// 
+			this.toolStripLabelWatchedFields.Name = "toolStripLabelWatchedFields";
+			this.toolStripLabelWatchedFields.Size = new System.Drawing.Size(97, 15);
+			this.toolStripLabelWatchedFields.Text = "Watched Fields: f";
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(6, 23);
+			// 
 			// toolStripLabelSpeed
 			// 
 			this.toolStripLabelSpeed.Name = "toolStripLabelSpeed";
@@ -792,16 +805,13 @@
 			// 
 			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.menuStrip1);
 			// 
-			// toolStripSeparator8
+			// enableInputPreprocessorToolStripMenuItem
 			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(6, 23);
-			// 
-			// toolStripLabelWatchedFields
-			// 
-			this.toolStripLabelWatchedFields.Name = "toolStripLabelWatchedFields";
-			this.toolStripLabelWatchedFields.Size = new System.Drawing.Size(97, 15);
-			this.toolStripLabelWatchedFields.Text = "Watched Fields: f";
+			this.enableInputPreprocessorToolStripMenuItem.CheckOnClick = true;
+			this.enableInputPreprocessorToolStripMenuItem.Name = "enableInputPreprocessorToolStripMenuItem";
+			this.enableInputPreprocessorToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			this.enableInputPreprocessorToolStripMenuItem.Text = "Enable input Preprocessor";
+			this.enableInputPreprocessorToolStripMenuItem.Click += new System.EventHandler(this.enableInputPreprocessorToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -916,5 +926,6 @@
 		private System.Windows.Forms.ToolStripMenuItem copyExecutiondataToClipboardToolStripMenuItem;
 		private System.Windows.Forms.ToolStripLabel toolStripLabelWatchedFields;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem enableInputPreprocessorToolStripMenuItem;
 	}
 }

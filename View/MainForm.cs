@@ -23,7 +23,7 @@ namespace BefunExec.View
 		private bool Loaded => glStackView.Loaded && glProgramView.Loaded;
 
 		private BefunProg prog;
-		private string initCode;
+		private FileInformation initCode;
 
 		private readonly InteropKeyboard keyboard = new InteropKeyboard();
 
@@ -37,7 +37,7 @@ namespace BefunExec.View
 
 		#region Konstruktor
 
-		public MainForm(BefunProg bp, string code)
+		public MainForm(BefunProg bp, FileInformation code)
 		{
 			InitializeComponent();
 			if (RunOptions.FILEPATH != null)
@@ -57,6 +57,7 @@ namespace BefunExec.View
 			debugModeToolStripMenuItem.Checked = RunOptions.DEBUGRUN;
 			showTrailToolStripMenuItem.Checked = RunOptions.SHOW_DECAY;
 			showStackReversedToolStripMenuItem.Checked = RunOptions.SHOW_STACK_REVERSED;
+			showStackReversedToolStripMenuItem.Checked = RunOptions.PREPROCESSOR;
 			enableUndoToolStripMenuItem.Checked = RunOptions.ENABLEUNDO;
 			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
 			prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
@@ -97,7 +98,14 @@ namespace BefunExec.View
 
 				glProgramView.RenderTimer.Start();
 				{
-					glProgramView.DoRender(true, keyboard.IsDown(Keys.Tab), currInput);
+					try
+					{
+						glProgramView.DoRender(true, keyboard.IsDown(Keys.Tab), currInput);
+					}
+					catch (Exception re)
+					{
+						Console.Out.WriteLine("Error in DoRender:\r\n" + re.ToString());
+					}
 				}
 				glProgramView.RenderTimer.Stop();
 
@@ -407,7 +415,7 @@ namespace BefunExec.View
 		{
 			if (RunOptions.FILEPATH != null)
 			{
-				string code = BefungeFileHelper.LoadTextFile(RunOptions.FILEPATH);
+				var code = BefungeFileHelper.LoadTextFile(RunOptions.FILEPATH, RunOptions.PREPROCESSOR);
 
 				if (code == null)
 				{
@@ -421,9 +429,9 @@ namespace BefunExec.View
 				{
 					glProgramView.Loaded = false;
 
-					var oldInitCode = BefunProg.GetProg(initCode);
+					var oldInitRaster = initCode.GetRaster();
 					initCode = code;
-					var newInintCode = BefunProg.GetProg(initCode);
+					var newInintRaster = initCode.GetRaster();
 
 					prog.ResetFreezeRequest = true;
 					while (!prog.ResetFreezeAnswer)
@@ -433,7 +441,7 @@ namespace BefunExec.View
 
 					var oldProg = prog;
 
-					prog = new BefunProg(newInintCode);
+					prog = new BefunProg(initCode);
 
 					var keepView = oldProg.Width == prog.Width && oldProg.Height == prog.Height;
 
@@ -444,17 +452,27 @@ namespace BefunExec.View
 					{
 						for (int x = 0; x < prog.Width; x++)
 							for (int y = 0; y < prog.Height; y++)
-								if (oldInitCode[x, y] == newInintCode[x, y])
+								if (oldInitRaster[x, y] == newInintRaster[x, y])
 									prog.Raster[x, y] = oldProg.Raster[x, y];
+						
+
+						for (int x = 0; x < prog.Width; x++)
+							for (int y = 0; y < prog.Height; y++)
+							{
+								prog.WatchData[x, y] = oldProg.WatchData[x, y];
+							}
+
+						prog.WatchedFields = oldProg.WatchedFields;
+
 
 						for (int x = 0; x < prog.Width; x++)
 							for (int y = 0; y < prog.Height; y++)
 							{
 								prog.Breakpoints[x, y] = oldProg.Breakpoints[x, y];
-								prog.WatchData[x, y] = oldProg.WatchData[x, y];
 							}
+
 						prog.Breakpointcount = oldProg.Breakpointcount;
-						prog.WatchedFields = oldProg.WatchedFields;
+
 
 						prog.PC = oldProg.PC;
 
@@ -598,7 +616,7 @@ namespace BefunExec.View
 			
 			if (fd.ShowDialog() == DialogResult.OK)
 			{
-				string c = BefungeFileHelper.LoadTextFile(fd.FileName);
+				var c = BefungeFileHelper.LoadTextFile(fd.FileName, RunOptions.PREPROCESSOR);
 				if (c != null)
 				{
 					glProgramView.Loaded = false;
@@ -609,14 +627,14 @@ namespace BefunExec.View
 
 					prog.Running = false;
 
-					var arrprog = BefunProg.GetProg(initCode);
+					var arrprog = initCode.GetRaster();
 
 					if (arrprog.GetLength(0) * arrprog.GetLength(1) > GLProgramViewControl.MAX_EXTENDEDSH_SIZE)
 					{
 						SetSyntaxHighlighting(RunOptions.SH_SIMPLE, true);
 					}
 
-					prog = new BefunProg(arrprog);
+					prog = new BefunProg(initCode);
 
 					glProgramView.ResetProg(prog, null);
 					prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
@@ -869,6 +887,11 @@ namespace BefunExec.View
 		private void showStackReversedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RunOptions.SHOW_STACK_REVERSED = showStackReversedToolStripMenuItem.Checked;
+		}
+
+		private void enableInputPreprocessorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RunOptions.PREPROCESSOR = enableInputPreprocessorToolStripMenuItem.Checked;
 		}
 
 		private void enableUndoToolStripMenuItem_Click(object sender, EventArgs e)

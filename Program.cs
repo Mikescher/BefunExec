@@ -21,7 +21,7 @@ namespace BefunExec
 
 			//args.ToList().ForEach(Console.WriteLine);
 
-			string code;
+			FileInformation code;
 
 			ParseParams(args, out code);
 
@@ -71,14 +71,14 @@ namespace BefunExec
 			Console.WriteLine();
 			Console.WriteLine();
 
-			BefunProg bp = new BefunProg(BefunProg.GetProg(code));
-			new Thread(new ThreadStart(bp.Run)).Start();
+			BefunProg bp = new BefunProg(code);
+			new Thread(bp.Run).Start();
 
 			//MainView mv = new MainView(bp, code);
 			Application.Run(new MainForm(bp, code));
 		}
 
-		private static CommandLineArguments ParseParams(string[] args, out string code)
+		private static CommandLineArguments ParseParams(string[] args, out FileInformation code)
 		{
 			if (args.Length > 0 && File.Exists(args[0]))
 			{
@@ -89,12 +89,16 @@ namespace BefunExec
 
 			if (cmda.isEmpty())
 			{
+				//                 00000000011111111112222222222333333333344444444445555555555666666666677777777778
+				//                 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 				Console.WriteLine("########## Parameter ##########");
 				Console.WriteLine();
 				Console.WriteLine("pause | no_pause           : Start Interpreter paused");
 				Console.WriteLine("asciistack | no_asciistack : Enable char display in stack");
 				Console.WriteLine("skipnop | no_skipnop       : Skip NOP's");
 				Console.WriteLine("debug | no_debug           : Activates additional debug-messages");
+				Console.WriteLine("                             and the input-preprocessor");
+				Console.WriteLine("preprocess | no_preprocess : Explicitly activate/deactivate the proprocessor");
 				Console.WriteLine("follow | no_follow         : Activates the follow-cursor mode");
 
 				Console.WriteLine("p_highlight | no_highlight : Set Syntax-Highlighting to [none]");
@@ -162,14 +166,24 @@ namespace BefunExec
 			if (cmda.IsSet("no_debug") || cmda.IsSet("no_debugrun"))
 				RunOptions.DEBUGRUN = false;
 			if (cmda.IsSet("debug") || cmda.IsSet("debugrun"))
+			{
+				RunOptions.PREPROCESSOR = true;
 				RunOptions.DEBUGRUN = true;
+			}
 
 			//##############
 
-			if (cmda.IsSet("no_followcursor") || cmda.IsSet("no_followcursor"))
+			if (cmda.IsSet("no_follow") || cmda.IsSet("no_followcursor"))
 				RunOptions.FOLLOW_MODE = false;
 			if (cmda.IsSet("follow") || cmda.IsSet("followcursor"))
 				RunOptions.FOLLOW_MODE = true;
+
+			//##############
+
+			if (cmda.IsSet("no_preprocess") || cmda.IsSet("no_preprocessor"))
+				RunOptions.PREPROCESSOR = false;
+			if (cmda.IsSet("preprocess") || cmda.IsSet("preprocessor"))
+				RunOptions.PREPROCESSOR = true;
 
 			//##############
 
@@ -205,8 +219,8 @@ namespace BefunExec
 			}
 
 			//##############
-
-			if (!cmda.IsSet("file") || (code = BefungeFileHelper.LoadTextFile(cmda["file"].Trim('"'))) == null)
+			
+			if (!cmda.IsSet("file") || (code = BefungeFileHelper.LoadTextFile(cmda["file"].Trim('"'), RunOptions.PREPROCESSOR)) == null)
 			{
 				Console.WriteLine("########## FILE NOT FOUND ##########");
 
@@ -214,14 +228,14 @@ namespace BefunExec
 
 				Console.WriteLine("Using Demo ...");
 
-				code = demo;
+				code = new FileInformation{ Code = demo };
 			}
 			else // succ loaded
 			{
 				RunOptions.FILEPATH = Path.GetFullPath(cmda["file"].Trim('"'));
 			}
 
-			if (!customHighlight && BefunProg.GetProgWidth(code) * BefunProg.GetProgHeight(code) > GLProgramViewControl.MAX_EXTENDEDSH_SIZE)
+			if (!customHighlight && code.GetProgWidth() * code.GetProgHeight() > GLProgramViewControl.MAX_EXTENDEDSH_SIZE)
 			{
 				RunOptions.SYNTAX_HIGHLIGHTING = RunOptions.SH_SIMPLE;
 			}

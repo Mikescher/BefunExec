@@ -78,6 +78,7 @@
     <Compile Include="GIFEncoder\GifDecoder.cs" />
     <Compile Include="GIFEncoder\LZWEncoder.cs" />
     <Compile Include="GIFEncoder\NeuQuant.cs" />
+    <Compile Include="Logic\FileInformation.cs" />
     <Compile Include="Logic\Log\BefunLog.cs" />
     <Compile Include="Logic\Log\BefunLogAction.cs" />
     <Compile Include="Logic\Log\BefunLogActionGridChange.cs" />
