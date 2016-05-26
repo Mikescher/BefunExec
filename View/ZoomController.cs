@@ -71,9 +71,30 @@ namespace BefunExec.View
 
 			if (e.Button == MouseButtons.Middle)
 			{
-				if (selx != -1 && sely != -1)
+				if (selx >= 0 && sely >= 0 && selx < prog.Width && sely < prog.Height)
 				{
-					prog.WatchDataChanges.Enqueue(new Vec2I(selx, sely));
+					var prev = prog.WatchedFields.FirstOrDefault(p => p.X == selx && p.Y == sely);
+
+					if (prev == null)
+					{
+						prog.WatchData[selx, sely] = true;
+						prog.WatchedFields.Add(new WatchedField(selx, sely));
+					}
+					else
+					{
+						prog.WatchedFields.Remove(prev);
+
+						var next = prev.GetNext();
+						if (next == null)
+						{
+							prog.WatchData[selx, sely] = false;
+						}
+						else
+						{
+							prog.WatchedFields.Add(next);
+						}
+					}
+
 				}
 			}
 			else if (e.Button == MouseButtons.Left)

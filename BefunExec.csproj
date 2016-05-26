@@ -87,6 +87,7 @@
     <Compile Include="Logic\Log\BefunLogActionStackRemove.cs" />
     <Compile Include="Logic\Log\BefunLogActionDeltaChange.cs" />
     <Compile Include="Logic\Log\BefunLogActionChangeStringmode.cs" />
+    <Compile Include="Logic\WatchedField.cs" />
     <Compile Include="View\GLExtendedViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

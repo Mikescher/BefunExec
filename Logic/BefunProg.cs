@@ -34,9 +34,9 @@ namespace BefunExec.Logic
 		public readonly bool[,] Breakpoints;
 		public int Breakpointcount = 0;
 
-		public readonly ConcurrentQueue<Vec2I> WatchDataChanges = new ConcurrentQueue<Vec2I>();
-		public readonly byte[,] WatchData;
-		public List<Vec2I> WatchedFields = new List<Vec2I>(); 
+		// Only accessed by UI Thread
+		public List<WatchedField> WatchedFields = new List<WatchedField>();
+		public readonly bool[,] WatchData;
 
 		public ulong StepCount = 0; // MAX_ULONG = 18.446.744.073.709.551.615
 
@@ -83,7 +83,7 @@ namespace BefunExec.Logic
 			Raster = pfi.GetRaster();
 			DecayRaster = new long[Width, Height];
 			Breakpoints = new bool[Width, Height];
-			WatchData = new byte[Width, Height];
+			WatchData = new bool[Width, Height];
 
 			pfi.ApplyMetadata(this, true);
 
@@ -112,30 +112,7 @@ namespace BefunExec.Logic
 					UndoLog.Reverse(this);
 					DoSingleUndo = false;
 				}
-
-				if (WatchDataChanges.Count > 0)
-				{
-					Vec2I wdc;
-					if (WatchDataChanges.TryDequeue(out wdc))
-					{
-						if (wdc.X >= 0 && wdc.X < Width && wdc.Y >= 0 && wdc.Y < Height)
-						{
-							byte newValue = (byte) ((WatchData[wdc.X, wdc.Y] + 1)%7);
-							WatchData[wdc.X, wdc.Y] = newValue;
-							if (newValue == 1)
-							{
-								WatchedFields.Add(new Vec2I(wdc));
-								WatchedFields = new List<Vec2I>(WatchedFields);
-							}
-							if (newValue == 0)
-							{
-								WatchedFields.RemoveAll(p => p == wdc);
-								WatchedFields = new List<Vec2I>(WatchedFields);
-							}
-						}
-					}
-				}
-
+				
 				if ((pausedCached && !DoSingleStep) || Mode != MODE_RUN)
 				{
 					if (Mode == MODE_IN_CHAR && InputCharacters.Count > 0)

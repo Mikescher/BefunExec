@@ -64,6 +64,7 @@ namespace BefunExec.Logic
 		/// #$watch[0,2]:int
 		/// #$replace C -> 1
 		/// #break[3,17]
+		/// #$watch[0,2]:int = Varname
 		/// 
 		/// </summary>
 		/// <param name="input"></param>
@@ -73,6 +74,7 @@ namespace BefunExec.Logic
 			var info = new FileInformation();
 
 			List<Tuple<char, char>> replacements = new List<Tuple<char, char>>();
+			HashSet<int> preprocessorlines = new HashSet<int>();
 
 			for (int i = 0; i < input.Length; i++)
 			{
@@ -97,12 +99,13 @@ namespace BefunExec.Logic
 					}
 
 					replacements.Add(repl);
+					preprocessorlines.Add(i);
 
 					Console.Out.WriteLine("[PREPROCESSOR] Replace '{0}' with '{1}'", repl.Item1, repl.Item2);
 				}
 				else if (name == "watch")
 				{
-					if (info.Watchpoints == null) info.Watchpoints = new List<Tuple<Vec2I, byte>>();
+					if (info.Watchpoints == null) info.Watchpoints = new List<WatchedField>();
 					var point = ParseWatchParam(parameter);
 
 					if (point == null)
@@ -111,11 +114,13 @@ namespace BefunExec.Logic
 						continue;
 					}
 
-					if (!info.Watchpoints.Any(p => p.Item1.Equals(point.Item1)))
+					preprocessorlines.Add(i);
+
+					if (!info.Watchpoints.Any(p => p.X == point.X && p.Y == point.Y))
 					{
 						info.Watchpoints.Add(point);
 
-						Console.Out.WriteLine("[PREPROCESSOR] Add Watchpoint [{0}|{1}] with type {2}", point.Item1.X, point.Item1.Y, point.Item2);
+						Console.Out.WriteLine("[PREPROCESSOR] Add Watchpoint [{0}|{1}] with type {2} and name '{3}'", point.X, point.Y, point.Type, point.Name ?? "NULL");
 					}
 				}
 				else if (name == "break")
@@ -128,6 +133,8 @@ namespace BefunExec.Logic
 						Console.Out.WriteLine("[PREPROCESSOR] Line {0}: Cannot parse parameter of statement\r\n{1}", i + 1, line);
 						continue;
 					}
+
+					preprocessorlines.Add(i);
 
 					if (!info.Breakpoints.Any(p => p.Equals(point)))
 					{
@@ -143,6 +150,8 @@ namespace BefunExec.Logic
 			{
 				for (int i = 0; i < input.Length; i++)
 				{
+					if (preprocessorlines.Contains(i)) continue;
+
 					input[i] = input[i].Replace(rep.Item1, rep.Item2);
 				}
 			}
@@ -193,38 +202,46 @@ namespace BefunExec.Logic
 			return null;
 		}
 
-		private static Tuple<Vec2I, byte> ParseWatchParam(string param)
+		private static WatchedField ParseWatchParam(string param)
 		{
 			param = param.Trim();
 			var split = param.Split(':');
 			if (split.Length != 2) return null;
+			
+			if (split[1].Contains('='))
+			{
+				var resplit = split[1].Split('=');
+				if (resplit.Length != 2) return null;
 
-			var spos = split[0].Trim();
-			var stype = split[1].Trim().ToLower();
+				var spos = split[0].Trim();
+				var stype = resplit[0].Trim().ToLower();
+				var sname = resplit[1].Trim();
 
-			Vec2I pos = ParseVecParam(spos);
+				Vec2I pos = ParseVecParam(spos);
 
-			if (pos == null) return null;
+				if (pos == null) return null;
 
-			if (stype == "1" || stype == "int" || stype == "integer")
-				return Tuple.Create<Vec2I, byte>(pos, 1);
+				var etype = WatchedField.ParseTypeFromString(stype);
 
-			if (stype == "2" || stype == "long" || stype == "int8")
-				return Tuple.Create<Vec2I, byte>(pos, 2);
+				if (etype == null) return null;
 
-			if (stype == "3" || stype == "char" || stype == "character")
-				return Tuple.Create<Vec2I, byte>(pos, 3);
+				return new WatchedField(pos.X, pos.Y, etype.Value, sname);
+			}
+			else
+			{
+				var spos = split[0].Trim();
+				var stype = split[1].Trim().ToLower();
 
-			if (stype == "4" || stype == "hex")
-				return Tuple.Create<Vec2I, byte>(pos, 4);
+				Vec2I pos = ParseVecParam(spos);
 
-			if (stype == "5" || stype == "hex8" || stype == "longhex")
-				return Tuple.Create<Vec2I, byte>(pos, 5);
+				if (pos == null) return null;
 
-			if (stype == "6" || stype == "binary" || stype == "bits" || stype == "bit24")
-				return Tuple.Create<Vec2I, byte>(pos, 6);
+				var etype = WatchedField.ParseTypeFromString(stype);
 
-			return null;
+				if (etype == null) return null;
+
+				return new WatchedField(pos.X, pos.Y, etype.Value);
+			}
 		}
 	}
 }

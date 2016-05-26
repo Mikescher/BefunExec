@@ -2,6 +2,7 @@
 using BefunExec.View.OpenGL.OGLMath;
 using OpenTK.Graphics.OpenGL;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
@@ -377,14 +378,13 @@ namespace BefunExec.View
 
 		private void ResetWatched()
 		{
+			prog.WatchedFields = new List<WatchedField>();
+
 			for (int x = 0; x < prog.Width; x++)
 			{
 				for (int y = 0; y < prog.Height; y++)
 				{
-					for (int i = 0; i < (7 - prog.WatchData[x, y]) % 7; i++)
-					{
-						prog.WatchDataChanges.Enqueue(new Vec2I(x, y));
-					}
+					prog.WatchData[x, y] = false;
 				}
 			}
 		}

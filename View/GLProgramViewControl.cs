@@ -181,40 +181,22 @@ namespace BefunExec.View
 			#endregion
 
 			#region Watch List
-
-			var wdata = prog.WatchedFields;
-			if (wdata.Any())
+			
+			if (prog.WatchedFields.Any())
 			{
 				watchFont.bind();
 
 				int ty = 0;
-				foreach (var watch in wdata)
+				foreach (var watch in prog.WatchedFields.AsEnumerable().Reverse())
 				{
-					var value = prog.Raster[watch.X, watch.Y];
-					var disp = "??";
-					switch (prog.WatchData[watch.X, watch.Y])
-					{
-
-						case 1:
-							disp = string.Format("{0}", value);
-							break;
-						case 2:
-							disp = string.Format("{0:00000000}", value);
-							break;
-						case 3:
-							disp = (value > '~' || value < ' ') ? "OOB" : ((char)value).ToString();
-							break;
-						case 4:
-							disp = value<0 ? value.ToString() : string.Format("0x{0:X}", value);
-							break;
-						case 5:
-							disp = value < 0 ? value.ToString() : string.Format("0x{0:X8}", value);
-							break;
-						case 6:
-							disp = value < 0 ? value.ToString() : string.Format("0b{0}", Convert.ToString(value, 2).PadLeft(24, '0'));
-							break;
-					}
-					RenderFontBottomUp(new Vec2D(10f, 10f + ty++ * 20f), string.Format("[{0:00}, {1:00}] := {2}", watch.X, watch.Y, disp), -0.9f, watchFont, true);
+					RenderFontBottomUpSplitted(
+						new Vec2D(10f, 10f + ty++ * 20f), 
+						watch.GetDisplayString(prog.Raster[watch.X, watch.Y]),
+						100,
+						" := ",
+						-0.9f, 
+						watchFont, 
+						true);
 				}
 			}
 
@@ -347,7 +329,7 @@ namespace BefunExec.View
 				{
 					double decayPerc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
-					if (prog.WatchData[x, y]==0 && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
+					if (!prog.WatchData[x, y] && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
 						continue;
 
 					bool docol = true;
@@ -357,7 +339,7 @@ namespace BefunExec.View
 
 						docol = false;
 					}
-					else if (prog.WatchData[x, y] > 0)
+					else if (prog.WatchData[x, y])
 					{
 						GL.Color3(1.0, 0.9, 0.5);
 
@@ -376,7 +358,7 @@ namespace BefunExec.View
 
 					font.RenderLQ(docol, new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
 
-					last = (decayPerc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y]>0) ? int.MinValue : prog.Raster[x, y];
+					last = (decayPerc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y]) ? int.MinValue : prog.Raster[x, y];
 				}
 			}
 
@@ -401,7 +383,7 @@ namespace BefunExec.View
 				{
 					double decayPerc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
-					if (prog.WatchData[x, y] == 0 && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
+					if (!prog.WatchData[x, y] && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
 						continue;
 
 					bool docol = true;
@@ -411,7 +393,7 @@ namespace BefunExec.View
 
 						docol = false;
 					}
-					else if (prog.WatchData[x, y] > 0)
+					else if (prog.WatchData[x, y])
 					{
 						GL.Color3(1.0, 0.9, 0.5);
 
@@ -458,7 +440,7 @@ namespace BefunExec.View
 
 					font.RenderLQ(docol, new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
 
-					last = (decayPerc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y] > 0) ? int.MinValue : prog.Raster[x, y];
+					last = (decayPerc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y]) ? int.MinValue : prog.Raster[x, y];
 				}
 			}
 
@@ -497,7 +479,7 @@ namespace BefunExec.View
 						g = 0;
 						b = (1 - decayPerc);
 					}
-					else if (prog.WatchData[x, y] > 0)
+					else if (prog.WatchData[x, y])
 					{
 						r = 1;
 						g = (1 - decayPerc) * 0.9;
@@ -517,7 +499,7 @@ namespace BefunExec.View
 
 					Rect2D renderRect = new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h);
 
-					if (prog.WatchData[x, y] > 0 || prog.Breakpoints[x, y] || decayPerc > 0.25)
+					if (prog.WatchData[x, y] || prog.Breakpoints[x, y] || decayPerc > 0.25)
 					{
 						if (fontBinded != 1)
 							bwfont.bind();
@@ -571,7 +553,7 @@ namespace BefunExec.View
 						g = 0;
 						b = (1 - decayPerc);
 					}
-					else if (prog.WatchData[x, y] > 0)
+					else if (prog.WatchData[x, y])
 					{
 						r = 1;
 						g = (1 - decayPerc) * 0.9;
@@ -591,7 +573,7 @@ namespace BefunExec.View
 
 					Rect2D renderRect = new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h);
 
-					if (prog.WatchData[x, y] > 0 || prog.Breakpoints[x, y] || decayPerc > 0.25)
+					if (prog.WatchData[x, y] || prog.Breakpoints[x, y] || decayPerc > 0.25)
 					{
 						if (fontBinded != 1)
 							bwfont.bind();

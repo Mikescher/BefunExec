@@ -85,6 +85,50 @@ namespace BefunExec.View
 			return h;
 		}
 
+		protected float RenderFontBottomUpSplitted(Vec2D pos, Tuple<string, string> row, int colWidth, string sep, float distance, StringFontRasterSheet fnt, bool backg)
+		{
+			string text1 = row.Item1;
+			string text2 = row.Item2;
+
+			float h = fnt.Size;
+
+			float w1 = Math.Max(fnt.MeasureWidth(text1), colWidth);
+			float ws = fnt.MeasureWidth(sep);
+
+			if (backg)
+			{
+				float w2 = fnt.MeasureWidth(text2);
+				Rect2D rect = new Rect2D(pos.X, pos.Y, w1 + ws + w2, h);
+
+				GL.Disable(EnableCap.Texture2D);
+				GL.Begin(PrimitiveType.Quads);
+				GL.Translate(0, 0, -4);
+				GL.Color4(Color.FromArgb(245, 255, 225, 128));
+				GL.Vertex3(rect.tl.X, rect.tl.Y, 0);
+				GL.Vertex3(rect.bl.X, rect.bl.Y, 0);
+				GL.Vertex3(rect.br.X, rect.br.Y, 0);
+				GL.Vertex3(rect.tr.X, rect.tr.Y, 0);
+				GL.Color3(1.0, 1.0, 1.0);
+				GL.Translate(0, 0, 4);
+				GL.End();
+				GL.Enable(EnableCap.Texture2D);
+			}
+
+			GL.PushMatrix();
+
+			GL.Translate(0, 0, distance);
+
+			fnt.Print(text1, pos.X,           pos.Y);
+			fnt.Print(sep,   pos.X + w1,      pos.Y);
+			fnt.Print(text2, pos.X + w1 + ws, pos.Y);
+
+			GL.PopMatrix();
+
+			GL.Color3(1.0, 1.0, 1.0);
+
+			return h;
+		}
+
 		protected void RenderPipeHorz(Rect2D renderRect, double insetXLeft, double insetXRight, double height)
 		{
 			GL.Disable(EnableCap.Texture2D);

@@ -10,7 +10,7 @@ namespace BefunExec.Logic
 		public string Code = "";
 
 		public List<Vec2I> Breakpoints = null;
-		public List<Tuple<Vec2I, byte>> Watchpoints = null;
+		public List<WatchedField> Watchpoints = null;
 
 		public int GetProgWidth()
 		{
@@ -63,23 +63,23 @@ namespace BefunExec.Logic
 					}
 				}
 			}
-
+			
 			if (Watchpoints != null)
 			{
-				prog.WatchedFields = Watchpoints.Select(p => p.Item1).ToList();
+				prog.WatchedFields = Watchpoints.Where(p => p.X >= 0 && p.Y >= 0 && p.X < prog.Width && p.Y < prog.Height).ToList();
 				foreach (var point in Watchpoints)
 				{
-					prog.WatchData[point.Item1.X, point.Item1.Y] = point.Item2;
+					prog.WatchData[point.X, point.Y] = true;
 				}
-			} 
+			}
 			else if (forceOverride)
 			{
-				prog.WatchedFields.Clear();
+				prog.WatchedFields = new List<WatchedField>();
 				for (int x = 0; x < prog.Width; x++)
 				{
 					for (int y = 0; y < prog.Height; y++)
 					{
-						prog.WatchData[x, y] = 0;
+						prog.WatchData[x, y] = false;
 					}
 				}
 			}
