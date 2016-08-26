@@ -888,6 +888,11 @@ namespace BefunExec.View
 			RunOptions.SHOW_STACK_REVERSED = showStackReversedToolStripMenuItem.Checked;
 		}
 
+		private void alwaysRenderFullTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RunOptions.FORCE_TEXTURE_RENDERING = alwaysRenderFullTexturesToolStripMenuItem.Checked;
+		}
+
 		private void enableInputPreprocessorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RunOptions.PREPROCESSOR = enableInputPreprocessorToolStripMenuItem.Checked;

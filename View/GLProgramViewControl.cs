@@ -104,7 +104,7 @@ namespace BefunExec.View
 
 			int quality;
 
-			if (cellcount < MAX_HQ_CELLCOUNT)
+			if (cellcount < MAX_HQ_CELLCOUNT || RunOptions.FORCE_TEXTURE_RENDERING)
 			{
 				quality = 0;
 

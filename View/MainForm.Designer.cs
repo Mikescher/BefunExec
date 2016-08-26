@@ -83,6 +83,7 @@
 			this.showCompleteOutputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showCurrentStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyExecutiondataToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.enableInputPreprocessorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.captureGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createHDScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,7 +108,7 @@
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabelSpeed = new System.Windows.Forms.ToolStripLabel();
 			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.enableInputPreprocessorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alwaysRenderFullTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -337,6 +338,7 @@
             this.aSCIIStackToolStripMenuItem,
             this.showInputASCIIMessageToolStripMenuItem,
             this.showStackReversedToolStripMenuItem,
+            this.alwaysRenderFullTexturesToolStripMenuItem,
             this.toolStripMenuItem4,
             this.zoomOutToolStripMenuItem,
             this.zoomCompleteOutToolStripMenuItem,
@@ -466,34 +468,34 @@
 			// runToolStripMenuItem
 			// 
 			this.runToolStripMenuItem.Name = "runToolStripMenuItem";
-			this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.runToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.runToolStripMenuItem.Text = "Run/Pause";
 			this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
 			// 
 			// stepToolStripMenuItem
 			// 
 			this.stepToolStripMenuItem.Name = "stepToolStripMenuItem";
-			this.stepToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.stepToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.stepToolStripMenuItem.Text = "Step";
 			this.stepToolStripMenuItem.Click += new System.EventHandler(this.stepToolStripMenuItem_Click);
 			// 
 			// undoToolStripMenuItem
 			// 
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.undoToolStripMenuItem.Text = "Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(138, 6);
 			// 
 			// skipNOPsToolStripMenuItem
 			// 
 			this.skipNOPsToolStripMenuItem.CheckOnClick = true;
 			this.skipNOPsToolStripMenuItem.Name = "skipNOPsToolStripMenuItem";
-			this.skipNOPsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.skipNOPsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.skipNOPsToolStripMenuItem.Text = "Skip NOP\'s";
 			this.skipNOPsToolStripMenuItem.Click += new System.EventHandler(this.skipNOPsToolStripMenuItem_Click);
 			// 
@@ -501,14 +503,14 @@
 			// 
 			this.enableUndoToolStripMenuItem.CheckOnClick = true;
 			this.enableUndoToolStripMenuItem.Name = "enableUndoToolStripMenuItem";
-			this.enableUndoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.enableUndoToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.enableUndoToolStripMenuItem.Text = "Enable Undo";
 			this.enableUndoToolStripMenuItem.Click += new System.EventHandler(this.enableUndoToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem5
 			// 
 			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-			this.toolStripMenuItem5.Size = new System.Drawing.Size(149, 6);
+			this.toolStripMenuItem5.Size = new System.Drawing.Size(138, 6);
 			// 
 			// speedToolStripMenuItem
 			// 
@@ -519,7 +521,7 @@
             this.veryFastToolStripMenuItem,
             this.fullToolStripMenuItem});
 			this.speedToolStripMenuItem.Name = "speedToolStripMenuItem";
-			this.speedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.speedToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.speedToolStripMenuItem.Text = "Speed";
 			// 
 			// lowToolStripMenuItem
@@ -619,6 +621,14 @@
 			this.copyExecutiondataToClipboardToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
 			this.copyExecutiondataToClipboardToolStripMenuItem.Text = "Copy Executiondata to clipboard";
 			this.copyExecutiondataToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyExecutiondataToClipboardToolStripMenuItem_Click);
+			// 
+			// enableInputPreprocessorToolStripMenuItem
+			// 
+			this.enableInputPreprocessorToolStripMenuItem.CheckOnClick = true;
+			this.enableInputPreprocessorToolStripMenuItem.Name = "enableInputPreprocessorToolStripMenuItem";
+			this.enableInputPreprocessorToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			this.enableInputPreprocessorToolStripMenuItem.Text = "Enable input Preprocessor";
+			this.enableInputPreprocessorToolStripMenuItem.Click += new System.EventHandler(this.enableInputPreprocessorToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
 			// 
@@ -805,13 +815,13 @@
 			// 
 			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.menuStrip1);
 			// 
-			// enableInputPreprocessorToolStripMenuItem
+			// alwaysRenderFullTexturesToolStripMenuItem
 			// 
-			this.enableInputPreprocessorToolStripMenuItem.CheckOnClick = true;
-			this.enableInputPreprocessorToolStripMenuItem.Name = "enableInputPreprocessorToolStripMenuItem";
-			this.enableInputPreprocessorToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-			this.enableInputPreprocessorToolStripMenuItem.Text = "Enable input Preprocessor";
-			this.enableInputPreprocessorToolStripMenuItem.Click += new System.EventHandler(this.enableInputPreprocessorToolStripMenuItem_Click);
+			this.alwaysRenderFullTexturesToolStripMenuItem.CheckOnClick = true;
+			this.alwaysRenderFullTexturesToolStripMenuItem.Name = "alwaysRenderFullTexturesToolStripMenuItem";
+			this.alwaysRenderFullTexturesToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.alwaysRenderFullTexturesToolStripMenuItem.Text = "Always render full textures";
+			this.alwaysRenderFullTexturesToolStripMenuItem.Click += new System.EventHandler(this.alwaysRenderFullTexturesToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -927,5 +937,6 @@
 		private System.Windows.Forms.ToolStripLabel toolStripLabelWatchedFields;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem enableInputPreprocessorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem alwaysRenderFullTexturesToolStripMenuItem;
 	}
 }

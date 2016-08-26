@@ -107,6 +107,8 @@ namespace BefunExec
 
 				Console.WriteLine("undo | no_undo             : Enables the undo log");
 				Console.WriteLine("revstack | normstack       : Show the stack reversed");
+				Console.WriteLine("forcetexturerenderer       : Always render the full textures");
+				Console.WriteLine("                             (warning will (!) result in slow performance)");
 
 				Console.WriteLine("speed=?                    : Set the initial speed (index 0..15)");
 
@@ -153,6 +155,11 @@ namespace BefunExec
 				RunOptions.SHOW_STACK_REVERSED = true;
 			if (cmda.IsSet("normstack"))
 				RunOptions.SHOW_STACK_REVERSED = false;
+
+			if (cmda.IsSet("forcetexturerenderer"))
+				RunOptions.FORCE_TEXTURE_RENDERING = true;
+			if (cmda.IsSet("forceperfrenderer"))
+				RunOptions.FORCE_TEXTURE_RENDERING = false;
 
 			//##############
 
