@@ -58,7 +58,6 @@ namespace BefunExec.View
 			debugModeToolStripMenuItem.Checked = RunOptions.DEBUGRUN;
 			showTrailToolStripMenuItem.Checked = RunOptions.SHOW_DECAY;
 			showStackReversedToolStripMenuItem.Checked = RunOptions.SHOW_STACK_REVERSED;
-			showStackReversedToolStripMenuItem.Checked = RunOptions.PREPROCESSOR;
 			enableUndoToolStripMenuItem.Checked = RunOptions.ENABLEUNDO;
 			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
 			prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
