@@ -30,11 +30,11 @@ namespace BefunExec.View
 			zoom = new Stack<Rect2I>(copy.zoom.Reverse());
 		}
 
-		public void RenderSelection(double offx, double offy, double w, double h)
+		public void RenderSelection(double offx, double offy, double w, double h, Rect2I currZoom)
 		{
 			if (selection != null)
 			{
-				Rect2D rect = new Rect2D(offx + ((selection.tl.X) - zoom.Peek().bl.X) * w, offy + ((zoom.Peek().Height - 1) - ((selection.tl.Y - 1) - zoom.Peek().bl.Y)) * h, selection.Width * w, selection.Height * h);
+				Rect2D rect = new Rect2D(offx + ((selection.tl.X) - currZoom.bl.X) * w, offy + ((currZoom.Height - 1) - ((selection.tl.Y - 1) - currZoom.bl.Y)) * h, selection.Width * w, selection.Height * h);
 
 				GL.Disable(EnableCap.Texture2D);
 

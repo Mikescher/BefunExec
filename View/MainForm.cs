@@ -61,6 +61,7 @@ namespace BefunExec.View
 			enableUndoToolStripMenuItem.Checked = RunOptions.ENABLEUNDO;
 			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
 			prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
+			enableInputPreprocessorToolStripMenuItem.Checked = RunOptions.FILL_VIEWPORT;
 			SetSpeed(RunOptions.RUN_FREQUENCY_IDX, true);
 
 			Application.Idle += Application_Idle;
@@ -273,6 +274,9 @@ namespace BefunExec.View
 
 			if (isrun && keyboard[Keys.P] && RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED && glProgramView.ExtendedSHGraph.isEffectiveSizeCalculated())
 				glProgramView.Zoom.Push(new Rect2I(0, 0, glProgramView.ExtendedSHGraph.EffectiveWidth, glProgramView.ExtendedSHGraph.EffectiveHeight));
+
+			if (isrun && keyboard[Keys.V])
+				SetFillViewPort(!RunOptions.FILL_VIEWPORT);
 
 			if (keyboard.AnyKey())
 				UpdateStatusbar();
@@ -546,6 +550,15 @@ namespace BefunExec.View
 			{
 				glProgramView.Zoom.Pop();
 			}
+		}
+
+		private void SetFillViewPort(bool v)
+		{
+			if (!(v ^ RunOptions.FILL_VIEWPORT))
+				return;
+
+			RunOptions.FILL_VIEWPORT = v;
+			alwaysFillViewportToolStripMenuItem.Checked = RunOptions.FILL_VIEWPORT;
 		}
 
 		private void UpdateStatusbar()
@@ -915,6 +928,11 @@ namespace BefunExec.View
 		private void copyExecutiondataToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Clipboard.SetText(glProgramView.GetExecutionData());
+		}
+
+		private void alwaysFillViewportToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RunOptions.FILL_VIEWPORT = enableInputPreprocessorToolStripMenuItem.Checked;
 		}
 	}
 }

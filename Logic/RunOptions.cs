@@ -47,6 +47,7 @@ namespace BefunExec.Logic
 		public static bool SHOW_STACK_REVERSED = false;
 		public static bool PREPROCESSOR = false;
 		public static bool FORCE_TEXTURE_RENDERING = false;
+		public static bool FILL_VIEWPORT = false;
 
 		public static bool FOLLOW_MODE = false;
 

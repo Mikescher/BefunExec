@@ -94,9 +94,10 @@ namespace BefunExec.View
 			double offy;
 			double w; // Width & Height of an single cell
 			double h;
-			CalcProgPos(out offx, out offy, out w, out h);
+			Rect2I zoom;
+			CalcProgPos(out offx, out offy, out w, out h, out zoom);
 
-			int cellcount = Zoom.Peek().Width * Zoom.Peek().Height;
+			int cellcount = zoom.Width * zoom.Height;
 
 			#endregion
 
@@ -110,11 +111,11 @@ namespace BefunExec.View
 
 				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				{
-					Render_HQ_sh(offx, offy, w, h, renderDebug);
+					Render_HQ_sh(offx, offy, w, h, zoom, renderDebug);
 				}
 				else
 				{
-					Render_HQ(offx, offy, w, h);
+					Render_HQ(offx, offy, w, h, zoom);
 				}
 			}
 			else if (cellcount < MAX_MQ_CELLCOUNT)
@@ -123,25 +124,25 @@ namespace BefunExec.View
 
 				if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				{
-					Render_MQ_sh(offx, offy, w, h);
+					Render_MQ_sh(offx, offy, w, h, zoom);
 				}
 				else
 				{
-					Render_MQ(offx, offy, w, h);
+					Render_MQ(offx, offy, w, h, zoom);
 				}
 			}
 			else
 			{
 				quality = 2;
 
-				Render_LQ(offx, offy, w, h);
+				Render_LQ(offx, offy, w, h, zoom);
 			}
 
 			#endregion
 
 			#region SELECTION
 
-			Zoom.RenderSelection(offx, offy, w, h);
+			Zoom.RenderSelection(offx, offy, w, h, zoom);
 
 			#endregion
 
@@ -257,29 +258,29 @@ namespace BefunExec.View
 			Zoom.DoMouseWheel(e);
 		}
 
-		private void Render_LQ(double offx, double offy, double w, double h)
+		private void Render_LQ(double offx, double offy, double w, double h, Rect2I zoom)
 		{
 			double oldW = w;
 			double oldH = h;
 
-			double targetW = Zoom.Peek().Width * w;
-			double targetH = Zoom.Peek().Height * h;
+			double targetW = zoom.Width * w;
+			double targetH = zoom.Height * h;
 
-			double ratio = (Zoom.Peek().Width * 1.0) / Zoom.Peek().Height;
+			double ratio = (zoom.Width * 1.0) / zoom.Height;
 			double frenderH = Math.Sqrt(LQ_CELLCOUNT / ratio);
 			double frenderW = LQ_CELLCOUNT / frenderH;
 
 			int renderW = (int)Math.Ceiling(frenderW);
 			int renderH = (int)Math.Ceiling(frenderH);
 
-			int ox = Zoom.Peek().bl.X;
-			int oy = Zoom.Peek().bl.Y;
+			int ox = zoom.bl.X;
+			int oy = zoom.bl.Y;
 
 			renderW = Math.Min(prog.Width, ox + renderW) - ox;
 			renderH = Math.Min(prog.Height, oy + renderH) - oy;
 
-			renderW = Math.Min(Zoom.Peek().Width, renderW);
-			renderH = Math.Min(Zoom.Peek().Height, renderH);
+			renderW = Math.Min(zoom.Width, renderW);
+			renderH = Math.Min(zoom.Height, renderH);
 
 			w = targetW / renderW;
 			h = targetH / renderH;
@@ -300,6 +301,14 @@ namespace BefunExec.View
 					int x = ox + (int)(sx * scaleX);
 					int y = oy + (int)(sy * scaleY);
 
+					if (RunOptions.FILL_VIEWPORT)
+					{
+						if (x < 0) continue;
+						if (y < 0) continue;
+						if (x >= prog.Width) continue;
+						if (y >= prog.Height) continue;
+					}
+
 					bool docol = last != prog.Raster[x, y];
 
 					font.RenderLQ(docol, new Rect2D(offx + sx * w, offy - sy * h + targetH - oldH, w, h), -4, prog[x, y]);
@@ -313,7 +322,7 @@ namespace BefunExec.View
 			GL.Enable(EnableCap.Texture2D);
 		}
 
-		private void Render_MQ(double offx, double offy, double w, double h)
+		private void Render_MQ(double offx, double offy, double w, double h, Rect2I zoom)
 		{
 			long now = Environment.TickCount;
 
@@ -323,10 +332,18 @@ namespace BefunExec.View
 
 			long last = 0;
 
-			for (int x = Zoom.Peek().bl.X; x < Zoom.Peek().tr.X; x++)
+			for (int x = zoom.bl.X; x < zoom.tr.X; x++)
 			{
-				for (int y = Zoom.Peek().bl.Y; y < Zoom.Peek().tr.Y; y++)
+				for (int y = zoom.bl.Y; y < zoom.tr.Y; y++)
 				{
+					if (RunOptions.FILL_VIEWPORT)
+					{
+						if (x < 0) continue;
+						if (y < 0) continue;
+						if (x >= prog.Width) continue;
+						if (y >= prog.Height) continue;
+					}
+
 					double decayPerc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
 					if (!prog.WatchData[x, y] && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
@@ -356,7 +373,7 @@ namespace BefunExec.View
 						docol = false;
 					}
 
-					font.RenderLQ(docol, new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+					font.RenderLQ(docol, new Rect2D(offx + (x - zoom.bl.X) * w, offy + ((zoom.Height - 1) - (y - zoom.bl.Y)) * h, w, h), -4, prog[x, y]);
 
 					last = (decayPerc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y]) ? int.MinValue : prog.Raster[x, y];
 				}
@@ -367,7 +384,7 @@ namespace BefunExec.View
 			GL.Enable(EnableCap.Texture2D);
 		}
 
-		private void Render_MQ_sh(double offx, double offy, double w, double h)
+		private void Render_MQ_sh(double offx, double offy, double w, double h, Rect2I zoom)
 		{
 			long now = Environment.TickCount;
 
@@ -377,10 +394,18 @@ namespace BefunExec.View
 
 			long last = 0;
 
-			for (int x = Zoom.Peek().bl.X; x < Zoom.Peek().tr.X; x++)
+			for (int x = zoom.bl.X; x < zoom.tr.X; x++)
 			{
-				for (int y = Zoom.Peek().bl.Y; y < Zoom.Peek().tr.Y; y++)
+				for (int y = zoom.bl.Y; y < zoom.tr.Y; y++)
 				{
+					if (RunOptions.FILL_VIEWPORT)
+					{
+						if (x < 0) continue;
+						if (y < 0) continue;
+						if (x >= prog.Width) continue;
+						if (y >= prog.Height) continue;
+					}
+
 					double decayPerc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
 					if (!prog.WatchData[x, y] && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
@@ -438,7 +463,7 @@ namespace BefunExec.View
 						}
 					}
 
-					font.RenderLQ(docol, new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h), -4, prog[x, y]);
+					font.RenderLQ(docol, new Rect2D(offx + (x - zoom.bl.X) * w, offy + ((zoom.Height - 1) - (y - zoom.bl.Y)) * h, w, h), -4, prog[x, y]);
 
 					last = (decayPerc < 0.66 || prog.Breakpoints[x, y] || prog.WatchData[x, y]) ? int.MinValue : prog.Raster[x, y];
 				}
@@ -449,7 +474,7 @@ namespace BefunExec.View
 			GL.Enable(EnableCap.Texture2D);
 		}
 
-		private void Render_HQ(double offx, double offy, double w, double h)
+		private void Render_HQ(double offx, double offy, double w, double h, Rect2I zoom)
 		{
 			long now = Environment.TickCount;
 
@@ -459,10 +484,18 @@ namespace BefunExec.View
 			double prevG = -1;
 			double prevB = -1;
 
-			for (int x = Zoom.Peek().bl.X; x < Zoom.Peek().tr.X; x++)
+			for (int x = zoom.bl.X; x < zoom.tr.X; x++)
 			{
-				for (int y = Zoom.Peek().bl.Y; y < Zoom.Peek().tr.Y; y++)
+				for (int y = zoom.bl.Y; y < zoom.tr.Y; y++)
 				{
+					if (RunOptions.FILL_VIEWPORT)
+					{
+						if (x < 0) continue;
+						if (y < 0) continue;
+						if (x >= prog.Width) continue;
+						if (y >= prog.Height) continue;
+					}
+
 					double decayPerc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
 					decayPerc = Math.Min(1, decayPerc);
 					decayPerc = Math.Max(0, decayPerc);
@@ -497,7 +530,7 @@ namespace BefunExec.View
 						GL.Color3(prevR = r, prevG = g, prevB = b);
 					// ReSharper restore CompareOfFloatsByEqualityOperator
 
-					Rect2D renderRect = new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h);
+					Rect2D renderRect = new Rect2D(offx + (x - zoom.bl.X) * w, offy + ((zoom.Height - 1) - (y - zoom.bl.Y)) * h, w, h);
 
 					if (prog.WatchData[x, y] || prog.Breakpoints[x, y] || decayPerc > 0.25)
 					{
@@ -517,7 +550,7 @@ namespace BefunExec.View
 			}
 		}
 
-		private void Render_HQ_sh(double offx, double offy, double w, double h, bool renderDebug)
+		private void Render_HQ_sh(double offx, double offy, double w, double h, Rect2I zoom, bool renderDebug)
 		{
 			if (ExtendedSHGraph == null)
 			{
@@ -533,10 +566,18 @@ namespace BefunExec.View
 			double prevG = -1;
 			double prevB = -1;
 
-			for (int x = Zoom.Peek().bl.X; x < Zoom.Peek().tr.X; x++)
+			for (int x = zoom.bl.X; x < zoom.tr.X; x++)
 			{
-				for (int y = Zoom.Peek().bl.Y; y < Zoom.Peek().tr.Y; y++)
+				for (int y = zoom.bl.Y; y < zoom.tr.Y; y++)
 				{
+					if (RunOptions.FILL_VIEWPORT)
+					{
+						if (x < 0) continue;
+						if (y < 0) continue;
+						if (x >= prog.Width) continue;
+						if (y >= prog.Height) continue;
+					}
+
 					double decayPerc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
 					decayPerc = Math.Min(1, decayPerc);
 					decayPerc = Math.Max(0, decayPerc);
@@ -571,7 +612,7 @@ namespace BefunExec.View
 						GL.Color3(prevR = r, prevG = g, prevB = b);
 					// ReSharper restore CompareOfFloatsByEqualityOperator
 
-					Rect2D renderRect = new Rect2D(offx + (x - Zoom.Peek().bl.X) * w, offy + ((Zoom.Peek().Height - 1) - (y - Zoom.Peek().bl.Y)) * h, w, h);
+					Rect2D renderRect = new Rect2D(offx + (x - zoom.bl.X) * w, offy + ((zoom.Height - 1) - (y - zoom.bl.Y)) * h, w, h);
 
 					if (prog.WatchData[x, y] || prog.Breakpoints[x, y] || decayPerc > 0.25)
 					{
@@ -623,31 +664,85 @@ namespace BefunExec.View
 			}
 		}
 
-		private void CalcProgPos(out double offx, out double offy, out double w, out double h)
+		private void CalcProgPos(out double offx, out double offy, out double w, out double h, out Rect2I zoom)
 		{
-			w = (Width  * 1.0) / Zoom.Peek().Width;
-			h = (Height * 1.0) / Zoom.Peek().Height;
+			if (!RunOptions.FILL_VIEWPORT)
+			{
+				int pw = Zoom.Peek().Width;
+				int ph = Zoom.Peek().Height;
 
-			if ((w / h) < (8.0 / 12.0))
-			{
-				offy = h * Zoom.Peek().Height;
-				h = (12.0 * w) / (8.0);
-				offy -= h * Zoom.Peek().Height;
-				offy /= 2;
-				offx = 0;
-			}
-			else if ((w / h) > (8.0 / 12.0))
-			{
-				offx = w * Zoom.Peek().Width;
-				w = (8.0 * h) / (12.0);
-				offx -= w * Zoom.Peek().Width;
-				offx /= 2;
-				offy = 0;
+				zoom = Zoom.Peek();
+
+				w = (Width * 1.0) / pw;
+				h = (Height * 1.0) / ph;
+
+				if ((w / h) < (8.0 / 12.0))
+				{
+					offy = h * ph;
+					h = (12.0 * w) / (8.0);
+					offy -= h * ph;
+					offy /= 2;
+					offx = 0;
+				}
+				else if ((w / h) > (8.0 / 12.0))
+				{
+					offx = w * pw;
+					w = (8.0 * h) / (12.0);
+					offx -= w * pw;
+					offx /= 2;
+					offy = 0;
+				}
+				else
+				{
+					offx = 0;
+					offy = 0;
+				}
 			}
 			else
 			{
-				offx = 0;
-				offy = 0;
+				int px = Zoom.Peek().bl.X;
+				int py = Zoom.Peek().bl.Y;
+				int pw = Zoom.Peek().Width;
+				int ph = Zoom.Peek().Height;
+
+				w = (Width * 1.0) / pw;
+				h = (Height * 1.0) / ph;
+
+				if ((w / h) < (8.0 / 12.0)) // -
+				{
+					int nph = (int) Math.Floor((Height * pw * 8d) / (Width * 12d));
+					nph -= (nph - ph) % 2;
+					py -= (nph - ph) / 2;
+					ph = nph;
+					h = (Height * 1.0) / ph;
+
+					offy = h * ph;
+					h = (12.0 * w) / (8.0);
+					offy -= h * ph;
+					offy /= 2;
+					offx = 0;
+				}
+				else if ((w / h) > (8.0 / 12.0)) // |
+				{
+					int npw = (int)Math.Floor((Width * ph * 12d) / (Height * 8d));
+					npw -= (npw - pw) % 2;
+					px -= (npw - pw) / 2;
+					pw = npw;
+					w = (Width * 1.0) / pw;
+
+					offx = w * pw;
+					w = (8.0 * h) / (12.0);
+					offx -= w * pw;
+					offx /= 2;
+					offy = 0;
+				}
+				else
+				{
+					offx = 0;
+					offy = 0;
+				}
+				
+				zoom = new Rect2I(px, py, pw, ph);
 			}
 		}
 
@@ -773,10 +868,12 @@ namespace BefunExec.View
 			double offy;
 			double w;
 			double h;
-			CalcProgPos(out offx, out offy, out w, out h);
 
-			int iselx = (int)((px - offx + Zoom.Peek().bl.X * w) / w);
-			int isely = (int)((py - offy + Zoom.Peek().bl.Y * h) / h);
+			Rect2I zoom;
+			CalcProgPos(out offx, out offy, out w, out h, out zoom);
+
+			int iselx = (int)((px - offx + zoom.bl.X * w) / w);
+			int isely = (int)((py - offy + zoom.bl.Y * h) / h);
 
 			if (iselx >= 0 && isely >= 0 && iselx < prog.Width && isely < prog.Height)
 			{
@@ -831,7 +928,8 @@ namespace BefunExec.View
 			double rOffY;
 			double rWidth;
 			double rHeight;
-			CalcProgPos(out rOffX, out rOffY, out rWidth, out rHeight);
+			Rect2I zoom;
+			CalcProgPos(out rOffX, out rOffY, out rWidth, out rHeight, out zoom);
 			rWidth *= prog.Width;
 			rHeight *= prog.Height;
 
@@ -864,7 +962,8 @@ namespace BefunExec.View
 			double rOffY;
 			double rWidth;
 			double rHeight;
-			CalcProgPos(out rOffX, out rOffY, out rWidth, out rHeight);
+			Rect2I zoom;
+			CalcProgPos(out rOffX, out rOffY, out rWidth, out rHeight, out zoom);
 
 			int w = pixelW;
 			int h = pixelH;
@@ -890,9 +989,9 @@ namespace BefunExec.View
 			GL.Color3(1.0, 1.0, 1.0);
 
 			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
-				Render_HQ_sh(rOffX, rOffY, rWidth, rHeight, false);
+				Render_HQ_sh(rOffX, rOffY, rWidth, rHeight, zoom, false);
 			else
-				Render_HQ(rOffX, rOffY, rWidth, rHeight);
+				Render_HQ(rOffX, rOffY, rWidth, rHeight, zoom);
 			//##################################################
 
 			if (GraphicsContext.CurrentContext == null)

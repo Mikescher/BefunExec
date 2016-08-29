@@ -28,6 +28,9 @@ namespace BefunExec
 			Console.WriteLine();
 			Console.WriteLine();
 
+			//                 00000000011111111112222222222333333333344444444445555555555666666666677777777778
+			//                 12345678901234567890123456789012345678901234567890123456789012345678901234567890
+
 			Console.WriteLine("########## KEYS ##########");
 			Console.WriteLine();
 			Console.WriteLine("Space:          Pause | Resume");
@@ -46,6 +49,7 @@ namespace BefunExec
 			Console.WriteLine("Strg+R:         Reload file");
 			Console.WriteLine("F:              Follow Cursor Mode");
 			Console.WriteLine("P:              Zoom in on program code");
+			Console.WriteLine("V:              Toggle 'Fill viewport' option");
 
 			Console.WriteLine("1:              Debug speed");
 			Console.WriteLine("2:              Normal speed");
@@ -100,6 +104,7 @@ namespace BefunExec
 				Console.WriteLine("                             and the input-preprocessor");
 				Console.WriteLine("preprocess | no_preprocess : Explicitly activate/deactivate the proprocessor");
 				Console.WriteLine("follow | no_follow         : Activates the follow-cursor mode");
+				Console.WriteLine("full_vp | limited_vp       : Fill the whole viewport in zoomed mode");
 
 				Console.WriteLine("p_highlight | no_highlight : Set Syntax-Highlighting to [none]");
 				Console.WriteLine("s_highlight | highlight    : Set Syntax-Highlighting to [simple]");
@@ -191,6 +196,13 @@ namespace BefunExec
 				RunOptions.PREPROCESSOR = false;
 			if (cmda.IsSet("preprocess") || cmda.IsSet("preprocessor"))
 				RunOptions.PREPROCESSOR = true;
+
+			//##############
+
+			if (cmda.IsSet("full_vp") || cmda.IsSet("fullvp") || cmda.IsSet("fill_vp") || cmda.IsSet("fillvp"))
+				RunOptions.FILL_VIEWPORT = true;
+			if (cmda.IsSet("limited_vp") || cmda.IsSet("limitedvp"))
+				RunOptions.FILL_VIEWPORT = false;
 
 			//##############
 

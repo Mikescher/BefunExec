@@ -57,6 +57,7 @@
 			this.aSCIIStackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showInputASCIIMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showStackReversedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alwaysRenderFullTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
 			this.zoomOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.zoomCompleteOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,7 +109,7 @@
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabelSpeed = new System.Windows.Forms.ToolStripLabel();
 			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.alwaysRenderFullTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alwaysFillViewportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -339,6 +340,7 @@
             this.showInputASCIIMessageToolStripMenuItem,
             this.showStackReversedToolStripMenuItem,
             this.alwaysRenderFullTexturesToolStripMenuItem,
+            this.alwaysFillViewportToolStripMenuItem,
             this.toolStripMenuItem4,
             this.zoomOutToolStripMenuItem,
             this.zoomCompleteOutToolStripMenuItem,
@@ -423,6 +425,14 @@
 			this.showStackReversedToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.showStackReversedToolStripMenuItem.Text = "Show Stack reversed";
 			this.showStackReversedToolStripMenuItem.Click += new System.EventHandler(this.showStackReversedToolStripMenuItem_Click);
+			// 
+			// alwaysRenderFullTexturesToolStripMenuItem
+			// 
+			this.alwaysRenderFullTexturesToolStripMenuItem.CheckOnClick = true;
+			this.alwaysRenderFullTexturesToolStripMenuItem.Name = "alwaysRenderFullTexturesToolStripMenuItem";
+			this.alwaysRenderFullTexturesToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.alwaysRenderFullTexturesToolStripMenuItem.Text = "Always render full textures";
+			this.alwaysRenderFullTexturesToolStripMenuItem.Click += new System.EventHandler(this.alwaysRenderFullTexturesToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem4
 			// 
@@ -815,13 +825,13 @@
 			// 
 			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.menuStrip1);
 			// 
-			// alwaysRenderFullTexturesToolStripMenuItem
+			// alwaysFillViewportToolStripMenuItem
 			// 
-			this.alwaysRenderFullTexturesToolStripMenuItem.CheckOnClick = true;
-			this.alwaysRenderFullTexturesToolStripMenuItem.Name = "alwaysRenderFullTexturesToolStripMenuItem";
-			this.alwaysRenderFullTexturesToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-			this.alwaysRenderFullTexturesToolStripMenuItem.Text = "Always render full textures";
-			this.alwaysRenderFullTexturesToolStripMenuItem.Click += new System.EventHandler(this.alwaysRenderFullTexturesToolStripMenuItem_Click);
+			this.alwaysFillViewportToolStripMenuItem.CheckOnClick = true;
+			this.alwaysFillViewportToolStripMenuItem.Name = "alwaysFillViewportToolStripMenuItem";
+			this.alwaysFillViewportToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.alwaysFillViewportToolStripMenuItem.Text = "Always fill viewport";
+			this.alwaysFillViewportToolStripMenuItem.Click += new System.EventHandler(this.alwaysFillViewportToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -938,5 +948,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem enableInputPreprocessorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem alwaysRenderFullTexturesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem alwaysFillViewportToolStripMenuItem;
 	}
 }
