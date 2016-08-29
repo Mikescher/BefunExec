@@ -273,6 +273,38 @@ namespace BefunExec.View.OpenGL.OGLMath
 				this.TrimNorth(this.tr.Y - other.tr.Y);
 		}
 
+		public void ForceTranslateInside(Rect2I other)
+		{
+			if (this.Width > other.Width)
+			{
+				this.position.X = other.position.X;
+				this.Width = other.Width;
+			}
+			else
+			{
+				if (this.position.X < other.position.X)
+					this.position.X = other.position.X;
+
+				if (this.position.X + Width > other.position.X + other.Width)
+					this.position.X = other.position.X + other.Width - this.Width;
+			}
+
+			if (this.Height > other.Height)
+			{
+				this.position.Y = other.position.Y;
+				this.Height = other.Height;
+			}
+			else
+			{
+				if (this.position.Y < other.position.Y)
+					this.position.Y = other.position.Y;
+
+				if (this.position.Y + Height > other.position.Y + other.Height)
+					this.position.Y = other.position.Y + other.Height - this.Height;
+			}
+
+		}
+
 		public double GetRatio()
 		{
 			return Width / (Height * 1.0);
@@ -334,6 +366,12 @@ namespace BefunExec.View.OpenGL.OGLMath
 					old = real_r;
 				}
 			}
+		}
+
+		public void Move(int xx, int yy)
+		{
+			position.X += xx;
+			position.Y += yy;
 		}
 
 		public override string ToString()

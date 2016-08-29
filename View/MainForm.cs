@@ -135,7 +135,7 @@ namespace BefunExec.View
 
 		private void glProgramView_Load(object sender, EventArgs e)
 		{
-			glProgramView.DoInit(prog);
+			glProgramView.DoInit(prog, keyboard);
 
 			UpdateStatusbar();
 		}
@@ -294,8 +294,7 @@ namespace BefunExec.View
 				z.ForceInside(progRect);
 				z.setInsideRatio_Expanding((12.0 * glProgramView.Width) / (8.0 * glProgramView.Height), progRect);
 
-				glProgramView.Zoom.Pop();
-				glProgramView.Zoom.Push(z);
+				glProgramView.Zoom.Replace(z);
 			}
 
 			#endregion

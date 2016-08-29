@@ -11,22 +11,33 @@ namespace BefunExec.View
 {
 	public class ZoomController
 	{
+		private enum ZoomSelectionMode { None, Select, Drag, SetBreakPoint, SetWatchPoint }
+
+		private ZoomSelectionMode selectionMode = ZoomSelectionMode.None;
+		private Rect2I selectionStartZoom = null;
 		private Vec2I selectionStart = null;
 		private Rect2I selection = null;
+
+		private readonly Rect2I fullzoom;
 		private readonly Stack<Rect2I> zoom = new Stack<Rect2I>();
 
+		private readonly InteropKeyboard keyboard;
 		private readonly BefunProg prog;
 
-		public ZoomController(BefunProg p)
+		public ZoomController(BefunProg p, InteropKeyboard kb)
 		{
 			prog = p;
-			zoom.Push(new Rect2I(0, 0, prog.Width, prog.Height));
+			keyboard = kb;
+
+			zoom.Push(fullzoom = new Rect2I(0, 0, prog.Width, prog.Height));
 		}
 
 		public ZoomController(BefunProg p, ZoomController copy)
 		{
 			prog = p;
+			keyboard = copy.keyboard;
 
+			fullzoom = copy.fullzoom;
 			zoom = new Stack<Rect2I>(copy.zoom.Reverse());
 		}
 
@@ -73,6 +84,8 @@ namespace BefunExec.View
 			{
 				if (selx >= 0 && sely >= 0 && selx < prog.Width && sely < prog.Height)
 				{
+					selectionMode = ZoomSelectionMode.SetWatchPoint;
+
 					var prev = prog.WatchedFields.FirstOrDefault(p => p.X == selx && p.Y == sely);
 
 					if (prev == null)
@@ -99,15 +112,34 @@ namespace BefunExec.View
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				if (selx != -1 && sely != -1)
+				if (keyboard.IsDown(Keys.ShiftKey))
 				{
-					selectionStart = new Vec2I(selx, sely);
+					if (selx != -1 && sely != -1)
+					{
+						selectionMode = ZoomSelectionMode.Drag;
 
-					UpdateSelectionCalculation(selx, sely);
+						selectionStartZoom = new Rect2I(Peek());
+						selectionStart = new Vec2I(selx, sely);
+					}
+					else
+					{
+						selectionStart = null;
+					}
 				}
 				else
 				{
-					selectionStart = null;
+					if (selx != -1 && sely != -1)
+					{
+						selectionMode = ZoomSelectionMode.Select;
+
+						selectionStart = new Vec2I(selx, sely);
+
+						UpdateSelectionCalculation(selx, sely);
+					}
+					else
+					{
+						selectionStart = null;
+					}
 				}
 			}
 		}
@@ -120,7 +152,16 @@ namespace BefunExec.View
 
 			if (selectionStart != null)
 			{
-				UpdateSelectionCalculation(selx, sely);
+				if (selectionMode == ZoomSelectionMode.Select)
+				{
+					UpdateSelectionCalculation(selx, sely);
+				}
+				else if (selectionMode == ZoomSelectionMode.Drag)
+				{
+					UpdateZoomDragging(selx, sely);
+					
+					if (!keyboard.IsDown(Keys.ShiftKey)) selectionMode = ZoomSelectionMode.None;
+				}
 			}
 		}
 
@@ -131,30 +172,38 @@ namespace BefunExec.View
 
 			if (selectionStart != null)
 			{
-				UpdateSelectionCalculation(selx, sely);
-
-				if (selection == null) return;
-
-				if (selection.Width == 1 && selection.Height == 1)
+				if (selectionMode == ZoomSelectionMode.Select)
 				{
-					if (prog.Breakpoints[selection.bl.X, selection.bl.Y])
+					UpdateSelectionCalculation(selx, sely);
+
+					if (selection == null) return;
+
+					if (selection.Width == 1 && selection.Height == 1)
 					{
-						prog.Breakpoints[selection.bl.X, selection.bl.Y] = false;
-						prog.Breakpointcount--;
+						if (prog.Breakpoints[selection.bl.X, selection.bl.Y])
+						{
+							prog.Breakpoints[selection.bl.X, selection.bl.Y] = false;
+							prog.Breakpointcount--;
+						}
+						else
+						{
+							prog.Breakpoints[selection.bl.X, selection.bl.Y] = true;
+							prog.Breakpointcount++;
+						}
 					}
-					else
+					else if (Math.Abs(selection.Width) > 0 && Math.Abs(selection.Height) > 0)
 					{
-						prog.Breakpoints[selection.bl.X, selection.bl.Y] = true;
-						prog.Breakpointcount++;
+						if (selection != zoom.Peek())
+							zoom.Push(selection);
 					}
 				}
-				else if (Math.Abs(selection.Width) > 0 && Math.Abs(selection.Height) > 0)
+				else if (selectionMode == ZoomSelectionMode.Drag)
 				{
-					if (selection != zoom.Peek())
-						zoom.Push(selection);
+					UpdateZoomDragging(selx, sely);
 				}
 			}
 
+			selectionMode = ZoomSelectionMode.None;
 			selectionStart = null;
 			selection = null;
 		}
@@ -265,6 +314,22 @@ namespace BefunExec.View
 			}
 		}
 
+		private void UpdateZoomDragging(int mouseX, int mouseY)
+		{
+			if (mouseX != -1 && mouseY != -1)
+			{
+				Rect2I r = new Rect2I(selectionStartZoom);
+
+				r.Move(selectionStart.X - mouseX, selectionStart.Y - mouseY);
+
+				r.ForceTranslateInside(fullzoom);
+
+				Replace(r);
+
+				selectionStartZoom = r;
+			}
+		}
+
 		public Rect2I Peek()
 		{
 			return zoom.Peek();
@@ -306,6 +371,19 @@ namespace BefunExec.View
 		public int Count()
 		{
 			return zoom.Count();
+		}
+
+		public InteropKeyboard GetKeyboard()
+		{
+			return keyboard;
+		}
+
+		public void Replace(Rect2I zr)
+		{
+			if (Count() > 1)
+				Pop();
+
+			Push(zr);
 		}
 	}
 }

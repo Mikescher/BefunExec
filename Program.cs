@@ -33,33 +33,34 @@ namespace BefunExec
 
 			Console.WriteLine("########## KEYS ##########");
 			Console.WriteLine();
-			Console.WriteLine("Space:          Pause | Resume");
-			Console.WriteLine("Right:          Step Forward");
-			Console.WriteLine("Left:           Undo last Step (needs undo enabled)");
+			Console.WriteLine("Space:                 Pause | Resume");
+			Console.WriteLine("Right:                 Step Forward");
+			Console.WriteLine("Left:                  Undo last Step (needs undo enabled)");
 
-			Console.WriteLine("Mouse (Click):  Breakpoint");
-			Console.WriteLine("Mouse (Drag):   Zoom in");
-			Console.WriteLine("MouseWheel:     Zoom In/Out");
-			Console.WriteLine("Mouse (Middle): Add field to watch list");
-			Console.WriteLine("Mouse (Middle): Toggle watch field type");
-			Console.WriteLine("Esc:            Zoom out");
+			Console.WriteLine("Mouse (Click):         Breakpoint");
+			Console.WriteLine("Mouse (Drag):          Zoom in");
+			Console.WriteLine("MouseWheel:            Zoom In/Out");
+			Console.WriteLine("Mouse (Middle):        Add field to watch list");
+			Console.WriteLine("Mouse (Middle):        Toggle watch field type");
+			Console.WriteLine("Esc:                   Zoom out");
+			Console.WriteLine("Mouse (Drag) + Drag:   Move viewport");
 
-			Console.WriteLine("C:              Remove all breakpoints");
-			Console.WriteLine("R:              Reset program");
-			Console.WriteLine("Strg+R:         Reload file");
-			Console.WriteLine("F:              Follow Cursor Mode");
-			Console.WriteLine("P:              Zoom in on program code");
-			Console.WriteLine("V:              Toggle 'Fill viewport' option");
+			Console.WriteLine("C:                     Remove all breakpoints");
+			Console.WriteLine("R:                     Reset program");
+			Console.WriteLine("Strg+R:                Reload file");
+			Console.WriteLine("F:                     Follow Cursor Mode");
+			Console.WriteLine("P:                     Zoom in on program code");
+			Console.WriteLine("V:                     Toggle 'Fill viewport' option");
 
-			Console.WriteLine("1:              Debug speed");
-			Console.WriteLine("2:              Normal speed");
-			Console.WriteLine("3:              High speed");
-			Console.WriteLine("4:              Very High speed");
-			Console.WriteLine("5:              Full speed");
-			Console.WriteLine("Pg-Up:          Increase Speed");
-			Console.WriteLine("Pg-Down:        Decrease Speed");
+			Console.WriteLine("1:                     Debug speed");
+			Console.WriteLine("2:                     Normal speed");
+			Console.WriteLine("3:                     High speed");
+			Console.WriteLine("4:                     Very High speed");
+			Console.WriteLine("5:                     Full speed");
+			Console.WriteLine("Pg-Up:                 Increase Speed");
+			Console.WriteLine("Pg-Down:               Decrease Speed");
 			Console.WriteLine();			   
-			Console.WriteLine("TAB:            Debug View  (TRY IT OUT !)");
+			Console.WriteLine("TAB:                   Debug View  (TRY IT OUT !)");
 
 			Console.WriteLine();
 			Console.WriteLine();

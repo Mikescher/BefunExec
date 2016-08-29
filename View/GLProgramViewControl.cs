@@ -43,10 +43,10 @@ namespace BefunExec.View
 			Loaded = false;
 		}
 
-		public void DoInit(BefunProg p)
+		public void DoInit(BefunProg p, InteropKeyboard kb)
 		{
 			prog = p;
-			Zoom = new ZoomController(prog);
+			Zoom = new ZoomController(prog, kb);
 
 			MakeCurrent();
 
@@ -1057,7 +1057,7 @@ namespace BefunExec.View
 			if (keepView)
 				Zoom = new ZoomController(prog, Zoom);
 			else
-				Zoom = new ZoomController(prog);
+				Zoom = new ZoomController(prog, Zoom.GetKeyboard());
 		}
 
 		public string GetExecutionData()
