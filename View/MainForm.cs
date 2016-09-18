@@ -931,7 +931,7 @@ namespace BefunExec.View
 
 		private void alwaysFillViewportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			RunOptions.FILL_VIEWPORT = enableInputPreprocessorToolStripMenuItem.Checked;
+			RunOptions.FILL_VIEWPORT = alwaysFillViewportToolStripMenuItem.Checked;
 		}
 	}
 }
