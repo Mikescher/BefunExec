@@ -48,7 +48,7 @@ namespace BefunExec.Logic
 				prog.Breakpointcount = Breakpoints.Count;
 				foreach (var point in Breakpoints)
 				{
-					prog.Breakpoints[point.X, point.Y] = false;
+					prog.Breakpoints[point.X, point.Y] = true;
 					prog.Breakpointcount++;
 				}
 			}

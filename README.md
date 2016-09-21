@@ -1,4 +1,4 @@
-![](https://raw.githubusercontent.com/Mikescher/BefunUtils/master/README-FILES/icon_BefunExec.png) BefunExec
+![](https://raw.githubusercontent.com/Mikescher/BefunUtils/master/README-FILES/icon_BefunExec.png) BefunExec [![Build status](https://ci.appveyor.com/api/projects/status/u10tua2nyn5pyr6x?svg=true)](https://ci.appveyor.com/project/Mikescher/befunexec)
 =================
 
 BefunExec is a fast Befunge-93 interpreter (without any program-size limitations) and a simple tool to execute and debug the generated Befunge-93 files.
@@ -29,7 +29,9 @@ BefunHighlight (Graph display):
 Download
 ========
 
-You can download the binaries from my website [www.mikescher.com](http://www.mikescher.com/programs/view/BefunUtils)
+You can download the binaries from my website **[www.mikescher.com](http://www.mikescher.com/programs/view/BefunUtils)**
+
+Or you can download the latest (nightly) version from the **[AppVeyor build server](https://ci.appveyor.com/project/Mikescher/BefunExec/build/artifacts)**
 
 Set Up
 ======
@@ -38,3 +40,47 @@ Set Up
 
 You need the other [BefunUtils](https://github.com/Mikescher/BefunUtils) projects *(especially BefunHighlight)* to run this.  
 Follow the setup instructions from BefunUtils: [README](https://github.com/Mikescher/BefunUtils/blob/master/README.md)
+
+
+Feature overview / Manual
+=========================
+
+ - Click on a field to create a breakpoint
+ - Middle click on a field to add the field to the watch list, middle click again to change the display mode
+ - Use preprocessor statements in you code to automatically watch specific fields / break on specific fields etc (see chapter below)
+ - Press ctrl+R to *smart reload* the file. (If the overall size hasn't changed the current program state ist not lost, kinda like *Edit and compile*)
+ - Press left in paused mode to undo the last program step (needs the option UndoLog enabled)
+ - Use the key `1` to `5` to change the execution speed
+ - Draw a box to zoom in
+ - Shift+Drag to move the current view
+ - Press TAB to view execution speed, program info etc
+ - Press TAB with extended Syntaxhighlighting to see a graph of the possible program flow (uses *BefunHighlight* library)
+ - **Read the commandline output for all the options etc**
+
+
+Preprocessor
+============
+
+You can insert a few special preprocessor lines in you befunge code:
+
+~~~
+#$watch[1,2]:int = my_var_name
+~~~
+This line adds the field `[1,2]` to the list of watched fields (with description `my_var_name`).
+Supported display types are `int`, `long`, `char`, `hex`, `hex8` and `binary`
+
+~~~
+#$break[10,5]
+~~~
+This line adds a breakpoint at `[10,5]`
+
+~~~
+#$replace {V01} -> 55+3g
+~~~
+This line replaces all occurrences of `{V01}` with `55+3g` (! Please note that left and right side must be of equal size) 
+
+
+GIF Capturing
+=============
+
+Under the menu tools you can use the `Capture GIF` option to make a small (possible looping) animation of you program.

@@ -43,7 +43,7 @@ namespace BefunExec
 			Console.WriteLine("Mouse (Middle):        Add field to watch list");
 			Console.WriteLine("Mouse (Middle):        Toggle watch field type");
 			Console.WriteLine("Esc:                   Zoom out");
-			Console.WriteLine("Mouse (Drag) + Drag:   Move viewport");
+			Console.WriteLine("Mouse (Drag) + Shift:  Move viewport");
 
 			Console.WriteLine("C:                     Remove all breakpoints");
 			Console.WriteLine("R:                     Reset program");

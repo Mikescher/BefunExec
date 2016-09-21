@@ -73,7 +73,7 @@ namespace BefunExec.Logic
 		{
 			var info = new FileInformation();
 
-			List<Tuple<char, char>> replacements = new List<Tuple<char, char>>();
+			List<Tuple<string, string>> replacements = new List<Tuple<string, string>>();
 			HashSet<int> preprocessorlines = new HashSet<int>();
 
 			for (int i = 0; i < input.Length; i++)
@@ -161,7 +161,7 @@ namespace BefunExec.Logic
 			return info;
 		}
 
-		private static Tuple<char, char> ParseReplParam(string param)
+		private static Tuple<string, string> ParseReplParam(string param)
 		{
 			param = param.Trim();
 			var split = param.Split(new [] { "->" }, StringSplitOptions.None);
@@ -170,10 +170,11 @@ namespace BefunExec.Logic
 			split[0] = split[0].Trim();
 			split[1] = split[1].Trim();
 
-			if (split[0].Length != 1) return null;
-			if (split[1].Length != 1) return null;
+			if (split[0].Length < 1) return null;
+			if (split[1].Length < 1) return null;
+			if (split[0].Length != split[1].Length) return null;
 
-			return Tuple.Create(split[0][0], split[1][0]);
+			return Tuple.Create(split[0], split[1]);
 		}
 
 		private static Vec2I ParseVecParam(string param)
