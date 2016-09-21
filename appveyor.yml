@@ -1,0 +1,96 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 1.0.{build}
+
+# you can use {branch} name in version format too
+# version: 1.0.{build}-{branch}
+
+# branches to build
+branches:
+  # blacklist
+  except:
+    - gh-pages
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2015
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - git config --global core.autocrlf input
+
+# fetch repository as zip archive
+shallow_clone: true                 # default is "false"
+
+# set clone depth
+clone_depth: 0                      # clone entire repository history if not defined
+
+# scripts that run after cloning repository
+install:
+  - git clone --depth=1 https://github.com/Mikescher/BefunUtils
+  - cd BefunUtils
+  - CLONE_ALL_SHALLOW.bat
+  - cd ..
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: Any CPU
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Release
+
+build:
+  parallel: true                          # enable MSBuild parallel builds
+  project: BefunUtils/BefunUtils.sln      # path to Visual Studio solution or project
+
+  # MSBuild verbosity level
+  verbosity: normal
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+
+  # pushing a single file
+  #- path: BefunUtils\bin\Release\BefunExec.exe
+
+  # pushing a single file with environment variable in path and "Deployment name" specified
+  - path: BefunUtils\bin\Release
+    name: BefunExec
+
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+#---------------------------------#
+#        global handlers          #
+#---------------------------------#
+
+#---------------------------------#
+#         notifications           #
+#---------------------------------#
+
+notifications:
+
+  # Email
+  - provider: Email
+    to:
+      - mailport@mikescher.de
+    on_build_success: true
+    on_build_failure: true
