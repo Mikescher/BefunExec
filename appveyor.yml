@@ -36,6 +36,7 @@ install:
   - git clone --depth=1 https://github.com/Mikescher/BefunUtils
   - cd BefunUtils
   - CLONE_ALL_SHALLOW.bat
+  - nuget restore
   - cd ..
 
 #---------------------------------#
