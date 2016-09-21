@@ -70,13 +70,8 @@ test:
 
 artifacts:
 
-  # pushing a single file
-  #- path: BefunUtils\bin\Release\BefunExec.exe
-
-  # pushing a single file with environment variable in path and "Deployment name" specified
-  - path: BefunUtils\bin\Release
+  - path: BefunUtils\bin\Release\BefunExec
     name: BefunExec
-
 
 #---------------------------------#
 #     deployment configuration    #
