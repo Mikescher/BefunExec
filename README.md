@@ -84,3 +84,9 @@ GIF Capturing
 =============
 
 Under the menu tools you can use the `Capture GIF` option to make a small (possible looping) animation of you program.
+
+
+Contributions
+=============
+
+Yes, please
