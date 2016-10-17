@@ -3,6 +3,7 @@ using BefunExec.View.OpenGL;
 using BefunExec.View.OpenGL.OGLMath;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using System;
 
 namespace BefunExec.View
 {
@@ -64,6 +65,37 @@ namespace BefunExec.View
 						{
 							b.SetPixel(x, y, background);
 						}
+					}
+				}
+			}
+
+			return new FontRasterSheet(LoadResourceIntoUID(b, TextureMinFilter.Nearest), 80, 2, b);
+		}
+
+		public static FontRasterSheet Create(Func<char, Color> replFunc, Color background)
+		{
+			Bitmap b = new Bitmap(Resources.raster);
+			b = b.Clone(new Rectangle(0, 0, b.Width, b.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			int chrWidth = b.Width/80;
+			int chrHeight = b.Height/2;
+			
+			for (int x = 0; x < b.Width; x++)
+			{
+				for (int y = 0; y < b.Height; y++)
+				{
+					Color c = b.GetPixel(x, y);
+					
+					if (c.R + c.G + c.B != (255 * 3)) // Foreground
+					{
+						char chr = (char)((x / chrWidth) + 80 * (y / chrHeight));
+						Color repl = replFunc(chr);
+					
+						b.SetPixel(x, y, repl);
+					}
+					else // Background
+					{
+						b.SetPixel(x, y, background);
 					}
 				}
 			}

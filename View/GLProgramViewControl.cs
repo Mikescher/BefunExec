@@ -63,7 +63,7 @@ namespace BefunExec.View
 			InitSyntaxHighlighting();
 
 			stringfont = FontRasterSheet.Create(false, Color.DarkGreen, Color.FromArgb(212, 255, 212));
-			nopFont = FontRasterSheet.Create(false, Color.Black, Color.FromArgb(244, 244, 244)); //TODO CHR(0) stay gray
+			nopFont = FontRasterSheet.Create((chr) => chr == 0 ? Color.FromArgb(102, 102, 102) : Color.Black, Color.FromArgb(244, 244, 244));
 			bwfont = FontRasterSheet.Create(false, Color.Black, Color.White);
 
 			Zoom.Push(RunOptions.INIT_ZOOM);
