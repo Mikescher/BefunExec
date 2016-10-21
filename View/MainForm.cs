@@ -63,6 +63,7 @@ namespace BefunExec.View
 			undoToolStripMenuItem.Enabled = RunOptions.ENABLEUNDO;
 			prog.UndoLog.Enabled = RunOptions.ENABLEUNDO;
 			enableInputPreprocessorToolStripMenuItem.Checked = RunOptions.FILL_VIEWPORT;
+			renderZeroCellsToolStripMenuItem.Checked = RunOptions.RENDER_BIN_ZERO;
 			SetSpeed(RunOptions.RUN_FREQUENCY_IDX, true);
 
 			Application.Idle += Application_Idle;
@@ -964,6 +965,11 @@ namespace BefunExec.View
 		private void rerunPreprocessoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ReloadPreprocessor();
+		}
+
+		private void renderZeroCellsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RunOptions.RENDER_BIN_ZERO = renderZeroCellsToolStripMenuItem.Checked;
 		}
 	}
 }

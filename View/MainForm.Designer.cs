@@ -111,6 +111,9 @@
 			this.syntaxHighlighting_noneToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
 			this.syntaxHighlighting_simpleToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
 			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem = new BefunExec.View.ToolStripRadioButtonMenuItem();
+			this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
+			this.renderZeroCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -306,14 +309,17 @@
 			// 
 			this.displayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.syntaxHighlightingToolStripMenuItem,
-            this.followCursorToolStripMenuItem,
             this.showTrailToolStripMenuItem,
+            this.renderZeroCellsToolStripMenuItem,
+            this.toolStripMenuItem6,
             this.aSCIIStackToolStripMenuItem,
             this.showInputASCIIMessageToolStripMenuItem,
             this.showStackReversedToolStripMenuItem,
+            this.toolStripMenuItem8,
             this.alwaysRenderFullTexturesToolStripMenuItem,
             this.alwaysFillViewportToolStripMenuItem,
             this.toolStripMenuItem4,
+            this.followCursorToolStripMenuItem,
             this.zoomOutToolStripMenuItem,
             this.zoomCompleteOutToolStripMenuItem,
             this.zoomToInitialToolStripMenuItem});
@@ -501,7 +507,7 @@
 			// 
 			this.lowToolStripMenuItem.Name = "lowToolStripMenuItem";
 			this.lowToolStripMenuItem.ShortcutKeyDisplayString = "[1]";
-			this.lowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.lowToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.lowToolStripMenuItem.Text = "Low";
 			this.lowToolStripMenuItem.Click += new System.EventHandler(this.lowToolStripMenuItem_Click);
 			// 
@@ -509,7 +515,7 @@
 			// 
 			this.middleToolStripMenuItem.Name = "middleToolStripMenuItem";
 			this.middleToolStripMenuItem.ShortcutKeyDisplayString = "[2]";
-			this.middleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.middleToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.middleToolStripMenuItem.Text = "Middle";
 			this.middleToolStripMenuItem.Click += new System.EventHandler(this.middleToolStripMenuItem_Click);
 			// 
@@ -517,7 +523,7 @@
 			// 
 			this.fastToolStripMenuItem.Name = "fastToolStripMenuItem";
 			this.fastToolStripMenuItem.ShortcutKeyDisplayString = "[3]";
-			this.fastToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.fastToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.fastToolStripMenuItem.Text = "Fast";
 			this.fastToolStripMenuItem.Click += new System.EventHandler(this.fastToolStripMenuItem_Click);
 			// 
@@ -525,7 +531,7 @@
 			// 
 			this.veryFastToolStripMenuItem.Name = "veryFastToolStripMenuItem";
 			this.veryFastToolStripMenuItem.ShortcutKeyDisplayString = "[4]";
-			this.veryFastToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.veryFastToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.veryFastToolStripMenuItem.Text = "Very Fast";
 			this.veryFastToolStripMenuItem.Click += new System.EventHandler(this.veryFastToolStripMenuItem_Click);
 			// 
@@ -533,7 +539,7 @@
 			// 
 			this.fullToolStripMenuItem.Name = "fullToolStripMenuItem";
 			this.fullToolStripMenuItem.ShortcutKeyDisplayString = "[5]";
-			this.fullToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.fullToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.fullToolStripMenuItem.Text = "Full";
 			this.fullToolStripMenuItem.Click += new System.EventHandler(this.fullToolStripMenuItem_Click);
 			// 
@@ -860,6 +866,26 @@
 			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.Text = "Extended (BefunHighlight)";
 			this.syntaxHighlighting_extendedBefunHighlightToolStripMenuItem.CheckedChanged += new System.EventHandler(this.syntaxhighlightingToolStripMenuItem_CheckedChanged);
 			// 
+			// toolStripMenuItem6
+			// 
+			this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+			this.toolStripMenuItem6.Size = new System.Drawing.Size(236, 6);
+			// 
+			// toolStripMenuItem8
+			// 
+			this.toolStripMenuItem8.Name = "toolStripMenuItem8";
+			this.toolStripMenuItem8.Size = new System.Drawing.Size(236, 6);
+			// 
+			// renderZeroCellsToolStripMenuItem
+			// 
+			this.renderZeroCellsToolStripMenuItem.Checked = true;
+			this.renderZeroCellsToolStripMenuItem.CheckOnClick = true;
+			this.renderZeroCellsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.renderZeroCellsToolStripMenuItem.Name = "renderZeroCellsToolStripMenuItem";
+			this.renderZeroCellsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+			this.renderZeroCellsToolStripMenuItem.Text = "Render cells with value = 0x00";
+			this.renderZeroCellsToolStripMenuItem.Click += new System.EventHandler(this.renderZeroCellsToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -977,5 +1003,8 @@
 		private System.Windows.Forms.ToolStripMenuItem alwaysRenderFullTexturesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem alwaysFillViewportToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rerunPreprocessoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem renderZeroCellsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;
 	}
 }

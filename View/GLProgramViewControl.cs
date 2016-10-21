@@ -115,7 +115,7 @@ namespace BefunExec.View
 				}
 				else
 				{
-					Render_HQ(offx, offy, w, h, zoom);
+					Render_HQ(offx, offy, w, h, zoom, renderDebug);
 				}
 			}
 			else if (cellcount < MAX_MQ_CELLCOUNT)
@@ -349,6 +349,9 @@ namespace BefunExec.View
 					if (!prog.WatchData[x, y] && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
 						continue;
 
+					if (!RunOptions.RENDER_BIN_ZERO && prog.Raster[x, y] == 0)
+						continue;
+
 					bool docol = true;
 					if (prog.Breakpoints[x, y])
 					{
@@ -409,6 +412,9 @@ namespace BefunExec.View
 					double decayPerc = (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME;
 
 					if (!prog.WatchData[x, y] && !prog.Breakpoints[x, y] && prog.Raster[x, y] == ' ' && decayPerc >= 1)
+						continue;
+
+					if (!RunOptions.RENDER_BIN_ZERO && prog.Raster[x, y] == 0)
 						continue;
 
 					bool docol = true;
@@ -474,7 +480,7 @@ namespace BefunExec.View
 			GL.Enable(EnableCap.Texture2D);
 		}
 
-		private void Render_HQ(double offx, double offy, double w, double h, Rect2I zoom)
+		private void Render_HQ(double offx, double offy, double w, double h, Rect2I zoom, bool renderDebug)
 		{
 			long now = Environment.TickCount;
 
@@ -532,18 +538,21 @@ namespace BefunExec.View
 
 					Rect2D renderRect = new Rect2D(offx + (x - zoom.bl.X) * w, offy + ((zoom.Height - 1) - (y - zoom.bl.Y)) * h, w, h);
 
+					long chr = prog[x, y];
+					if (!RunOptions.RENDER_BIN_ZERO && prog.Raster[x, y] == 0 && !renderDebug) chr = ' ';
+
 					if (prog.WatchData[x, y] || prog.Breakpoints[x, y] || decayPerc > 0.25)
 					{
 						if (fontBinded != 1)
 							bwfont.bind();
-						bwfont.Render(renderRect, -4, prog[x, y]);
+						bwfont.Render(renderRect, -4, chr);
 						fontBinded = 1;
 					}
 					else
 					{
 						if (fontBinded != 2)
 							font.bind();
-						font.Render(renderRect, -4, prog[x, y]);
+						font.Render(renderRect, -4, chr);
 						fontBinded = 2;
 					}
 				}
@@ -577,7 +586,7 @@ namespace BefunExec.View
 						if (x >= prog.Width) continue;
 						if (y >= prog.Height) continue;
 					}
-
+					
 					double decayPerc = (RunOptions.DECAY_TIME != 0) ? (1 - (now - prog.DecayRaster[x, y] * 1d) / RunOptions.DECAY_TIME) : (prog.DecayRaster[x, y]);
 					decayPerc = Math.Min(1, decayPerc);
 					decayPerc = Math.Max(0, decayPerc);
@@ -613,12 +622,15 @@ namespace BefunExec.View
 					// ReSharper restore CompareOfFloatsByEqualityOperator
 
 					Rect2D renderRect = new Rect2D(offx + (x - zoom.bl.X) * w, offy + ((zoom.Height - 1) - (y - zoom.bl.Y)) * h, w, h);
+					
+					long chr = prog[x, y];
+					if (!RunOptions.RENDER_BIN_ZERO && prog.Raster[x, y] == 0 && !renderDebug) chr = ' ';
 
 					if (prog.WatchData[x, y] || prog.Breakpoints[x, y] || decayPerc > 0.25)
 					{
 						if (fontBinded != 1)
 							bwfont.bind();
-						bwfont.Render(renderRect, -4, prog[x, y]);
+						bwfont.Render(renderRect, -4, chr);
 						fontBinded = 1;
 					}
 					else
@@ -637,21 +649,21 @@ namespace BefunExec.View
 						{
 							if (fontBinded != 4)
 								nopFont.bind();
-							nopFont.Render(renderRect, -4, prog[x, y]);
+							nopFont.Render(renderRect, -4, chr);
 							fontBinded = 4;
 						}
 						else if (type == HighlightType.Command || type == HighlightType.String_and_Command)
 						{
 							if (fontBinded != 2)
 								font.bind();
-							font.Render(renderRect, -4, prog[x, y]);
+							font.Render(renderRect, -4, chr);
 							fontBinded = 2;
 						}
 						else if (type == HighlightType.String)
 						{
 							if (fontBinded != 3)
 								stringfont.bind();
-							stringfont.Render(renderRect, -4, prog[x, y]);
+							stringfont.Render(renderRect, -4, chr);
 							fontBinded = 3;
 						}
 
@@ -991,7 +1003,7 @@ namespace BefunExec.View
 			if (RunOptions.SYNTAX_HIGHLIGHTING == RunOptions.SH_EXTENDED)
 				Render_HQ_sh(rOffX, rOffY, rWidth, rHeight, zoom, false);
 			else
-				Render_HQ(rOffX, rOffY, rWidth, rHeight, zoom);
+				Render_HQ(rOffX, rOffY, rWidth, rHeight, zoom, false);
 			//##################################################
 
 			if (GraphicsContext.CurrentContext == null)
