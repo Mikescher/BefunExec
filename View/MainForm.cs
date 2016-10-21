@@ -212,6 +212,13 @@ namespace BefunExec.View
 				glProgramView.Zoom.Pop();
 			}
 
+			if (isrun && keyboard[Keys.Escape] & keyboard.IsDown(Keys.ControlKey)) // no shortcut eval on purpose
+			{
+				SetFollowMode(false);
+
+				glProgramView.Zoom.PopToBase();
+			}
+
 			if (isrun && keyboard[Keys.Space] && prog.Mode == BefunProg.MODE_RUN)
 			{
 				prog.Paused = !prog.Paused;
@@ -278,6 +285,9 @@ namespace BefunExec.View
 
 			if (isrun && keyboard[Keys.V])
 				SetFillViewPort(!RunOptions.FILL_VIEWPORT);
+
+			if (isrun && keyboard[Keys.T])
+				ReloadPreprocessor();
 
 			if (keyboard.AnyKey())
 				UpdateStatusbar();
@@ -503,6 +513,25 @@ namespace BefunExec.View
 			}
 		}
 
+		private void ReloadPreprocessor()
+		{
+			if (RunOptions.FILEPATH != null)
+			{
+				var code = BefungeFileHelper.LoadTextFile(RunOptions.FILEPATH, RunOptions.PREPROCESSOR);
+
+				if (code == null)
+				{
+					Console.WriteLine();
+					Console.WriteLine("Could not load program from Filepath: ");
+					Console.WriteLine(RunOptions.FILEPATH);
+				}
+				else
+				{
+					code.ApplyMetadata(prog, true);
+				}
+			}
+		}
+
 		private void SetSpeed(int freqIdx, bool recheck)
 		{
 			RunOptions.RUN_FREQUENCY_IDX = freqIdx;
@@ -675,8 +704,7 @@ namespace BefunExec.View
 
 		private void zoomToInitialToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
-				return;
+			SetFollowMode(false);
 
 			glProgramView.Zoom.PopToBase();
 
@@ -685,8 +713,7 @@ namespace BefunExec.View
 
 		private void zoomOutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
-				return;
+			SetFollowMode(false);
 
 
 			glProgramView.Zoom.Pop();
@@ -694,8 +721,7 @@ namespace BefunExec.View
 
 		private void zoomCompleteOutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (RunOptions.FOLLOW_MODE) //NOT POSSIBLE WHILE FOLLOWING
-				return;
+			SetFollowMode(false);
 
 			glProgramView.Zoom.PopToBase();
 		}
@@ -933,6 +959,11 @@ namespace BefunExec.View
 		private void alwaysFillViewportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RunOptions.FILL_VIEWPORT = alwaysFillViewportToolStripMenuItem.Checked;
+		}
+
+		private void rerunPreprocessoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ReloadPreprocessor();
 		}
 	}
 }

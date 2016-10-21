@@ -45,12 +45,13 @@ namespace BefunExec.Logic
 		{
 			if (Breakpoints != null)
 			{
-				prog.Breakpointcount = Breakpoints.Count;
+				prog.Breakpointcount = 0;
 				foreach (var point in Breakpoints)
 				{
 					prog.Breakpoints[point.X, point.Y] = true;
 					prog.Breakpointcount++;
 				}
+				prog.Breakpointcount = Breakpoints.Count;
 			}
 			else if (forceOverride)
 			{
@@ -66,11 +67,12 @@ namespace BefunExec.Logic
 			
 			if (Watchpoints != null)
 			{
-				prog.WatchedFields = Watchpoints.Where(p => p.X >= 0 && p.Y >= 0 && p.X < prog.Width && p.Y < prog.Height).ToList();
+				prog.WatchedFields = new List<WatchedField>();
 				foreach (var point in Watchpoints)
 				{
 					prog.WatchData[point.X, point.Y] = true;
 				}
+				prog.WatchedFields = Watchpoints.Where(p => p.X >= 0 && p.Y >= 0 && p.X < prog.Width && p.Y < prog.Height).ToList();
 			}
 			else if (forceOverride)
 			{

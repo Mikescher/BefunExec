@@ -206,17 +206,18 @@ namespace BefunExec.Logic
 		private static WatchedField ParseWatchParam(string param)
 		{
 			param = param.Trim();
-			var split = param.Split(':');
-			if (split.Length != 2) return null;
 			
-			if (split[1].Contains('='))
+			if (param.Contains('='))
 			{
-				var resplit = split[1].Split('=');
-				if (resplit.Length != 2) return null;
+				var eqSplit = param.Split('=');
+				if (eqSplit.Length != 2) return null;
 
-				var spos = split[0].Trim();
-				var stype = resplit[0].Trim().ToLower();
-				var sname = resplit[1].Trim();
+				var leftSplit = eqSplit[0].Split(':');
+				if (leftSplit.Length != 2) return null;
+
+				var spos = leftSplit[0].Trim();
+				var stype = leftSplit[1].Trim().ToLower();
+				var sname = eqSplit[1].Trim();
 
 				Vec2I pos = ParseVecParam(spos);
 
@@ -230,6 +231,9 @@ namespace BefunExec.Logic
 			}
 			else
 			{
+				var split = param.Split(':');
+				if (split.Length != 2) return null;
+
 				var spos = split[0].Trim();
 				var stype = split[1].Trim().ToLower();
 

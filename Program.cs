@@ -43,14 +43,16 @@ namespace BefunExec
 			Console.WriteLine("Mouse (Middle):        Add field to watch list");
 			Console.WriteLine("Mouse (Middle):        Toggle watch field type");
 			Console.WriteLine("Esc:                   Zoom out");
+			Console.WriteLine("Ctrl+Esc:              Zoom completely out");
 			Console.WriteLine("Mouse (Drag) + Shift:  Move viewport");
 
 			Console.WriteLine("C:                     Remove all breakpoints");
 			Console.WriteLine("R:                     Reset program");
-			Console.WriteLine("Strg+R:                Reload file");
+			Console.WriteLine("Ctrl+R:                Reload file");
 			Console.WriteLine("F:                     Follow Cursor Mode");
 			Console.WriteLine("P:                     Zoom in on program code");
 			Console.WriteLine("V:                     Toggle 'Fill viewport' option");
+			Console.WriteLine("T:                     Reload breakpoints and watched fields from file");
 
 			Console.WriteLine("1:                     Debug speed");
 			Console.WriteLine("2:                     Normal speed");
