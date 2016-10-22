@@ -208,7 +208,7 @@ namespace BefunExec.Logic
 
 		private void TestForFreeze()
 		{
-			while (ResetFreezeRequest)
+			while (ResetFreezeRequest && Running)
 			{
 				ResetFreezeAnswer = true;
 				Thread.Sleep(0);
