@@ -46,6 +46,18 @@ namespace BefunExec.Logic
 			if (Breakpoints != null)
 			{
 				prog.Breakpointcount = 0;
+
+				if (forceOverride)
+				{
+					for (int x = 0; x < prog.Width; x++)
+					{
+						for (int y = 0; y < prog.Height; y++)
+						{
+							prog.Breakpoints[x, y] = false;
+						}
+					}
+				}
+
 				foreach (var point in Breakpoints)
 				{
 					prog.Breakpoints[point.X, point.Y] = true;
@@ -68,10 +80,22 @@ namespace BefunExec.Logic
 			if (Watchpoints != null)
 			{
 				prog.WatchedFields = new List<WatchedField>();
+				if (forceOverride)
+				{
+					for (int x = 0; x < prog.Width; x++)
+					{
+						for (int y = 0; y < prog.Height; y++)
+						{
+							prog.WatchData[x, y] = false;
+						}
+					}
+				}
+
 				foreach (var point in Watchpoints)
 				{
 					prog.WatchData[point.X, point.Y] = true;
 				}
+
 				prog.WatchedFields = Watchpoints.Where(p => p.X >= 0 && p.Y >= 0 && p.X < prog.Width && p.Y < prog.Height).ToList();
 			}
 			else if (forceOverride)
