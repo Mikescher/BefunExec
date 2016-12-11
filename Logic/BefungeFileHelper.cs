@@ -227,6 +227,9 @@ namespace BefunExec.Logic
 
 				if (etype == null) return null;
 
+				if (sname.StartsWith("\"") && sname.Substring(1).Contains("\""))
+					sname = sname.Substring(1).Split('"')[0];
+
 				return new WatchedField(pos.X, pos.Y, etype.Value, sname);
 			}
 			else
