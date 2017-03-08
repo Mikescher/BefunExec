@@ -421,7 +421,7 @@ namespace BefunExec.Logic
 						Pop();
 						break;
 					case '.':
-						Out(Pop().ToString());
+						Out(Pop().ToString() + " ");
 						break;
 					case ',':
 						Out(((char)Pop()).ToString());
